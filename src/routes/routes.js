@@ -7,4 +7,6 @@ let router=express.Router();
 router.get("/",controller.homeCtrl);
 
 router.get("/reg",controller.regCtrl);
+
+router.post("/savereg", controller.saveReg);
 module.exports=router;
