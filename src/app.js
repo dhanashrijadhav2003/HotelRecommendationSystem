@@ -5,13 +5,19 @@ let cors=require("cors");
 let dotenv=require("dotenv");
 let bodyParser=require("body-parser");
 let db=require("./config/db.js");
+let router=require("./routes/routes.js");
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+
+app.use("/",router);
+
 app.use(cors());
 app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(cookieParser());
+
+
 
 dotenv.config();
 module.exports=app;
