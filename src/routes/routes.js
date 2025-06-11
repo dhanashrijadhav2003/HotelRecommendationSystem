@@ -9,4 +9,9 @@ router.get("/",controller.homeCtrl);
 router.get("/reg",controller.regCtrl);
 
 router.post("/savereg", controller.saveReg);
+
+router.get("/login",controller.regLogin);
+
+router.post("/validate", controller.validateUser);
+
 module.exports=router;
