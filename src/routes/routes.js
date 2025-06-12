@@ -6,9 +6,9 @@ let router=express.Router();
 
 router.get("/",controller.homeCtrl);
 
-router.get("/reg",controller.regCtrl);
+router.get("/savereg",controller.regCtrl);
 
-router.post("/savereg", controller.saveReg);
+router.post("/saveUser", controller.saveReg);
 
 router.get("/login",controller.regLogin);
 

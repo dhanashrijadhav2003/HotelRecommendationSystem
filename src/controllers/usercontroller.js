@@ -9,7 +9,7 @@ exports.homeCtrl=(req,res)=>{
 }
 
 exports.regCtrl=(req,res)=>{
-    res.send("registration page.");
+    res.render("register.ejs",{message:""});
 }
 
 
@@ -19,15 +19,15 @@ exports.saveReg = async (req, res) => {
     contact = Number(contact); 
 
     const result = await regService.regserviceLogic(username, useremail, password, contact, type);
-    res.send("success");
+    res.render("login",{message:"Login Successfully..."});
   } catch (err) {
     console.error("Controller error:", err);
-    res.status(500).send({ message: err.message || "Internal server error" });
+   res.render("login",{message:"Registration Failed!..."})
   }
 };
 
 exports.regLogin=((req,res)=>{
-    res.render("login.ejs");
+    res.render("login.ejs",{message:""});
 });
 
 exports.validateUser = async (req, res) => {
