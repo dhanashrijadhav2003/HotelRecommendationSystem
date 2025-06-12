@@ -19,7 +19,7 @@ exports.saveReg = async (req, res) => {
     contact = Number(contact); 
 
     const result = await regService.regserviceLogic(username, useremail, password, contact, type);
-    res.render("login",{message:"Login Successfully..."});
+    res.render("login",{message:"Register Successfully..."});
   } catch (err) {
     console.error("Controller error:", err);
    res.render("login",{message:"Registration Failed!..."})
@@ -33,13 +33,13 @@ exports.regLogin=((req,res)=>{
 exports.validateUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-
+    
     if (!username || !password) {
-      return res.status(400).send("Username and password are required");
+      return res.send("Username and password are required");
     }
     const user = await regService.getOriginalPassword(username);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.send("User not found");
     }
     const isMatch = bcrypt.compareSync(password, user.password);
     if (isMatch){
@@ -48,7 +48,7 @@ exports.validateUser = async (req, res) => {
          name: username 
         },"11$$$66&&&&4444", { expiresIn: "1h" }
       );
-      console.log("Generated Token:", token);
+      //console.log("Generated Token:", token);
       return res.send({ message: "Login successful", token });
     } else {
       return res.send("Incorrect password");
