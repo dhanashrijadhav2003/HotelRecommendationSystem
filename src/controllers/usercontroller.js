@@ -58,3 +58,7 @@ exports.validateUser = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
+exports.adminDashCtrl=(req,res)=>{
+  res.render("Admindashboard.ejs");
+}
