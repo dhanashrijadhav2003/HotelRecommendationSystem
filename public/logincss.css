@@ -1,0 +1,135 @@
+/* Login Page Glassmorphism Style */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0575E6, #00F260);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.first {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.first .main {
+  flex: 1;
+  padding: 50px;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.first .main h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.first .main h4 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.first .box {
+  flex: 1;
+  padding: 50px 30px;
+  background-color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.first .box h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  height: 50px;
+  border-radius: 12px;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+}
+
+input[type='submit'] {
+  background: linear-gradient(to right, #007BFF, #00F260);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  height: 50px;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 400px;
+  transition: background 0.3s ease;
+}
+
+input[type='submit']:hover {
+  background: linear-gradient(to right, #0056b3, #00c96b);
+}
+
+.alert {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+}
+
+.box p {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.box p a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.box p a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .first {
+    flex-direction: column;
+  }
+
+  .first .main,
+  .first .box {
+    padding: 30px 20px;
+    text-align: center;
+  }
+}

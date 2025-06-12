@@ -4,21 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="navbar">
             <div class="logo">
-                <img src="D:\HRS\HotelRecommendationSystem\public\hrmlogo.jpg" alt="logo">
+                <img src="hrmlogo.jpg" alt="logo">
                 <h3>Hotels.com</h3>
             </div>
             <div class="nav">
                 <ul>
-                    <li><a href="">Login</a></li>
+                    <li>
+                        <i class="fa fa-user-circle-o" style="font-size:32px"></i>
+                        <a href="/login">Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
-            
+
+        <div class="bgfrm">
+            <div class="content-wrapper">
+                <h1>Where to next?</h1>
+                <form name="frm" action="" method="POST" class="search-form">
+                    <input type="text" class="form-control location-input" name="location" placeholder="Where to ?">
+                    <input type="submit" class="form-control submit-btn" name="s" value="Search">
+                </form>
+            </div>
+        </div>
+
+        <div class="first">
+            <div class="f1">
+                <div class="f11">
+                    <h3>Stay 10 nights, get 1 reward night</h3>
+                </div>
+                <div class="f12">
+                    <img src="img1.jpg" alt="img1">
+                </div>
+            </div>
+            <div class="f1">
+                <div class="f11">
+                    <h3>Plans change.Book a stay with flexibility to cancel at any time</h3>
+                </div>
+                <div class="f12">
+                     <img src="img2.jpg" alt="img2">
+                </div>
+            </div>
+            <div class="f1">
+                <div class="f11">
+                    <h3>Compare hotels side-by-side to find the right one for you</h3>
+                </div>
+                <div class="f12">
+                    <img src="img3.jpg" alt="img3">
+                </div>
+            </div>
+        </div>
+    <div class="scroll-wrapper">
+        <h1>Discover your new favourite stay</h1>
+  <div class="scroll-container">
+    <div class="scroll-item" style="background-image: url('sildeimg1.jpg');">
+      <div class="img-text">Apartment</div>
+    </div>
+    <div class="scroll-item" style="background-image: url('resort.jpg');">
+      <div class="img-text">Resort</div>
+    </div>
+    <div class="scroll-item" style="background-image: url('spaimg.jpg');">
+      <div class="img-text">Spa</div>
+    </div>
+    <div class="scroll-item" style="background-image: url('boathouse.jpg');">
+      <div class="img-text">Houseboat</div>
+    </div>
+    <div class="scroll-item" style="background-image: url('familyfriendly.jpg');">
+      <div class="img-text">Family friendly</div>
+    </div>
+    <div class="scroll-item" style="background-image: url('pool.jpg');">
+      <div class="img-text">Pool</div>
+    </div>
+     <div class="scroll-item" style="background-image: url('hotelaprt.jpg');">
+      <div class="img-text">Apart hotel</div>
+    </div>
+     <div class="scroll-item" style="background-image: url('seaview.jpg');">
+      <div class="img-text">Sea view</div>
+    </div>
+  </div>
+</div>
+<div class="container1">
+    <div class="amenities-box">
+      <div class="amenities-content">
+        <h2>Our Amenities</h2>
+        <p>The hotel is arranged on three floors without a lift. On the ground floor, apart from the reception, there is a comfortable lounge where you can sit and drink tea.</p>
+        <div class="amenities-grid">
+          <div class="amenity"><i class="fas fa-swimming-pool"></i> Swimming pool</div>
+          <div class="amenity"><i class="fas fa-dumbbell"></i> Gym & yoga</div>
+          <div class="amenity"><i class="fas fa-spa"></i> Spa & massage</div>
+          <div class="amenity"><i class="fas fa-ship"></i> Boat tours</div>
+          <div class="amenity"><i class="fas fa-water"></i> Surfing lessons</div>
+          <div class="amenity"><i class="fas fa-microphone"></i> Conference room</div>
+          <div class="amenity"><i class="fas fa-water"></i> Diving & snorkeling</div>
+          <div class="amenity"><i class="fas fa-umbrella-beach"></i> Private Beach</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="footer">
+    <div class="ft1">
+        <div class="ft11">
+            <h1>Hotels.com</h1>
+        </div>
+        <div class="ft12">
+            <ul>
+                <li><i class="fa fa-facebook-official" style="font-size:24px"></i></li>
+                <li><i class="fa fa-instagram" style="font-size:24px"></i></li>
+                <li><i class="fa fa-linkedin-square" style="font-size:24px"></i></li>
+                <li><i class="fa fa-twitter-square" style="font-size:24px"></i></li>
+                <li><i class="fa fa-youtube-play" style="font-size:24px"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="ft2">
+        <div class="ft21">
+                <ul>
+                    <li>Comapny</li>
+                    <li>Jobs</li>
+                    <li>Press</li>
+                    <li>Investor ralations</li>
+                    <li>Mobile apps - searching on the go</li>
+                    <li>Hotels.com for hoteliers</li>
+                </ul>
+        </div>
+        <div class="ft21">
+            <u>
+                <li>Help</li>
+                <li>Learn how Hotels.com works</li>
+                <li>Term and conditions</li>
+                <li>Legal information</li>
+                <li>Do Not Sell My Personal Information</li>
+                <li>Privacy notice</li>
+                <li>DSA information</li>
+                <li>Cybersecurity</li>
+                <li>Vulnerability Disclouser Programme</li>
+            </u>
+        </div>
+        <div class="ft21">
+            <h3>Get exclusive information to your next stay
+            </h3>
+        </div>
+    </div>
+</div>
+
     </div>
 </body>
 </html>

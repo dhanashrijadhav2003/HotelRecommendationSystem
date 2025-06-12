@@ -1,0 +1,89 @@
+/* Registration Form - Glassmorphism Style */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0575E6, #00F260);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    margin: 0;
+}
+
+.box {
+    width: 100%;
+    max-width: 500px;
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.box form {
+    width: 100%;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="submit"] {
+    width: 100%;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0,123,255,0.4);
+    outline: none;
+}
+
+input[type="submit"] {
+    background: linear-gradient(to right, #007BFF, #00F260);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: linear-gradient(to right, #0056b3, #00c96b);
+}
+
+/* Validation Messages */
+span {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+/* General alert for submission feedback */
+#h {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .box {
+        padding: 30px 20px;
+    }
+}
