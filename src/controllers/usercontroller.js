@@ -27,7 +27,7 @@ exports.saveReg = async (req, res) => {
 };
 
 exports.regLogin=((req,res)=>{
-    res.send("Login Page");
+    res.render("login.ejs");
 });
 
 exports.validateUser = async (req, res) => {
@@ -37,13 +37,10 @@ exports.validateUser = async (req, res) => {
     if (!username || !password) {
       return res.status(400).send("Username and password are required");
     }
-
     const user = await regService.getOriginalPassword(username);
-
     if (!user) {
       return res.status(404).send("User not found");
     }
-
     const isMatch = bcrypt.compareSync(password, user.password);
     if (isMatch){
       const token = jwt.sign({
