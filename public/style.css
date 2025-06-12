@@ -318,7 +318,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background-color:#d4c766;
-     border-radius: 20px;
+  border-radius: 20px;
   pointer-events: none;
   z-index: 0;
 }
