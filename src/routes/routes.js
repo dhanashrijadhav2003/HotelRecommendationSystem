@@ -19,5 +19,3 @@ router.post("/validate", controller.validateUser);
 router.get("/admindash",controller.adminDashCtrl);
 
 module.exports=router;
-
-//comment
