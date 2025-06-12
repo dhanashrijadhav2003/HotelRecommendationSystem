@@ -1,9 +1,8 @@
 let db=require("../config/db.js");
 
-
+let type="user";
 exports.saveRegData = (...regData) => {
   return new Promise((resolve, reject) => {
-    // Insert only the 5 columns (excluding userid which is auto_increment)
     db.query(
       "insert into usermaster (username, useremail, password, contact, type) values (?, ?, ?, ?, ?)",
       [regData[0], regData[1], regData[2], regData[3], regData[4]],
