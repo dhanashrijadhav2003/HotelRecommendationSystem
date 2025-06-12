@@ -17,7 +17,7 @@ exports.saveReg = async (req, res) => {
   try {
     let { username, useremail, password, contact, type } = req.body;
     contact = Number(contact); 
-
+    
     const result = await regService.regserviceLogic(username, useremail, password, contact, type);
     res.render("login",{message:"Register Successfully..."});
   } catch (err) {
