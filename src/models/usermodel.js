@@ -35,3 +35,37 @@ exports.getPasswordFromDB=(username)=>{
             });
   });
 }
+
+
+exports.saveHotelData=(...hoteldata)=>{
+    return new Promise((resolve,reject)=>{
+        db.query(
+          "insert into hotelmaster(hotel_name,hotel_address,city_id,area_id ,hotel_email,hotel_contact,rating,reviewcount) values(?,?,?,?,?,?,?,?)",
+          [hoteldata[0],hoteldata[1],hoteldata[2],hoteldata[3],hoteldata[4],hoteldata[5],hoteldata[6],hoteldata[7]],
+          (err,result)=>{
+            if(err){
+              console.error("DB error:",err);
+              reject(err);
+            }
+            else{
+              resolve("hotel added successfully...");
+            }
+          }
+        );
+    });
+};
+
+
+exports.fetchAllHotels=()=>{
+  return new Promise((resolve,reject)=>{
+      db.query("select * from hotelmaster",(err,result)=>{
+        if(err){
+          console.log("Error:",err);
+          reject(err);
+        }
+        else{
+          resolve(result);
+        }
+      });
+  });
+};
