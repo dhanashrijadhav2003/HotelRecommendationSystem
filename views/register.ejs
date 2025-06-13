@@ -36,6 +36,12 @@
       </div>
 
       <div class="form-group">
+        <input type="password" name="password" id="password" placeholder="Enter Password"
+               oninput="validatePassword(this.value)" />
+        <span id="pmsg"></span>
+      </div>
+      
+      <div class="form-group">
         <input type="submit" value="Register" />
         <span id="h"></span>
       </div>
