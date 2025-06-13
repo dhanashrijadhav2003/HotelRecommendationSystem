@@ -20,7 +20,7 @@ exports.saveRegData = (...regData) => {
 
 exports.getPasswordFromDB=(username)=>{
     return new Promise((resolve, reject) => {
-        db.query("select userid,password,username from usermaster where username=?",
+        db.query("select userid,password,username,type from usermaster where username=?",
             [username],(err,result)=>{
                     if(err){
                         reject(err);
