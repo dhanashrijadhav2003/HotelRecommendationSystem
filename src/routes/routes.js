@@ -16,6 +16,10 @@ router.post("/validate", controller.validateUser);
 
 router.post("/addHotel",controller.addhotelCtrl);
 
+router.get("/addHotelForm",controller.addHotelFormCtrl);
+
+router.get("/viewHotelsTable",controller.viewHotelFormCtrl);
+
 router.get("/showHotels",controller.viewHotelCtrl);
 
 router.get("/admindash",controller.adminDashCtrl);
