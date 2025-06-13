@@ -49,7 +49,11 @@ exports.validateUser = async (req, res) => {
         },"11$$$66&&&&4444", { expiresIn: "1h" }
       );
       //console.log("Generated Token:", token);
-      return res.send({ message: "Login successful", token });
+      
+
+      if (username === "admin" && password === "admin" && type === "admin") {
+         return res.render("Admindashboard.ejs");
+      }
     } else {
       return res.send("Incorrect password");
     }
@@ -58,9 +62,7 @@ exports.validateUser = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 
-  if (username === "admin" && password === "admin" && type === "admin") {
-    return res.render("Admindashboard.ejs");
-  }
+  
 
 };
 
@@ -124,5 +126,13 @@ exports.ratingCtrl=(req,res)=>{
 }
 
 exports.logoutCtrl=(req,res)=>{
-  res.render("Rating.ejs");
+  res.render("logout.ejs");
+}
+
+exports.addHotelFormCtrl=(req,res)=>{
+  res.render("addhotel.ejs");
+}
+
+exports.viewHotelFormCtrl=(req,res)=>{
+  res.render("viewHotel.ejs");
 }
