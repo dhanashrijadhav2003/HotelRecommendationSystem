@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="addhotel.css">
+</head>
+
+<body>
+  <div class="box">
+    <form name="frm" action="/addHotel" method="Post">
+
+      <div class="form-group">
+        <input type="text" name="hotelname" id="hotelname" placeholder="Enter Hotel Name"" />
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="hoteladd" id="hoteladd" placeholder="Enter Hotel Address" />
+      </div>
+
+      <div class="form-group">
+          <select class="form-control" name="cityId" required>
+            <option value="">-- Select City --</option>
+            <% citymaster.forEach(citymaster => { %>
+              <option value="<%= citymaster.city_id %>"><%= citymaster.city_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+      <div class="form-group">
+          <select class="form-control" name="areaId" required>
+            <option value="">-- Select Area --</option>
+            <% areamaster.forEach(areamaster => { %>
+              <option value="<%= areamaster.area_id %>"><%= areamaster.area_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+
+	<div class="form-group">
+        <input type="text" name="hotelemail" id="hotelemail" placeholder="Enter Email" />
+      </div>
+
+
+
+	<div class="form-group">
+        <input type="text" name="hotelcontact" id="hotelcontact" placeholder="Enter Contact" />
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="hotelrating" id="hotelrating" placeholder="Enter Rating" />
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="➕Add Hotel" />
+        <span id="h"></span>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="validation.js"></script>
+</body>
+</html>
