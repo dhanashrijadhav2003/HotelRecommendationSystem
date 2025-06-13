@@ -14,9 +14,10 @@ router.get("/login",controller.regLogin);
 
 router.post("/validate", controller.validateUser);
 
-//router.post("/addHotel",controller.addhotelCtrl);
+router.post("/addHotel",controller.addhotelCtrl);
+
+router.get("/showHotels",controller.viewHotelCtrl);
 
 router.get("/admindash",controller.adminDashCtrl);
 
 module.exports=router;
-//hi hi

@@ -62,3 +62,62 @@ exports.validateUser = async (req, res) => {
 exports.adminDashCtrl=(req,res)=>{
   res.render("Admindashboard.ejs");
 }
+
+exports.addhotelCtrl = async (req, res) => {
+  try {
+    const {
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating, reviewcount
+    } = req.body;
+
+    const result = await regService.hotelSaveLogic(
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating, reviewcount
+    );
+
+    res.send({ message: result });
+  } catch (err) {
+    console.error("Error adding hotel:", err);
+    res.status(500).send("Error adding hotel");
+  }
+};
+
+exports.viewHotelCtrl=async(req,res)=>{
+  try{
+    const hotels=await regService.getAllHotels();
+    console.log("hotels  from db:");
+    console.table(hotels);
+    res.json(hotels);
+   
+  }
+  catch(err){
+    console.log("failed to fetch err:",err);
+  }
+}
+
+
+exports.hotelDastCtrl=(req,res)=>{
+  res.render("Hotels.ejs");
+}
+
+exports.aminitiesCtrl=(req,res)=>{
+  res.render("Aminities.ejs");
+}
+
+exports.cityCtrl=(req,res)=>{
+  res.render("City.ejs");
+}
+
+exports.areaCtrl=(req,res)=>{
+  res.render("Area.ejs");
+}
+
+exports.customerCtrl=(req,res)=>{
+  res.render("Customer.ejs");
+}
+
+exports.ratingCtrl=(req,res)=>{
+  res.render("Rating.ejs");
+}
+
+exports.logoutCtrl=(req,res)=>{
+  res.render("Rating.ejs");
+}

@@ -16,3 +16,19 @@ exports.regserviceLogic = async (username, useremail, password, contact, type) =
 exports.getOriginalPassword = (username) => {
   return regModel.getPasswordFromDB(username);
 };
+
+exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating, reviewcount) => {
+  try {
+    const result = await regModel.saveHotelData(
+      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating, reviewcount
+    );
+    return result;
+  } catch (err) {
+    console.error("Service error:", err);
+    throw new Error("Failed to add hotel");
+  }
+};
+
+exports.getAllHotels=()=>{
+  return regModel.fetchAllHotels();
+};

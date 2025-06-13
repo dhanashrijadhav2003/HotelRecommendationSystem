@@ -1,25 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+
+  <!-- Font Awesome & Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="admindashboard.css">
 </head>
 <body>
-    <div class="main">
-            <div class="AdminNav">
-                    <div class="adminText">
-
-                    </div>
-
-                    <div class="adminProfile">
-
-                    </div>
-            </div>
-
-            <div class="MainBody">
-
-            </div>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <h3>Admin Panel</h3>
     </div>
+    <div class="navbar-right">
+      <div class="profile-container" onclick="toggleProfileMenu()">
+        <i class="fa fa-user-circle-o profile-icon"></i>
+        <div class="profile-menu" id="profileMenu">
+          <p><strong>Name:</strong> John Doe</p>
+          <p><strong>Email:</strong> admin@example.com</p>
+          <p><strong>Role:</strong> Admin</p>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
+
+  <!-- Page Layout -->
+  <div class="dashboard-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <ul class="sidebar-menu">
+        <li><i class="fa fa-hotel"></i> <a href="Hotels.ejs">Hotels</a></li>
+        <li><i class="fa fa-suitcase"></i><a href="Amenities.ejs">Amenities</a> </li>
+        <li><i class="fa fa-building"></i><a href="City.ejs">City</a></li>
+        <li><i class="fa fa-map-marker"></i><a href="Area.ejs">Area</a></li>
+        <li><i class="fa fa-users"></i> <a href="Customer.ejs">Customer</a></li>
+        <li><i class="fa fa-star"></i><a href="Rating.ejs">Rating & Reviews</a></li>
+        <li><i class="fa fa-sign-out"></i><a href="Logout.ejs">Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-body">
+      <h1>Welcome to the Admin Dashboard</h1>
+      <p>Select a menu item from the sidebar to manage your content.</p>
+    </main>
+    
+  </div>
+
+  <!-- JavaScript for Profile Dropdown -->
+  <script>
+    function toggleProfileMenu() {
+      const menu = document.getElementById("profileMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Hide menu on outside click
+    document.addEventListener("click", function(event) {
+      const profileContainer = document.querySelector(".profile-container");
+      const profileMenu = document.getElementById("profileMenu");
+      if (!profileContainer.contains(event.target)) {
+        profileMenu.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
