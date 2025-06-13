@@ -56,9 +56,10 @@ exports.validateUser = async (req, res) => {
         maxAge: 60 * 60 * 1000,
       });
 
-      if (user.type === "admin") {
+      if (user.type && user.type.toLowerCase().trim()==="admin" ) {
         return res.redirect("/admindash");
       } else {
+        console.log(user);
         return res.send("Login successful. You are not admin.");
         // Or redirect to a user dashboard
       }
@@ -89,6 +90,18 @@ exports.addhotelCtrl = async (req, res) => {
   } catch (err) {
     console.error("Error adding hotel:", err);
     res.status(500).send("Error adding hotel");
+  }
+};
+
+exports.addCityCtrl=async(req,res)=>{
+  try{
+    const{city_id,city_name,pincode}=req.body;
+    const result=await regService.citySaveLogic(city_id,city_name,pincode);
+    res.send({message:result});
+  }
+  catch(err){
+    console.error("Error adding city:",err);
+    res.satus(500).send("Error adding city");
   }
 };
 
@@ -135,7 +148,7 @@ exports.logoutCtrl=(req,res)=>{
 }
 
 exports.addHotelFormCtrl=(req,res)=>{
-  res.render("addhotel.ejs");
+  res.render("addhotel.ejs",{citymaster:[],areamaster:[]});
 }
 
 exports.viewHotelFormCtrl=(req,res)=>{
