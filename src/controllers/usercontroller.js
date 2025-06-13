@@ -95,8 +95,8 @@ exports.addhotelCtrl = async (req, res) => {
 
 exports.addCityCtrl=async(req,res)=>{
   try{
-    const{city_id,city_name,pincode}=req.body;
-    const result=await regService.citySaveLogic(city_id,city_name,pincode);
+    const{city_name,pincode}=req.body;
+    const result=await regService.citySaveLogic(city_name,pincode);
     res.send({message:result});
   }
   catch(err){
