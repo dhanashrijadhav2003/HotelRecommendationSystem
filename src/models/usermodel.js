@@ -40,8 +40,8 @@ exports.getPasswordFromDB=(username)=>{
 exports.saveHotelData=(...hoteldata)=>{
     return new Promise((resolve,reject)=>{
         db.query(
-          "insert into hotelmaster(hotel_name,hotel_address,city_id,area_id ,hotel_email,hotel_contact,rating,reviewcount) values(?,?,?,?,?,?,?,?)",
-          [hoteldata[0],hoteldata[1],hoteldata[2],hoteldata[3],hoteldata[4],hoteldata[5],hoteldata[6],hoteldata[7]],
+          "insert into hotelmaster(hotel_name,hotel_address,city_id,area_id ,hotel_email,hotel_contact,rating) values(?,?,?,?,?,?,?)",
+          [hoteldata[0],hoteldata[1],hoteldata[2],hoteldata[3],hoteldata[4],hoteldata[5],hoteldata[6]],
           (err,result)=>{
             if(err){
               console.error("DB error:",err);
