@@ -17,16 +17,27 @@ exports.getOriginalPassword = (username) => {
   return regModel.getPasswordFromDB(username);
 };
 
-exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating, reviewcount) => {
+exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating) => {
   try {
     const result = await regModel.saveHotelData(
-      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating, reviewcount
+      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating
     );
     return result;
   } catch (err) {
     console.error("Service error:", err);
     throw new Error("Failed to add hotel");
   }
+};
+
+exports.citySaveLogic=async(city_name,pincode)=>{
+  try{
+    const result=await regModel.saveCity(city_name,pincode);
+    return result;
+  }catch(err){
+    console.error("Error:",err);
+    throw new Error("Failed to add city");
+  }
+ 
 };
 
 exports.getAllHotels=()=>{
