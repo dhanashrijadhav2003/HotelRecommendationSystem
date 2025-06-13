@@ -33,26 +33,34 @@ exports.regLogin=((req,res)=>{
 exports.validateUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    
+
     if (!username || !password) {
       return res.send("Username and password are required");
     }
+
     const user = await regService.getOriginalPassword(username);
     if (!user) {
       return res.send("User not found");
     }
-    const isMatch = bcrypt.compareSync(password, user.password);
-    if (isMatch){
-      const token = jwt.sign({
-         id: user.userid, 
-         name: username 
-        },"11$$$66&&&&4444", { expiresIn: "1h" }
-      );
-      //console.log("Generated Token:", token);
-      
 
-      if (username === "admin" && password === "admin" && type === "admin") {
-         return res.render("Admindashboard.ejs");
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (isMatch) {
+      const token = jwt.sign(
+        { id: user.userid, name: username, type: user.type },
+        "11$$$66&&&&4444",
+        { expiresIn: "1h" }
+      );
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1000,
+      });
+
+      if (user.type === "admin") {
+        return res.redirect("/admindash");
+      } else {
+        return res.send("Login successful. You are not admin.");
+        // Or redirect to a user dashboard
       }
     } else {
       return res.send("Incorrect password");
@@ -61,9 +69,6 @@ exports.validateUser = async (req, res) => {
     console.error("Error in validateUser:", err);
     res.status(500).send("Internal server error");
   }
-
-  
-
 };
 
 exports.adminDashCtrl=(req,res)=>{
