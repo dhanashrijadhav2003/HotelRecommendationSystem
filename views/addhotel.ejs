@@ -19,23 +19,23 @@
         <input type="text" name="hoteladd" id="hoteladd" placeholder="Enter Hotel Address" />
       </div>
 
-      <div class="form-group">
+     <div class="form-group">
           <select class="form-control" name="cityId" required>
             <option value="">-- Select City --</option>
             <% citymaster.forEach(citymaster => { %>
               <option value="<%= citymaster.city_id %>"><%= citymaster.city_name %></option>
             <% }) %>
           </select>
-        </div>
+        </div>       
 
-      <div class="form-group">
+     <div class="form-group">
           <select class="form-control" name="areaId" required>
             <option value="">-- Select Area --</option>
             <% areamaster.forEach(areamaster => { %>
               <option value="<%= areamaster.area_id %>"><%= areamaster.area_name %></option>
             <% }) %>
           </select>
-        </div>
+        </div>     
 
 
 	<div class="form-group">
