@@ -20,6 +20,25 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+<script>
+  // Array of background images
+  const images = ["hmbg1.jpg", "hmbg2.jpg", "hmbg3.jpg", "hmbg4.jpg"];
+
+  let currentIndex = 0;
+
+  // Function to change background
+  function changeBackground() {
+    const bgDiv = document.querySelector(".bgfrm");
+    bgDiv.style.backgroundImage = `url(${images[currentIndex]})`;
+
+    currentIndex = (currentIndex + 1) % images.length;
+  }
+
+  // Start slideshow
+  setInterval(changeBackground, 3000); // 3000 = 3 seconds
+</script>
+
+    
 </head>
 <body>
     <div class="container">
@@ -39,7 +58,7 @@
         </div>
 
         <div class="bgfrm">
-            <div class="content-wrapper">
+            <div class="content-wrapper" id="in">
                 <h1>Where to next?</h1>
                 <form name="frm" action="" method="POST" class="search-form">
                     <input type="text" class="form-control location-input" name="location" placeholder="Where to ?">

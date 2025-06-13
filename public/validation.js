@@ -85,9 +85,9 @@ function validatePassword(str) {
     passwordValidation = false;
     span.innerHTML = "❌ Password cannot be empty";
     span.style.color = "red";
-  } else if (trimmed.length < 6) {
+  } else if (trimmed.length < 4) {
     passwordValidation = false;
-    span.innerHTML = "❌ Password must be at least 6 characters";
+    span.innerHTML = "❌ Password must be at least 4 characters";
     span.style.color = "red";
   } else {
     span.innerHTML = "";
