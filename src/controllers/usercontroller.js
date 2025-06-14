@@ -79,11 +79,11 @@ exports.adminDashCtrl=(req,res)=>{
 exports.addhotelCtrl = async (req, res) => {
   try {
     const {
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating, reviewcount
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating,filename
     } = req.body;
 
     const result = await regService.hotelSaveLogic(
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating, reviewcount
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating,filename
     );
 
     res.send({ message: result });
@@ -93,6 +93,8 @@ exports.addhotelCtrl = async (req, res) => {
   }
 };
 
+
+
 exports.addCityCtrl=async(req,res)=>{
   try{
     const{city_name,pincode}=req.body;
@@ -101,9 +103,34 @@ exports.addCityCtrl=async(req,res)=>{
   }
   catch(err){
     console.error("Error adding city:",err);
-    res.satus(500).send("Error adding city");
+    res.status(500).send("Error adding city",err);
   }
 };
+
+exports.addAreaCtrl = async (req, res) => {
+  try {
+    
+    const { area_name } = req.body;
+    const result = await regService.areaSaveLogic(area_name);
+    res.send({ message: result });
+  } catch (err) {
+    console.error("Error adding area:", err);
+    res.status(500).send({ message: "Error adding area", error: err.message });
+  }
+};
+
+exports.addAminitiesCtrl=async(req,res)=>{
+  try{
+    const{amenity_name}=req.body;
+    const result = await regService.aminitySaveLogic(amenity_name);
+    res.send({ message: result });
+  } catch (err) {
+    console.error("Error adding aminity:", err);
+    res.status(500).send({ message: "Error adding aminity", error: err.message });
+  }
+};
+
+
 
 exports.viewHotelCtrl=async(req,res)=>{
   try{
@@ -118,13 +145,48 @@ exports.viewHotelCtrl=async(req,res)=>{
   }
 }
 
+exports.viewCityCtrl=async(req,res)=>{
+  try{
+    const city=await regService.getAllCities();
+    console.log("Cities from db:");
+    console.table(city);
+    res.json(city);
+  }catch(err){
+    console.log("Failed to fetch error:",err);
+  }
+};
+
+exports.viewAreaCtrl=async(req,res)=>{
+  try{
+    const area=await regService.getAllArea();
+    console.log("Area from db:");
+    console.table(area);
+    res.json(area);
+  }catch(err){
+    console.log("Failed to feach erroe:",err);
+  }
+};
+
+
+exports.viewAmenityCtrl=async(req,res)=>{
+  try{
+    const amenity=await regService.getAllAmenities();
+    console.log("Amenity from db:");
+    console.table(amenity);
+    res.json(amenity);
+  }catch(err){
+    console.log("Failed to feach erroe:",err);
+  }
+};
+
+
 
 exports.hotelDastCtrl=(req,res)=>{
   res.render("Hotels.ejs");
 }
 
 exports.aminitiesCtrl=(req,res)=>{
-  res.render("Aminities.ejs");
+  res.render("Amenities.ejs");
 }
 
 exports.cityCtrl=(req,res)=>{
@@ -152,5 +214,5 @@ exports.addHotelFormCtrl=(req,res)=>{
 }
 
 exports.viewHotelFormCtrl=(req,res)=>{
-  res.render("viewHotel.ejs");
+  res.render("viewHotel.ejs",{data:[]});
 }

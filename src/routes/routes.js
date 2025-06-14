@@ -16,7 +16,19 @@ router.post("/validate", controller.validateUser);
 
 router.post("/addHotel",controller.addhotelCtrl);
 
+
+
 router.post("/addCity",controller.addCityCtrl);
+
+router.get("/viewCity",controller.viewCityCtrl);
+
+router.post("/addArea",controller.addAreaCtrl);
+
+router.get("/viewArea",controller.viewAreaCtrl);
+
+router.post("/addAmenityForm",controller.addAminitiesCtrl);
+
+router.get("/viewAmenity",controller.viewAmenityCtrl);
 
 router.get("/addHotelForm",controller.addHotelFormCtrl);
 
