@@ -10,18 +10,18 @@
 <body>
   <br>
   <div class="box">
-    <form name="frm" action="/addHotel" method="Post">
+    <form name="frm" action="/api/addHotel" method="Post">
 
       <div class="form-group">
-        <input type="text" name="hotelname" id="hotelname" placeholder="Enter Hotel Name"" />
+        <input type="text" name="hotel_name" id="hotelname" placeholder="Enter Hotel Name"" />
       </div>
 
       <div class="form-group">
-        <input type="text" name="hoteladd" id="hoteladd" placeholder="Enter Hotel Address" />
+        <input type="text" name="hotel_address" id="hoteladd" placeholder="Enter Hotel Address" />
       </div>
 
      <div class="form-group">
-          <select class="form-control" name="cityId" required>
+          <select class="form-control" name="city_id" required>
             <option value="">-- Select City --</option>
             <% citymaster.forEach(citymaster => { %>
               <option value="<%= citymaster.city_id %>"><%= citymaster.city_name %></option>
@@ -30,7 +30,7 @@
         </div>       
 
      <div class="form-group">
-          <select class="form-control" name="areaId" required>
+          <select class="form-control" name="area_id" required>
             <option value="">-- Select Area --</option>
             <% areamaster.forEach(areamaster => { %>
               <option value="<%= areamaster.area_id %>"><%= areamaster.area_name %></option>
@@ -40,22 +40,22 @@
 
 
 	<div class="form-group">
-        <input type="text" name="hotelemail" id="hotelemail" placeholder="Enter Email" />
+        <input type="text" name="hotel_email" id="hotelemail" placeholder="Enter Email" />
       </div>
 
 
 
 	<div class="form-group">
-        <input type="text" name="hotelcontact" id="hotelcontact" placeholder="Enter Contact" />
+        <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
       </div>
 
       <div class="form-group">
-        <input type="text" name="hotelrating" id="hotelrating" placeholder="Enter Rating" />
+        <input type="text" name="rating" id="hotelrating" placeholder="Enter Rating" />
       </div>
 
       <div class="form-group">
           <label for="imageUpload" style="color:white">Choose Hotel Image</label>
-          <input type="file" name="hotelimage" id="imageUpload" accept="image/*" />
+          <input type="file" name="filename" id="imageUpload" accept="image/*" />
           <img id="previewImage" src="#" alt="Preview" />
       </div>
 
