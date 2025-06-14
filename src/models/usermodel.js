@@ -36,6 +36,23 @@ exports.getPasswordFromDB=(username)=>{
   });
 }
 
+exports.saveCity=(...citydata)=>{
+  return new Promise((resolve,reject)=>{
+    db.query(
+      "insert into citymaster(city_name,pincode) values(?,?)",
+      [citydata[0],citydata[1]],
+      (err)=>{
+        if(err){
+          console.error("Error:",err);
+          reject(err);
+        }
+        else{
+          resolve("City added successfully...");
+        }
+      }
+    );
+  });
+};
 
 exports.saveHotelData=(...hoteldata)=>{
     return new Promise((resolve,reject)=>{
@@ -55,6 +72,43 @@ exports.saveHotelData=(...hoteldata)=>{
     });
 };
 
+exports.saveArea = (area_name) => {
+  console.log(area_name);
+  return new Promise((resolve, reject) => {
+    db.query(
+      "insert into  areamaster (area_name) VALUES (?)",
+      [area_name],
+      (err, result) => {
+        if (err) {
+          console.error("DB error:", err);
+          reject(err);
+        } else {
+          resolve("Area added successfully...");
+        }
+      }
+    );
+  });
+};
+
+
+exports.saveAminity=(amenity_name) => {
+  console.log(amenity_name);
+  return new Promise((resolve, reject) => {
+    db.query(
+      "insert into  amenities (amenity_name) VALUES (?)",
+      [amenity_name],
+      (err, result) => {
+        if (err) {
+          console.error("DB error:", err);
+          reject(err);
+        } else {
+          resolve("Aminity added successfully...");
+        }
+      }
+    );
+  });
+};
+
 
 exports.fetchAllHotels=()=>{
   return new Promise((resolve,reject)=>{
@@ -69,3 +123,47 @@ exports.fetchAllHotels=()=>{
       });
   });
 };
+
+exports.fetchAllCities=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select * from citymaster",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  })
+};
+
+exports.fetchAllArea=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select * from areamaster",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  });
+};
+
+
+
+exports.fetchAllAmenities = () => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM amenities", (err, result) => {
+      if (err) {
+        console.log("DB Error:", err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
