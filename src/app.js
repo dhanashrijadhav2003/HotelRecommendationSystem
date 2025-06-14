@@ -19,7 +19,7 @@ app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(cookieParser());
 
-app.use("/api,hotelRoutes");
+app.use("/api",hotelRoutes);
 
 
 dotenv.config();
