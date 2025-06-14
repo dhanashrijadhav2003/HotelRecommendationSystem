@@ -154,16 +154,16 @@ exports.fetchAllArea=()=>{
 
 
 
-exports.fetchAllAmenities = () => {
-  return new Promise((resolve, reject) => {
-    db.query("SELECT * FROM amenities", (err, result) => {
-      if (err) {
-        console.log("DB Error:", err);
+exports.fetchAllAmenities=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select * from amenities",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
         reject(err);
-      } else {
+      }
+      else{
         resolve(result);
       }
     });
   });
 };
-
