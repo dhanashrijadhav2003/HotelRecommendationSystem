@@ -24,7 +24,7 @@
             max-width: 95%;
         }
 
-        form-group {
+        .form-group {
             display: flex;
             justify-content: center;
             margin-bottom: 30px;
@@ -52,8 +52,8 @@
     text-align: center;
     color: #4e54c8;
     background: linear-gradient(to right, #4e54c8, #8f94fb);
-    /*-webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;*/
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 40px;
     letter-spacing: 1px;
     animation: fadeIn 1s ease-in-out;
@@ -74,7 +74,7 @@
         }
 
         thead {
-            background: linear-gradient(135deg, #0575E6, #00F260);
+            background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
             color: white;
         }
 
@@ -178,10 +178,8 @@
         <% } else { data.forEach((item) => { %>
         <tr>
             <td data-label="AREA_ID"><%= item.area_id %></td>
-	    <td data-label="AREA_NAME"><%= item.area_name %></td>
-            <td data-label="DELETE"><a href="/deleteArea?areaid=<%= item.area_id %>">Delete</a></td>
-            <td data-label="UPDATE"><a href="/updateArea?areaid=<%= item.area_id %>">Update</a></td>
-            <td data-label="VIEW"><a href="/viewArea?areaid=<%= item.area_id %>">View</a></td>
+	        <td data-label="AREA_NAME"><%= item.area_name %></td>
+           
         </tr>
         <% }); } %>
         </tbody>

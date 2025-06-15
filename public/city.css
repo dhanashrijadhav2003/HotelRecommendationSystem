@@ -1,20 +1,50 @@
-/* Glassmorphism Style */
+/* Base Styles */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0575E6, #00F260);
+  position: relative;
   min-height: 100vh;
+  margin: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
-  margin: 0;
+  align-items: flex-start;
+  padding: 50px 20px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
+/* Background image with black overlay */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url("hmbg1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -2;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Black overlay */
+  z-index: -1;
+}
+
+/* Form Box */
 .box {
   width: 100%;
-  max-width: 500px;
-  padding: 40px 30px;
-  background: rgba(255, 255, 255, 0.15);
+  max-width: 400px;
+  padding: 25px 20px;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -22,53 +52,81 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  opacity: 0.95;
+  z-index: 2;
 }
 
+/* Form Styling */
 .box form {
   width: 100%;
 }
 
 .form-group {
   width: 100%;
-  margin-bottom: 20px;
-  position: relative;
+  margin-bottom: 16px;
 }
 
 input[type="text"],
-input[type="submit"] {
-  width: 90%;
-  height: 50px;
-  border-radius: 12px;
-  font-size: 1rem;
-  padding: 10px 20px;
+input[type="email"],
+select.form-control {
+  width: 100%;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  padding: 6px 12px;
   border: 1px solid #ccc;
-  background: rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
   box-sizing: border-box;
 }
 
-input[type="text"]:focus {
-  border-color: #007BFF;
-  box-shadow: 0 0 5px rgba(0,123,255,0.4);
-  outline: none;
+input::placeholder {
+  color: #666;
+}
+
+select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
 }
 
 input[type="submit"] {
-  background: linear-gradient(to right, #007BFF, #00F260);
+  width: 100%;
+  height: 40px;
+  padding: 10px 0;
+  background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
   color: #fff;
   font-weight: 600;
+  font-size: 1rem;
   border: none;
   border-radius: 30px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 input[type="submit"]:hover {
-  background: linear-gradient(to right, #0056b3, #00c96b);
+  background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+  transform: scale(1.02);
+}
+
+/* Validation Message */
+span {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: red;
 }
 
 /* Responsive */
 @media (max-width: 576px) {
   .box {
-    padding: 30px 20px;
+    padding: 20px 15px;
+  }
+
+  input[type="submit"] {
+    font-size: 0.95rem;
+    height: 38px;
   }
 }
