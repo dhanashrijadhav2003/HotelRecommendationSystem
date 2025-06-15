@@ -54,23 +54,47 @@ exports.saveCity=(...citydata)=>{
   });
 };
 
-exports.saveHotelData=(...hoteldata)=>{
-    return new Promise((resolve,reject)=>{
+exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating) => {
+  return new Promise((resolve, reject) => {
+    // Check if city_id exists
+    db.query("select city_name from citymaster where city_id=?", [city_id], (err, result) => {
+      if (err) {
+        console.log("City fetch error:", err);
+        return reject("Failed to fetch city");
+      }
+      if (result.length === 0) {
+        console.log("City not found for id:", city_id);
+        return reject("Invalid city id");
+      }
+
+      // Check if area_id exists
+      db.query("select area_name from areamaster where area_id=?", [area_id], (err, arearesult) => {
+        if (err) {
+          console.log("Area fetch error:", err);
+          return reject("Failed to fetch area");
+        }
+        if (arearesult.length === 0) {
+          console.log("Area not found for id:", area_id);
+          return reject("Invalid area id");
+        }
+
+        // Insert into hotelmaster (fix typo here)
         db.query(
-          "insert into hotelmaster(hotel_name,hotel_address,city_id,area_id ,hotel_email,hotel_contact,rating) values(?,?,?,?,?,?,?)",
-          [hoteldata[0],hoteldata[1],hoteldata[2],hoteldata[3],hoteldata[4],hoteldata[5],hoteldata[6]],
-          (err,result)=>{
-            if(err){
-              console.error("DB error:",err);
-              reject(err);
+          "insert into hotelmaster (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating) values (?, ?, ?, ?, ?, ?, ?)",
+          [hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating],
+          (err, insertResult) => {
+            if (err) {
+              console.log("Insert hotel error:", err.sqlMessage || err);
+              return reject("Insert hotel failed");
             }
-            else{
-              resolve("hotel added successfully...");
-            }
+            resolve("Hotel added successfully...");
           }
         );
+      });
     });
+  });
 };
+
 
 exports.saveArea = (area_name) => {
   console.log(area_name);
@@ -110,17 +134,24 @@ exports.saveAminity=(amenity_name) => {
 };
 
 
-exports.fetchAllHotels=()=>{
-  return new Promise((resolve,reject)=>{
-      db.query("select * from hotelmaster",(err,result)=>{
-        if(err){
-          console.log("Error:",err);
-          reject(err);
-        }
-        else{
-          resolve(result);
-        }
-      });
+exports.fetchAllHotelsWithCityAndArea = () => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name,
+             h.hotel_email, h.hotel_contact, h.rating
+      FROM hotelmaster h
+      JOIN citymaster c ON h.city_id = c.city_id
+      JOIN areamaster a ON h.area_id = a.area_id;
+    `;
+
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error("DB error:", err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
   });
 };
 
@@ -164,6 +195,76 @@ exports.fetchAllAmenities=()=>{
       else{
         resolve(result);
       }
+    });
+  });
+};
+
+exports.deleteHotelFromDB = (hotel_id) => {
+  return new Promise((resolve, reject) => {
+    db.query("DELETE FROM hotelmaster WHERE hotel_id = ?", [hotel_id], (err, result) => {
+      if (err) {
+        console.error("DB error during delete:", err);
+        return reject("Delete failed");
+      }
+
+      if (result.affectedRows === 0) {
+        return reject(`No hotel found with this id: ${hotel_id}`);
+      }
+
+      console.log("Hotel deleted successfully...");
+
+      // Optional: fetch updated hotel list (for debugging or logging)
+      db.query(`
+        SELECT h.hotel_id, h.hotel_name, h.hotel_address, 
+               c.city_name, a.area_name, h.hotel_email, 
+               h.hotel_contact, h.rating 
+        FROM hotelmaster h 
+        JOIN citymaster c ON h.city_id = c.city_id 
+        JOIN areamaster a ON h.area_id = a.area_id
+      `, (err1, result1) => {
+        if (err1) {
+          console.error("DB error while fetching updated hotel list:", err1);
+          return resolve("Hotel deleted, but failed to fetch updated hotel list.");
+        }
+
+        console.table(result1); // Logs to your Node.js console
+        return resolve("Hotel deleted successfully and hotel list updated in console.");
+      });
+    });
+  });
+};
+
+
+exports.getHotelById = (hotel_id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      " SELECT h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name, h.hotel_email,h.hotel_contact, h.rating FROM hotelmaster h JOIN citymaster c ON h.city_id = c.city_id JOIN areamaster a ON h.area_id = a.area_id WHERE hotel_id = ?",
+      [hotel_id],
+      (err, result) => {
+        if (err) return reject(err);
+        if (result.length === 0) return reject("No hotel found");
+        resolve(result[0]);
+      }
+    );
+  });
+};
+
+
+
+
+exports.updateHotelInDB = (hotel_id, data) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE hotelmaster SET 
+        hotel_name = ?, hotel_address = ?, hotel_email = ?, 
+        hotel_contact = ?, rating = ?, city_id = ?, area_id = ?
+      WHERE hotel_id = ?
+    `;
+    const params = [data.hotel_name,data.hotel_address,data.hotel_email,data.hotel_contact,
+      data.rating,data.city_id,data.area_id,hotel_id];
+      db.query(sql, params, (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
     });
   });
 };

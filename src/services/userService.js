@@ -60,8 +60,8 @@ exports.aminitySaveLogic=async(amenity_name)=>{
   }
 };
 
-exports.getAllHotels=()=>{
-  return regModel.fetchAllHotels();
+exports.getAllHotelsForView = () => {
+  return regModel.fetchAllHotelsWithCityAndArea();
 };
 
 
@@ -77,3 +77,20 @@ exports.getAllArea=()=>{
 exports.getAllAmenities = () => {
   return regModel.fetchAllAmenities();
 };
+
+exports.deleteHotelLogic = (hotel_id) => {
+  return regModel.deleteHotelFromDB(hotel_id);
+};
+
+exports.getHotelById = (hotel_id) => {
+  return regModel.getHotelById(hotel_id);
+};
+
+
+exports.updateHotelLogic = (hotel_id, data) => {
+  return regModel.updateHotelInDB(hotel_id, data);
+
+};
+
+
+

@@ -77,16 +77,18 @@ exports.adminDashCtrl=(req,res)=>{
 }
 
 exports.addhotelCtrl = async (req, res) => {
+  console.log("Request body:",req.body);
   try {
     const {
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating,filename
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
     } = req.body;
 
     const result = await regService.hotelSaveLogic(
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating,filename
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
     );
 
     res.send({ message: result });
+    res.redirect("/addHotel");
   } catch (err) {
     console.error("Error adding hotel:", err);
     res.status(500).send("Error adding hotel");
@@ -126,24 +128,28 @@ exports.addAminitiesCtrl=async(req,res)=>{
     res.send({ message: result });
   } catch (err) {
     console.error("Error adding aminity:", err);
-    res.status(500).send({ message: "Error adding aminity", error: err.message });
+     res.status(500).render('Amenities', { 
+      message: 'Error adding amenity', 
+      error: err.message 
+    });
   }
 };
 
 
 
-exports.viewHotelCtrl=async(req,res)=>{
-  try{
-    const hotels=await regService.getAllHotels();
-    console.log("hotels  from db:");
+exports.viewHotelFormCtrl = async (req, res) => {
+  try {
+    const hotels = await regService.getAllHotelsForView();
     console.table(hotels);
-    res.json(hotels);
-   
+    res.json(hotels);  // Send JSON response
+  } catch (err) {
+    console.error("Error fetching hotels:", err);
+    res.status(500).json({ error: "Failed to fetch hotels" });
   }
-  catch(err){
-    console.log("failed to fetch err:",err);
-  }
-}
+};
+
+
+
 
 exports.viewCityCtrl=async(req,res)=>{
   try{
@@ -175,9 +181,76 @@ exports.viewAmenityCtrl=async(req,res)=>{
     console.table(amenity);
     res.json(amenity);
   }catch(err){
-    console.log("Failed to feach erroe:",err);
+    console.log("Failed to fetch error:",err);
   }
 };
+
+exports.getHotelByIdCtrl = async (req, res) => {
+  try {
+    const hotel_id = parseInt(req.query.hotel_id);
+    if (isNaN(hotel_id)) {
+      return res.status(400).send("Invalid or missing hotel_id");
+    }
+    const hotel = await regService.getHotelById(hotel_id);
+    console.log("Hotel by id:");
+    console.table(hotel);
+    res.json(hotel);
+  } catch (err) {
+    console.error("Failed to fetch hotel by id:", err);
+    res.status(500).send("Failed to fetch hotel by id");
+  }
+};
+
+
+exports.deleteHotelCtrl = async (req, res) => {
+  const hotel_id = parseInt(req.query.hotel_id);
+
+  if (isNaN(hotel_id)) {
+    console.error("Invalid hotel_id:", req.params.hotel_id);
+    return res.status(400).send("Invalid hotel ID");
+  }
+
+  try {
+    await regService.deleteHotelLogic(hotel_id);
+    res.redirect("/viewHotels");
+  } catch (err) {
+    console.error("Error deleting hotel:", err);
+    res.status(500).send("Failed to delete hotel");
+  }
+};
+
+
+exports.loadHotelForUpdate = async (req, res) => {
+  const hotel_id = parseInt(req.query.hotel_id);
+
+  if (isNaN(hotel_id)) return res.status(400).send("Invalid hotel_id");
+
+  try {
+    const hotel = await regService.getHotelById(hotel_id);
+    const cities = await regService.getAllCities();
+    const areas = await regService.getAllAreas();
+
+    //res.render("updatehotel.ejs", { hotel, cities, areas });
+  } catch (err) {
+    console.error("Error loading hotel:", err);
+    res.status(500).send("Failed to load hotel for update");
+  }
+};
+
+exports.finalHotelUpdate = async (req, res) => {
+  const {hotel_id,hotel_name,hotel_address,hotel_email,hotel_contact,rating,city_id,area_id} = req.body;
+
+  try {
+    await regService.updateHotelLogic(hotel_id, {hotel_name,hotel_address,hotel_email,hotel_contact,rating,city_id,area_id });
+
+    const hotels = await regService.getAllHotelsForView();
+    //res.render("viewhotel.ejs", { data: hotels });
+  } catch (err) {
+    console.error("Error updating hotel:", err);
+    res.status(500).send("Failed to update hotel");
+  }
+};
+
 
 
 
@@ -185,8 +258,20 @@ exports.hotelDastCtrl=(req,res)=>{
   res.render("Hotels.ejs");
 }
 
+exports.amenityDashCtrl=(req,res)=>{
+  res.render("AmenityDash.ejs");
+}
+
 exports.aminitiesCtrl=(req,res)=>{
   res.render("Amenities.ejs");
+}
+
+exports.cityDashCtrl=(req,res)=>{
+  res.render("CityDash.ejs");
+}
+
+exports.areaDashCtrl=(req,res)=>{
+  res.render("AreaDash.ejs");
 }
 
 exports.cityCtrl=(req,res)=>{
@@ -209,10 +294,15 @@ exports.logoutCtrl=(req,res)=>{
   res.render("logout.ejs");
 }
 
-exports.addHotelFormCtrl=(req,res)=>{
+/*exports.addHotelFormCtrl=(req,res)=>{
   res.render("addhotel.ejs",{citymaster:[],areamaster:[]});
-}
-
+}*/
+/*
 exports.viewHotelFormCtrl=(req,res)=>{
   res.render("viewHotel.ejs",{data:[]});
-}
+}*/
+
+
+exports.renderAddAmenityForm = (req, res) => {
+  res.render("Amenities"); // Renders Amenities.ejs
+};
