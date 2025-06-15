@@ -38,20 +38,21 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <ul class="sidebar-menu">
-        <li><i class="fa fa-hotel"></i> <a href="/hotelDash">Hotels</a></li>
-        <li><i class="fa fa-suitcase"></i><a href="/aminities">Amenities</a> </li>
-        <li><i class="fa fa-building"></i><a href="/city">City</a></li>
-        <li><i class="fa fa-map-marker"></i><a href="/area">Area</a></li>
-        <li><i class="fa fa-users"></i> <a href="/customer">Customer</a></li>
-        <li><i class="fa fa-star"></i><a href="/rating">Rating & Reviews</a></li>
-        <li><i class="fa fa-sign-out"></i><a href="/logout">Logout</a></li>
+	<li><i class="fa fa-hotel"></i><a class="nav-link active" onclick="loadPage('/hotelDash', this)">Hotels</a></li>
+	<li><i class="fa fa-suitcase"></i><a class="nav-link active" onclick="loadPage('/amenityDash', this)">Amenities</a></li>
+	<li><i class="fa fa-building"></i><a class="nav-link active" onclick="loadPage('/cityDash', this)">City</a></li>
+	<li><i class="fa fa-map-marker"></i><a class="nav-link active" onclick="loadPage('/areaDash', this)">Area</a></li>
+	<li><i class="fa fa-users"></i><a class="nav-link active" onclick="loadPage('', this)">Customer</a></li>
+	<li><i class="fa fa-star"></i><a class="nav-link active" onclick="loadPage('', this)">Rating & Reviews</a></li>
+	<li><i class="fa fa-sign-out"></i><a class="nav-link active" onclick="loadPage('', this)">Logout</a></li>
       </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="main-body">
-      <h1>Welcome to the Admin Dashboard</h1>
-      <p>Select a menu item from the sidebar to manage your content.</p>
+      <div class="iframe-wrapper">
+      <iframe id="contentFrame" src="" scrolling="no"></iframe>
+    </div>
     </main>
     
   </div>
@@ -71,6 +72,18 @@
         profileMenu.style.display = "none";
       }
     });
+
+
+	function loadPage(page, clickedLink) {
+      		document.getElementById('contentFrame').src = page;
+
+      // Handle active class
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      clickedLink.classList.add('active');
+    }
+
   </script>
 </body>
 </html>

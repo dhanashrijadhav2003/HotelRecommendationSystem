@@ -14,31 +14,49 @@ router.get("/login",controller.regLogin);
 
 router.post("/validate", controller.validateUser);
 
-router.post("/addHotel",controller.addhotelCtrl);
+router.post("/addHotel",controller.addhotelCtrl);//
 
 
 
-router.post("/addCity",controller.addCityCtrl);
+router.get("/deleteHotel", controller.deleteHotelCtrl);
 
-router.get("/viewCity",controller.viewCityCtrl);
+router.get("/updatehotel", controller.loadHotelForUpdate);
 
-router.post("/addArea",controller.addAreaCtrl);
+router.post("/finalupdatehotel", controller.finalHotelUpdate);
 
-router.get("/viewArea",controller.viewAreaCtrl);
+router.get("/getHotelById",controller.getHotelByIdCtrl);
 
-router.post("/addAmenityForm",controller.addAminitiesCtrl);
+router.post("/addCity",controller.addCityCtrl);//
 
-router.get("/viewAmenity",controller.viewAmenityCtrl);
+router.get("/viewCity",controller.viewCityCtrl);//
 
-router.get("/addHotelForm",controller.addHotelFormCtrl);
 
-router.get("/viewHotelsTable",controller.viewHotelFormCtrl);
+router.post("/addArea",controller.addAreaCtrl);//
 
-router.get("/showHotels",controller.viewHotelCtrl);
+router.get("/viewArea",controller.viewAreaCtrl);//
+
+router.post("/addAmenityForm",controller.addAminitiesCtrl);//
+
+router.get("/addAmenityForm", controller.renderAddAmenityForm);
+
+
+router.get("/viewAmenity",controller.viewAmenityCtrl);//
+
+/*router.get("/addHotelForm",controller.addHotelFormCtrl);*/
+
+router.get("/viewHotels",controller.viewHotelFormCtrl);
+
+//router.get("/showHotels",controller.viewHotelCtrl);
 
 router.get("/admindash",controller.adminDashCtrl);
 
-router.get("/hotelDash",controller.hotelDastCtrl);
+router.get("/hotelDash",controller.hotelDastCtrl);//
+
+router.get("/amenityDash",controller.amenityDashCtrl);//
+
+router.get("/cityDash",controller.cityDashCtrl);//
+
+router.get("/areaDash",controller.areaDashCtrl);//
 
 router.get("/aminities",controller.aminitiesCtrl);
 
