@@ -250,7 +250,7 @@ exports.deleteCityCtrl=async(req,res)=>{
   }
   try{
     await regService.deleteCityLogic(city_id);
-    //res.render("viewCity");
+    res.render("viewCity");
   }
   catch(err){
     console.error("Error deleting city:",err);
