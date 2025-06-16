@@ -42,6 +42,8 @@ router.post("/addArea",controller.addAreaCtrl);//
 
 router.get("/viewArea",controller.viewAreaCtrl);//
 
+router.get("/viewCityArea",controller.viewAreaWithCityCtrl);
+
 router.post("/addAmenityForm",controller.addAminitiesCtrl);//
 
 router.get("/addAmenityForm", controller.renderAddAmenityForm);

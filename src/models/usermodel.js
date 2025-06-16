@@ -96,7 +96,7 @@ exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_emai
 };
 
 
-exports.saveArea = (area_name) => {
+exports.saveArea = (area_name,city_id) => {
   console.log(area_name);
   return new Promise((resolve, reject) => {
     db.query(
@@ -107,7 +107,21 @@ exports.saveArea = (area_name) => {
           console.error("DB error:", err);
           reject(err);
         } else {
-          resolve("Area added successfully...");
+          db.query("select area_id from areamaster where area_name=? order by area_id desc limit 1",[area_name],(err,result2)=>{
+                if(err){
+                  reject("area not added");
+                }
+                else{
+                 db.query("insert into cityareajoin values (?,?)",[city_id,result2[0].area_id],(err,result3)=>{
+                    if(err){
+                      reject("Area adddition failed..")
+                    }
+                    else{
+                       resolve("Area added successfully...");
+                    }
+                 });
+                }
+          });
         }
       }
     );
@@ -167,6 +181,20 @@ exports.fetchAllCities=()=>{
       }
     });
   })
+};
+
+exports.fetchAllAreaWithCity=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select a.area_id,a.area_name,c.city_name,c.pincode from areamaster a inner join cityareajoin ca on ca.area_id=a.area_id inner join citymaster c on ca.city_id=c.city_id",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  });
 };
 
 exports.fetchAllArea=()=>{
