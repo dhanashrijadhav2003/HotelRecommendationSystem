@@ -19,7 +19,7 @@
             background: #fff;
             border-radius: 16px;
             padding: 25px;
-            margin: 50px auto;
+            margin: 10px auto;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
             max-width: 95%;
         }
@@ -51,9 +51,9 @@
     font-weight: 700;
     text-align: center;
     color: #4e54c8;
-    background: linear-gradient(to right, #4e54c8, #8f94fb);
     
-    margin-bottom: 40px;
+    
+    margin-bottom: 10px;
     letter-spacing: 1px;
     animation: fadeIn 1s ease-in-out;
 }
@@ -70,6 +70,7 @@
             border-collapse: collapse;
             border-radius: 12px;
             overflow: hidden;
+        
         }
 
         thead {
@@ -179,7 +180,7 @@
             <td data-label="CITY"><%= item.city_name %></td>
             <td data-label="AREA"><%= item.area_name %></td>
             <td data-label="EMAIL"><%= item.hotel_email %></td>
-            <td data-label="CONTACT"><%= item.hotl_contact %></td>
+            <td data-label="CONTACT"><%= item.hotel_contact %></td>
             <td data-label="IMAGE"><%= item.filename %></td>
             <td data-label="DELETE"><a href="/deleteHotel?hotelid=<%= item.hotel_id %>">Delete</a></td>
             <td data-label="UPDATE"><a href="/updateHotel?hotelid=<%= item.hotel_id %>">Update</a></td>
