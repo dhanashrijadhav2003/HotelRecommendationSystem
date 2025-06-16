@@ -161,17 +161,18 @@
 
 <script>
   // Ensure data is safely handled
-  const data = <%- JSON.stringify(data || []) %>;
+const data = <%- JSON.stringify(data || []) %>;
+
   const rowsPerPage = 5;
   let currentPage = 1;
 
-  function displayTableItems(items, wrapper, rowsPerPage, page) {
+  function displayTableItems(data, wrapper, rowsPerPage, page) {
     wrapper.innerHTML = "";
     page--;
 
     const start = rowsPerPage * page;
     const end = start + rowsPerPage;
-    const paginatedItems = items.slice(start, end);
+    const paginatedItems = data.slice(start, end);
 
     if (paginatedItems.length === 0) {
       wrapper.innerHTML = `<tr><td colspan="11">There is no data present in table.</td></tr>`;
@@ -181,17 +182,17 @@
     for (let data of paginatedItems) {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td data-label="HOTEL_ID"><%=data.hotel_id%></td>
-        <td data-label="HOTEL_NAME"><%=data.hotel_name%></td>
-        <td data-label="ADDRESS"><%=data.hotel_address%></td>
-        <td data-label="CITY"><%=data.city_name%></td>
-        <td data-label="AREA"><%=data.area_name%></td>
-        <td data-label="EMAIL"><%=data.hotel_email%></td>
-        <td data-label="CONTACT"><%=data.hotel_contact%></td>
-        <td data-label="IMAGE"><%=data.filename%></td>
-        <td data-label="DELETE"><a href="/deleteHotel?hotelid=<%=data.hotel_id%>">Delete</a></td>
-        <td data-label="UPDATE"><a href="/updateHotel?hotelid=<%=data.hotel_id%>">Update</a></td>
-        <td data-label="VIEW"><a href="/viewHotel?hotelid=<%=data.hotel_id%>">View</a></td>
+        <td data-label="HOTEL_ID">${data.hotel_id}</td>
+        <td data-label="HOTEL_NAME">${data.hotel_name}</td>
+        <td data-label="ADDRESS">${data.hotel_address}</td>
+        <td data-label="CITY">${data.city_name}</td>
+        <td data-label="AREA">${data.area_name}</td>
+        <td data-label="EMAIL">${data.hotel_email}</td>
+        <td data-label="CONTACT">${data.hotel_contact}</td>
+        <td data-label="IMAGE">${data.filename}</td>
+        <td data-label="DELETE"><a href="/deleteHotel?hotel_id=${data.hotel_id}">Delete</a></td>
+        <td data-label="UPDATE"><a href="/updateHotel?hotel_id=${data.hotel_id}">Update</a></td>
+        <td data-label="VIEW"><a href="/viewHotel?hotel_id=${data.hotel_id}">View</a></td>
       `;
       wrapper.appendChild(row);
     }
