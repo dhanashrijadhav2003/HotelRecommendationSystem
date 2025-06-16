@@ -42,7 +42,7 @@ router.get("/addAmenityForm", controller.renderAddAmenityForm);
 
 router.get("/viewAmenity",controller.viewAmenityCtrl);//
 
-/*router.get("/addHotelForm",controller.addHotelFormCtrl);*/
+router.get("/addHotel",controller.addHotelFormCtrl);
 
 router.get("/viewHotels",controller.viewHotelFormCtrl);
 
