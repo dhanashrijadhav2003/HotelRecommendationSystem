@@ -180,6 +180,8 @@ exports.viewAmenityCtrl=async(req,res)=>{
     console.log("Amenity from db:");
     console.table(amenity);
     res.json(amenity);
+    res.render("viewAmenity",{cities});
+
   }catch(err){
     console.log("Failed to fetch error:",err);
   }
