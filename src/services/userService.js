@@ -87,6 +87,10 @@ exports.deleteHotelLogic = (hotel_id) => {
   return regModel.deleteHotelFromDB(hotel_id);
 };
 
+exports.deleteCityLogic=(city_id)=>{
+  return regModel.deleteCity(city_id);
+};
+
 exports.getHotelById = (hotel_id) => {
   return regModel.getHotelById(hotel_id);
 };

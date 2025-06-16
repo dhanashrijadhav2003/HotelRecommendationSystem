@@ -32,7 +32,7 @@ router.post("/addCity",controller.addCityCtrl);//
 
 
 
-
+router.get("/deleteCity", controller.deleteCityCtrl);
 
 router.get("/viewCity",controller.viewCityCtrl);//
 
