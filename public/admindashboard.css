@@ -8,9 +8,9 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f1f1f1;
-  height: 100vh;
+  height: auto;
   width: 100vw;
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* Navbar */
@@ -215,7 +215,7 @@ body {
   }
 
   .iframe-wrapper {
-    height: 60vh; /* Adjusted height for mobile/tablet */
+    height: 100vh; /* Adjusted height for mobile/tablet */
   }
 
   .iframe-wrapper iframe {

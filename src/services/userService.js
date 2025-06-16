@@ -40,15 +40,16 @@ exports.citySaveLogic=async(city_name,pincode)=>{
   }
 };
 
-exports.areaSaveLogic=async(area_name)=>{
+exports.areaSaveLogic=async(area_name,city_id)=>{
   try{
-    const result=await regModel.saveArea(area_name);
+    const result=await regModel.saveArea(area_name,city_id);
     return result;
   }catch(err){
     console.error("Error:",err);
     throw new Error("Eailed to add area");
   }
 };
+
 
 exports.aminitySaveLogic=async(amenity_name)=>{
    try{
@@ -72,6 +73,10 @@ exports.getAllCities=()=>{
 
 exports.getAllArea=()=>{
   return regModel.fetchAllArea();
+};
+
+exports.getCityArea=()=>{
+  return regModel.fetchAllAreaWithCity();
 };
 
 exports.getAllAmenities = () => {

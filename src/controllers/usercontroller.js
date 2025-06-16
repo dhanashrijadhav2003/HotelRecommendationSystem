@@ -89,8 +89,6 @@ exports.addhotelCtrl = async (req, res) => {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
     );
 
-   
-
      res.render("addHotel",{citymaster:cities,areamaster:areas,msg:"Hotel added successfully"});
   } catch (err) {
     console.error("Error adding hotel:", err);
@@ -113,14 +111,16 @@ exports.addCityCtrl=async(req,res)=>{
 };
 
 exports.addAreaCtrl = async (req, res) => {
+  const cities = await regService.getAllCities();
+  console.log(req.body);
   try {
-    
-    const { area_name } = req.body;
-    const result = await regService.areaSaveLogic(area_name);
-    res.render("area",{msg:"Area added successfully"});
+
+    const { area_name ,city_id} = req.body;
+    const result = await regService.areaSaveLogic(area_name,city_id);
+    res.render("area",{citymaster:cities,msg:"Area added successfully"});
   } catch (err) {
     console.error("Error adding area:", err);
-     res.status(500).render('area', { msg: 'Error adding area'  });
+     res.status(500).render('area', {citymaster:cities,msg: 'Error adding area'  });
   }
 };
 
@@ -172,6 +172,19 @@ exports.viewAreaCtrl=async(req,res)=>{
     console.log("Area from db:");
     console.table(area);
     res.json(area);
+  }catch(err){
+    console.log("Failed to feach erroe:",err);
+  }
+};
+
+exports.viewAreaWithCityCtrl=async(req,res)=>{
+  try{
+   // const area=await regService.getAllArea();
+    const city=await regService.getAllCities();
+    const areacity=await regService.getCityArea();
+    console.log("Area from db:");
+    console.table(areacity);
+    res.json(areacity);
   }catch(err){
     console.log("Failed to feach erroe:",err);
   }
@@ -319,6 +332,7 @@ exports.addCityFormCtrl=(req,res)=>{
   res.render("city",{msg:""});
 };
 
-exports.addAreaFormCtrl=(req,res)=>{
-  res.render("area",{msg:""});
+exports.addAreaFormCtrl=async(req,res)=>{
+  const cities = await regService.getAllCities();
+  res.render("area",{citymaster:cities,msg:""});
 };
