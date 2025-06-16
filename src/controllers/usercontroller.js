@@ -140,8 +140,11 @@ exports.addAminitiesCtrl=async(req,res)=>{
 exports.viewHotelFormCtrl = async (req, res) => {
   try {
     const hotels = await regService.getAllHotelsForView();
+    const city=await regService.getAllCities();
+    const area=await regService.getAllArea();
     console.table(hotels);
-    res.json(hotels);  // Send JSON response
+    //res.json(hotels); 
+    res.render("viewHotel",{data:hotels,city,area});
   } catch (err) {
     console.error("Error fetching hotels:", err);
     res.status(500).json({ error: "Failed to fetch hotels" });
@@ -230,7 +233,7 @@ exports.loadHotelForUpdate = async (req, res) => {
   try {
     const hotel = await regService.getHotelById(hotel_id);
     const cities = await regService.getAllCities();
-    const areas = await regService.getAllAreas();
+    const areas = await regService.getAllArea();
 
     //res.render("updatehotel.ejs", { hotel, cities, areas });
   } catch (err) {
@@ -296,9 +299,11 @@ exports.logoutCtrl=(req,res)=>{
   res.render("logout.ejs");
 }
 
-/*exports.addHotelFormCtrl=(req,res)=>{
-  res.render("addhotel.ejs",{citymaster:[],areamaster:[]});
-}*/
+exports.addHotelFormCtrl=async(req,res)=>{
+   const cities = await regService.getAllCities();
+    const areas = await regService.getAllArea();
+  res.render("addhotel.ejs",{citymaster:cities,areamaster:areas});
+}
 /*
 exports.viewHotelFormCtrl=(req,res)=>{
   res.render("viewHotel.ejs",{data:[]});
