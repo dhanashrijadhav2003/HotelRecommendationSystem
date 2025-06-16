@@ -1,191 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>City List</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>City List</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-        .container {
-            background: #fff;
-            border-radius: 16px;
-            padding: 25px;
-            margin: 10px auto;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-            max-width: 95%;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+    }
 
-        .form-group {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 10px auto;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      max-width: 95%;
+    }
 
-        .form-group input {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px 20px;
-            border: 2px solid #4e54c8;
-            border-radius: 30px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
+    .form-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #8f94fb;
-            box-shadow: 0 0 10px rgba(142, 148, 251, 0.4);
-        }
+    .page-heading {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      color: #4e54c8;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-        .page-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    color: #4e54c8;
-    
-    
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-    animation: fadeIn 1s ease-in-out;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-/* Optional fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
+    thead {
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+      color: white;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+    th, td {
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
 
-        thead {
-            background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
-            color: white;
-        }
+    tbody tr {
+      background-color: #f9f9f9;
+      transition: background-color 0.2s;
+    }
 
-        th, td {
-            padding: 14px 10px;
-            text-align: center;
-            font-size: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+    tbody tr:hover {
+      background-color: #eef1ff;
+    }
 
+    a {
+      color: #4e54c8;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-	th:nth-child(1), td:nth-child(1) {
-    	    width: 100px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    a:hover {
+      color: #8f94fb;
+      text-decoration: underline;
+    }
 
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+    }
 
-        tbody tr {
-            background-color: #f9f9f9;
-            transition: background-color 0.2s;
-        }
+    @media (max-width: 576px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
 
-        tbody tr:hover {
-            background-color: #eef1ff;
-        }
+      thead tr {
+        display: none;
+      }
 
-        a {
-            color: #4e54c8;
-            text-decoration: none;
-            font-weight: bold;
-        }
+      tbody tr {
+        margin-bottom: 15px;
+        background: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
 
-        a:hover {
-            color: #8f94fb;
-            text-decoration: underline;
-        }
+      td {
+        text-align: left;
+        padding: 8px 12px;
+        position: relative;
+      }
 
-        @media (max-width: 768px) {
-            th, td {
-                font-size: 13px;
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            thead tr {
-                display: none;
-            }
-
-            tbody tr {
-                margin-bottom: 15px;
-                background: #f4f4f4;
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                padding: 10px;
-            }
-
-            td {
-                text-align: left;
-                padding: 8px 12px;
-                position: relative;
-            }
-
-            td::before {
-                content: attr(data-label);
-                font-weight: bold;
-                display: block;
-                margin-bottom: 4px;
-                color: #4e54c8;
-            }
-        }
-    </style>
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+        color: #4e54c8;
+      }
+    }
+  </style>
 </head>
 <body>
+
 <div class="form-group mt-5">
-    <h1 class="page-heading">City Details</h1>
+  <h1 class="page-heading">City Details</h1>
 </div>
 
 <div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>CITY_ID</th>
-            <th>CITY_NAME</th>
-	    <th>PINCODE</th>
-            <th>DELETE</th>
-            
-        </tr>
-        </thead>
-        <tbody id="tblBody1">
-        <% if (data.length === 0) { %>
-        <tr>
-            <td colspan="4">There is no data present in table.</td>
-        </tr>
-        <% } else { data.forEach((item) => { %>
-        <tr>
-            <td data-label="CITY_ID"><%= item.city_id %></td>
-	    <td data-label="CITY_NAME"><%= item.city_name %></td>
-	    <td data-label="PINCODE"><%= item.pincode %></td>
-          <td data-label="DELETE"><a href="/deleteAmenities?amenityid=<%= item.amenity_id %>">Delete</a></td>
-  
-        </tr>
-        <% }); } %>
-        </tbody>
-    </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>CITY_ID</th>
+        <th>CITY_NAME</th>
+        <th>PINCODE</th>
+        <th>DELETE</th>
+      </tr>
+    </thead>
+    <tbody id="tblBody1">
+      <!-- Data will be injected here using JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-center mt-3">
+    <nav>
+      <ul class="pagination" id="pagination"></ul>
+    </nav>
+  </div>
 </div>
+
+<script>
+  // Injected from server using EJS
+  const data = <%- JSON.stringify(data || []) %>;
+
+  const rowsPerPage = 5;
+  let currentPage = 1;
+
+  function displayTableItems(data, wrapper, rowsPerPage, page) {
+    wrapper.innerHTML = "";
+    page--;
+
+    const start = rowsPerPage * page;
+    const end = start + rowsPerPage;
+    const paginatedItems = data.slice(start, end);
+
+    if (paginatedItems.length === 0) {
+      wrapper.innerHTML = `<tr><td colspan="4">There is no data present in table.</td></tr>`;
+      return;
+    }
+
+    for (let data of paginatedItems) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td data-label="CITY_ID">${data.city_id}</td>
+        <td data-label="CITY_NAME">${data.city_name}</td>
+        <td data-label="PINCODE">${data.pincode}</td>
+        <td data-label="DELETE"><a href="/deleteCity?city_id=${data.city_id}">Delete</a></td>
+      `;
+      wrapper.appendChild(row);
+    }
+  }
+
+  function setupPagination(items, wrapper, rowsPerPage) {
+    wrapper.innerHTML = "";
+    const pageCount = Math.ceil(items.length / rowsPerPage);
+
+    // Previous
+    const prevLi = document.createElement("li");
+    prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+    const prevLink = document.createElement("a");
+    prevLink.className = "page-link";
+    prevLink.href = "#";
+    prevLink.innerText = "Previous";
+    prevLink.onclick = (e) => {
+      e.preventDefault();
+      if (currentPage > 1) {
+        currentPage--;
+        update();
+      }
+    };
+    prevLi.appendChild(prevLink);
+    wrapper.appendChild(prevLi);
+
+    // Page numbers
+    for (let i = 1; i <= pageCount; i++) {
+      const li = document.createElement("li");
+      li.className = "page-item" + (i === currentPage ? " active" : "");
+      const link = document.createElement("a");
+      link.className = "page-link";
+      link.href = "#";
+      link.innerText = i;
+      link.onclick = (e) => {
+        e.preventDefault();
+        currentPage = i;
+        update();
+      };
+      li.appendChild(link);
+      wrapper.appendChild(li);
+    }
+
+    // Next
+    const nextLi = document.createElement("li");
+    nextLi.className = "page-item" + (currentPage === pageCount ? " disabled" : "");
+    const nextLink = document.createElement("a");
+    nextLink.className = "page-link";
+    nextLink.href = "#";
+    nextLink.innerText = "Next";
+    nextLink.onclick = (e) => {
+      e.preventDefault();
+      if (currentPage < pageCount) {
+        currentPage++;
+        update();
+      }
+    };
+    nextLi.appendChild(nextLink);
+    wrapper.appendChild(nextLi);
+  }
+
+  function update() {
+    displayTableItems(data, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+    setupPagination(data, document.getElementById("pagination"), rowsPerPage);
+  }
+
+  update();
+</script>
 
 </body>
 </html>
