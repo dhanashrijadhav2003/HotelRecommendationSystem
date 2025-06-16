@@ -1,195 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Hotel List</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel List</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-        .container {
-            background: #fff;
-            border-radius: 16px;
-            padding: 25px;
-            margin: 10px auto;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-            max-width: 95%;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+    }
 
-        .form-group {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 10px auto;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      max-width: 95%;
+    }
 
-        .form-group input {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px 20px;
-            border: 2px solid #4e54c8;
-            border-radius: 30px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
+    .form-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #8f94fb;
-            box-shadow: 0 0 10px rgba(142, 148, 251, 0.4);
-        }
+    .page-heading {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      color: #4e54c8;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-        .page-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    color: #4e54c8;
-    
-    
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-    animation: fadeIn 1s ease-in-out;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-/* Optional fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
+    thead {
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+      color: white;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 12px;
-            overflow: hidden;
-        
-        }
+    th, td {
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
 
-        thead {
-            background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
-            color: white;
-        }
+    tbody tr {
+      background-color: #f9f9f9;
+      transition: background-color 0.2s;
+    }
 
-        th, td {
-            padding: 14px 10px;
-            text-align: center;
-            font-size: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+    tbody tr:hover {
+      background-color: #eef1ff;
+    }
 
-        tbody tr {
-            background-color: #f9f9f9;
-            transition: background-color 0.2s;
-        }
+    a {
+      color: #4e54c8;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-        tbody tr:hover {
-            background-color: #eef1ff;
-        }
+    a:hover {
+      color: #8f94fb;
+      text-decoration: underline;
+    }
 
-        a {
-            color: #4e54c8;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+    }
 
-        a:hover {
-            color: #8f94fb;
-            text-decoration: underline;
-        }
+    @media (max-width: 576px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
 
-        @media (max-width: 768px) {
-            th, td {
-                font-size: 13px;
-                padding: 10px;
-            }
-        }
+      thead tr {
+        display: none;
+      }
 
-        @media (max-width: 576px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
+      tbody tr {
+        margin-bottom: 15px;
+        background: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
 
-            thead tr {
-                display: none;
-            }
+      td {
+        text-align: left;
+        padding: 8px 12px;
+        position: relative;
+      }
 
-            tbody tr {
-                margin-bottom: 15px;
-                background: #f4f4f4;
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                padding: 10px;
-            }
-
-            td {
-                text-align: left;
-                padding: 8px 12px;
-                position: relative;
-            }
-
-            td::before {
-                content: attr(data-label);
-                font-weight: bold;
-                display: block;
-                margin-bottom: 4px;
-                color: #4e54c8;
-            }
-        }
-    </style>
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+        color: #4e54c8;
+      }
+    }
+  </style>
 </head>
 <body>
+
 <div class="form-group mt-5">
-    <h1 class="page-heading">Hotel Details</h1>
+  <h1 class="page-heading">Hotel Details</h1>
 </div>
 
 <div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>HOTEL_ID</th>
-            <th>HOTEL_NAME</th>
-            <th>ADDRESS</th>
-            <th>CITY</th>
-            <th>AREA</th>
-            <th>EMAIL</th>
-            <th>CONTACT</th>
-            <th>IMAGE</th>
-            <th>DELETE</th>
-            <th>UPDATE</th>
-            <th>VIEW</th>
-        </tr>
-        </thead>
-        <tbody id="tblBody1">
-        <% if (data.length === 0) { %>
-        <tr>
-            <td colspan="11">There is no data present in table.</td>
-        </tr>
-        <% } else { data.forEach((item) => { %>
-        <tr>
-            <td data-label="HOTEL_ID"><%= item.hotel_id %></td>
-            <td data-label="HOTEL_NAME"><%= item.hotel_name %></td>
-            <td data-label="ADDRESS"><%= item.hotel_address %></td>
-            <td data-label="CITY"><%= item.city_name %></td>
-            <td data-label="AREA"><%= item.area_name %></td>
-            <td data-label="EMAIL"><%= item.hotel_email %></td>
-            <td data-label="CONTACT"><%= item.hotel_contact %></td>
-            <td data-label="IMAGE"><%= item.filename %></td>
-            <td data-label="DELETE"><a href="/deleteHotel?hotelid=<%= item.hotel_id %>">Delete</a></td>
-            <td data-label="UPDATE"><a href="/updateHotel?hotelid=<%= item.hotel_id %>">Update</a></td>
-            <td data-label="VIEW"><a href="/viewHotel?hotelid=<%= item.hotel_id %>">View</a></td>
-        </tr>
-        <% }); } %>
-        </tbody>
-    </table>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>HOTEL_ID</th>
+      <th>HOTEL_NAME</th>
+      <th>ADDRESS</th>
+      <th>CITY</th>
+      <th>AREA</th>
+      <th>EMAIL</th>
+      <th>CONTACT</th>
+      <th>IMAGE</th>
+      <th>DELETE</th>
+      <th>UPDATE</th>
+      <th>VIEW</th>
+    </tr>
+    </thead>
+    <tbody id="tblBody1">
+      <!-- Table rows inserted by JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-center mt-3">
+    <nav>
+      <ul class="pagination" id="pagination"></ul>
+    </nav>
+  </div>
 </div>
+
+<script>
+  // Ensure data is safely handled
+  const data = <%- JSON.stringify(data || []) %>;
+  const rowsPerPage = 5;
+  let currentPage = 1;
+
+  function displayTableItems(items, wrapper, rowsPerPage, page) {
+    wrapper.innerHTML = "";
+    page--;
+
+    const start = rowsPerPage * page;
+    const end = start + rowsPerPage;
+    const paginatedItems = items.slice(start, end);
+
+    if (paginatedItems.length === 0) {
+      wrapper.innerHTML = `<tr><td colspan="11">There is no data present in table.</td></tr>`;
+      return;
+    }
+
+    for (let item of paginatedItems) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td data-label="HOTEL_ID">${item.hotel_id}</td>
+        <td data-label="HOTEL_NAME">${item.hotel_name}</td>
+        <td data-label="ADDRESS">${item.hotel_address}</td>
+        <td data-label="CITY">${item.city_name}</td>
+        <td data-label="AREA">${item.area_name}</td>
+        <td data-label="EMAIL">${item.hotel_email}</td>
+        <td data-label="CONTACT">${item.hotel_contact}</td>
+        <td data-label="IMAGE">${item.filename}</td>
+        <td data-label="DELETE"><a href="/deleteHotel?hotelid=${item.hotel_id}">Delete</a></td>
+        <td data-label="UPDATE"><a href="/updateHotel?hotelid=${item.hotel_id}">Update</a></td>
+        <td data-label="VIEW"><a href="/viewHotel?hotelid=${item.hotel_id}">View</a></td>
+      `;
+      wrapper.appendChild(row);
+    }
+  }
+
+  function setupPagination(items, wrapper, rowsPerPage) {
+    wrapper.innerHTML = "";
+    const pageCount = Math.ceil(items.length / rowsPerPage);
+
+    // Previous button
+    const prevLi = document.createElement("li");
+    prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+    const prevLink = document.createElement("a");
+    prevLink.className = "page-link";
+    prevLink.href = "#";
+    prevLink.innerText = "Previous";
+    prevLink.onclick = (e) => {
+      e.preventDefault();
+      if (currentPage > 1) {
+        currentPage--;
+        update();
+      }
+    };
+    prevLi.appendChild(prevLink);
+    wrapper.appendChild(prevLi);
+
+    // Page number buttons
+    for (let i = 1; i <= pageCount; i++) {
+      const li = document.createElement("li");
+      li.className = "page-item" + (i === currentPage ? " active" : "");
+      const link = document.createElement("a");
+      link.className = "page-link";
+      link.href = "#";
+      link.innerText = i;
+      link.onclick = (e) => {
+        e.preventDefault();
+        currentPage = i;
+        update();
+      };
+      li.appendChild(link);
+      wrapper.appendChild(li);
+    }
+
+    // Next button
+    const nextLi = document.createElement("li");
+    nextLi.className = "page-item" + (currentPage === pageCount ? " disabled" : "");
+    const nextLink = document.createElement("a");
+    nextLink.className = "page-link";
+    nextLink.href = "#";
+    nextLink.innerText = "Next";
+    nextLink.onclick = (e) => {
+      e.preventDefault();
+      if (currentPage < pageCount) {
+        currentPage++;
+        update();
+      }
+    };
+    nextLi.appendChild(nextLink);
+    wrapper.appendChild(nextLi);
+  }
+
+  function update() {
+    displayTableItems(data, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+    setupPagination(data, document.getElementById("pagination"), rowsPerPage);
+  }
+
+  update();
+</script>
 
 </body>
 </html>
