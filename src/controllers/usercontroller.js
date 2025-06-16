@@ -78,6 +78,8 @@ exports.adminDashCtrl=(req,res)=>{
 
 exports.addhotelCtrl = async (req, res) => {
   console.log("Request body:",req.body);
+   const cities = await regService.getAllCities();
+  const areas = await regService.getAllArea();
   try {
     const {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
@@ -87,11 +89,12 @@ exports.addhotelCtrl = async (req, res) => {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
     );
 
-    res.send({ message: result });
-    res.redirect("/addHotel");
+   
+
+     res.render("addHotel",{citymaster:cities,areamaster:areas,msg:"Hotel added successfully"});
   } catch (err) {
     console.error("Error adding hotel:", err);
-    res.status(500).send("Error adding hotel");
+    res.status(500).render('addHotel', { citymaster:cities,areamaster:areas,msg: 'Error adding hotel'  });
   }
 };
 
@@ -101,11 +104,11 @@ exports.addCityCtrl=async(req,res)=>{
   try{
     const{city_name,pincode}=req.body;
     const result=await regService.citySaveLogic(city_name,pincode);
-    res.send({message:result});
+    res.render("city",{msg:"City added successfully"});
   }
   catch(err){
     console.error("Error adding city:",err);
-    res.status(500).send("Error adding city",err);
+    res.status(500).render('city', { msg: 'Error adding city'  });
   }
 };
 
@@ -114,10 +117,10 @@ exports.addAreaCtrl = async (req, res) => {
     
     const { area_name } = req.body;
     const result = await regService.areaSaveLogic(area_name);
-    res.send({ message: result });
+    res.render("area",{msg:"Area added successfully"});
   } catch (err) {
     console.error("Error adding area:", err);
-    res.status(500).send({ message: "Error adding area", error: err.message });
+     res.status(500).render('area', { msg: 'Error adding area'  });
   }
 };
 
@@ -125,13 +128,10 @@ exports.addAminitiesCtrl=async(req,res)=>{
   try{
     const{amenity_name}=req.body;
     const result = await regService.aminitySaveLogic(amenity_name);
-    res.send({ message: result });
+    res.render("Amenities",{ msg:"Amenity added successfully" });
   } catch (err) {
     console.error("Error adding aminity:", err);
-     res.status(500).render('Amenities', { 
-      message: 'Error adding amenity', 
-      error: err.message 
-    });
+     res.status(500).render('Amenities', { msg: 'Error adding amenity'  });
   }
 };
 
@@ -147,7 +147,7 @@ exports.viewHotelFormCtrl = async (req, res) => {
     res.render("viewHotel",{data:hotels,city,area});
   } catch (err) {
     console.error("Error fetching hotels:", err);
-    res.status(500).json({ error: "Failed to fetch hotels" });
+    res.status(500).render('viewHotel', {data:hotels, citymaster:cities,areamaster:areas,msg: 'Error adding amenity'  });
   }
 };
 
@@ -159,7 +159,8 @@ exports.viewCityCtrl=async(req,res)=>{
     const city=await regService.getAllCities();
     console.log("Cities from db:");
     console.table(city);
-    res.json(city);
+    //res.json(city);
+    res.render("viewCity",{data:city});
   }catch(err){
     console.log("Failed to fetch error:",err);
   }
@@ -302,7 +303,7 @@ exports.logoutCtrl=(req,res)=>{
 exports.addHotelFormCtrl=async(req,res)=>{
    const cities = await regService.getAllCities();
     const areas = await regService.getAllArea();
-  res.render("addhotel.ejs",{citymaster:cities,areamaster:areas});
+  res.render("addhotel.ejs",{citymaster:cities,areamaster:areas,msg:""});
 }
 /*
 exports.viewHotelFormCtrl=(req,res)=>{
@@ -311,5 +312,13 @@ exports.viewHotelFormCtrl=(req,res)=>{
 
 
 exports.renderAddAmenityForm = (req, res) => {
-  res.render("Amenities"); // Renders Amenities.ejs
+  res.render("Amenities",{msg:""}); // Renders Amenities.ejs
+};
+
+exports.addCityFormCtrl=(req,res)=>{
+  res.render("city",{msg:""});
+};
+
+exports.addAreaFormCtrl=(req,res)=>{
+  res.render("area",{msg:""});
 };
