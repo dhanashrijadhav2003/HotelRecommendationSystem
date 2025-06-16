@@ -26,10 +26,17 @@ router.post("/finalupdatehotel", controller.finalHotelUpdate);
 
 router.get("/getHotelById",controller.getHotelByIdCtrl);
 
+router.get("/addCity",controller.addCityFormCtrl);
+
 router.post("/addCity",controller.addCityCtrl);//
+
+
+
+
 
 router.get("/viewCity",controller.viewCityCtrl);//
 
+router.get("/addArea",controller.addAreaFormCtrl);
 
 router.post("/addArea",controller.addAreaCtrl);//
 
