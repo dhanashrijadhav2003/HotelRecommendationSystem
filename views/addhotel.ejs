@@ -23,7 +23,7 @@
      <div class="form-group">
           <select class="form-control" name="city_id" required>
             <option value="">-- Select City --</option>
-            <% citymaster.forEach(citymaster => { %>
+            <% citymaster.forEach(city => { %>
               <option value="<%= city.city_id %>"><%= city.city_name %></option>
             <% }) %>
           </select>
@@ -32,7 +32,7 @@
      <div class="form-group">
           <select class="form-control" name="area_id" required>
             <option value="">-- Select Area --</option>
-            <% areamaster.forEach(areamaster => { %>
+            <% areamaster.forEach(area => { %>
               <option value="<%= area.area_id %>"><%= area.area_name %></option>
             <% }) %>
           </select>
