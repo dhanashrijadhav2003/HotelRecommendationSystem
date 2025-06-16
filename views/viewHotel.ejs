@@ -181,17 +181,17 @@
     for (let item of paginatedItems) {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td data-label="HOTEL_ID">${item.hotel_id}</td>
-        <td data-label="HOTEL_NAME">${item.hotel_name}</td>
-        <td data-label="ADDRESS">${item.hotel_address}</td>
-        <td data-label="CITY">${item.city_name}</td>
-        <td data-label="AREA">${item.area_name}</td>
-        <td data-label="EMAIL">${item.hotel_email}</td>
-        <td data-label="CONTACT">${item.hotel_contact}</td>
-        <td data-label="IMAGE">${item.filename}</td>
-        <td data-label="DELETE"><a href="/deleteHotel?hotelid=${item.hotel_id}">Delete</a></td>
-        <td data-label="UPDATE"><a href="/updateHotel?hotelid=${item.hotel_id}">Update</a></td>
-        <td data-label="VIEW"><a href="/viewHotel?hotelid=${item.hotel_id}">View</a></td>
+        <td data-label="HOTEL_ID"><%=item.hotel_id%></td>
+        <td data-label="HOTEL_NAME"><%=item.hotel_name%></td>
+        <td data-label="ADDRESS"><%=item.hotel_address%></td>
+        <td data-label="CITY"><%=item.city_name%></td>
+        <td data-label="AREA"><%=item.area_name%></td>
+        <td data-label="EMAIL"><%=item.hotel_email%></td>
+        <td data-label="CONTACT"><%=item.hotel_contact%></td>
+        <td data-label="IMAGE"><%=item.filename%></td>
+        <td data-label="DELETE"><a href="/deleteHotel?hotelid=<%=item.hotel_id%>">Delete</a></td>
+        <td data-label="UPDATE"><a href="/updateHotel?hotelid=<%=item.hotel_id%>">Update</a></td>
+        <td data-label="VIEW"><a href="/viewHotel?hotelid=<%=item.hotel_id%>">View</a></td>
       `;
       wrapper.appendChild(row);
     }
