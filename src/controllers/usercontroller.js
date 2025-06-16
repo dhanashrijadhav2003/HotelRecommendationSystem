@@ -179,12 +179,13 @@ exports.viewAreaCtrl=async(req,res)=>{
 
 exports.viewAreaWithCityCtrl=async(req,res)=>{
   try{
-   // const area=await regService.getAllArea();
+    const area=await regService.getAllArea();
     const city=await regService.getAllCities();
     const areacity=await regService.getCityArea();
     console.log("Area from db:");
     console.table(areacity);
-    res.json(areacity);
+   // res.json(areacity);
+   res.render("viewArea",{data:areacity,city,area});
   }catch(err){
     console.log("Failed to feach erroe:",err);
   }
