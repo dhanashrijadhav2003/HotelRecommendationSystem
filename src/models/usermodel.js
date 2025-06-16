@@ -266,16 +266,17 @@ exports.deleteHotelFromDB = (hotel_id) => {
 
 exports.deleteCity=(city_id)=>{
   return new Promise((resolve,reject)=>{
-      db.query("delete from citymaster where city_id-?",[city_id],(err,result)=>{
+    console.log(city_id);
+      db.query("delete from citymaster where city_id=?",[city_id],(err,result)=>{
         if(err){
           console.log("Error during deleting city",err);
           return reject("delete failed");
         }
         if(result.affectedRows === 0){
-          return reject(`No city found with id:"$(city_id)`);
+          return reject(`No city found with id: ${city_id}`);
         }
         console.log("City deleted successfully");
-        db.query("select * from city",(err1,result1)=>{
+        db.query("select * from citymaster",(err1,result1)=>{
             if(err1){
               console.error("DB error while fetching updated city list:", err1);
               return resolve("Hotel deleted, but failed to fetch updated city list.");
