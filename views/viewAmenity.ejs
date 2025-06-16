@@ -173,15 +173,14 @@
         <tbody id="tblBody1">
         <% if (data.length === 0) { %>
         <tr>
-            <td colspan="5">There is no data present in table.</td>
+            <td colspan="3">There is no data present in table.</td>
         </tr>
         <% } else { data.forEach((item) => { %>
         <tr>
             <td data-label="AMENITY_ID"><%= item.amenity_id %></td>
 	    <td data-label="AMENITY_NAME"><%= item.amenity_name %></td>
             <td data-label="DELETE"><a href="/deleteAmenities?amenityid=<%= item.amenity_id %>">Delete</a></td>
-            <td data-label="UPDATE"><a href="/updateAmenities?amenityid=<%= item.amenity_id %>">Update</a></td>
-            <td data-label="VIEW"><a href="/viewAmenities?amenityid=<%= item.amenity_id %>">View</a></td>
+
         </tr>
         <% }); } %>
         </tbody>

@@ -51,7 +51,7 @@
     font-weight: 700;
     text-align: center;
     color: #4e54c8;
-    background: linear-gradient(to right, #4e54c8, #8f94fb);
+    
     
     margin-bottom: 40px;
     letter-spacing: 1px;
@@ -173,14 +173,15 @@
         <tbody id="tblBody1">
         <% if (data.length === 0) { %>
         <tr>
-            <td colspan="3">There is no data present in table.</td>
+            <td colspan="4">There is no data present in table.</td>
         </tr>
         <% } else { data.forEach((item) => { %>
         <tr>
             <td data-label="CITY_ID"><%= item.city_id %></td>
 	    <td data-label="CITY_NAME"><%= item.city_name %></td>
 	    <td data-label="PINCODE"><%= item.pincode %></td>
-            
+          <td data-label="DELETE"><a href="/deleteAmenities?amenityid=<%= item.amenity_id %>">Delete</a></td>
+  
         </tr>
         <% }); } %>
         </tbody>
