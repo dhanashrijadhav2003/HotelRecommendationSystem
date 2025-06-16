@@ -163,6 +163,7 @@ exports.fetchAllHotelsWithCityAndArea = () => {
         console.error("DB error:", err);
         reject(err);
       } else {
+        console.log(result);
         resolve(result);
       }
     });
@@ -259,6 +260,30 @@ exports.deleteHotelFromDB = (hotel_id) => {
         return resolve("Hotel deleted successfully and hotel list updated in console.");
       });
     });
+  });
+};
+
+
+exports.deleteCity=(city_id)=>{
+  return new Promise((resolve,reject)=>{
+      db.query("delete from citymaster where city_id-?",[city_id],(err,result)=>{
+        if(err){
+          console.log("Error during deleting city",err);
+          return reject("delete failed");
+        }
+        if(result.affectedRows === 0){
+          return reject(`No city found with id:"$(city_id)`);
+        }
+        console.log("City deleted successfully");
+        db.query("select * from city",(err1,result1)=>{
+            if(err1){
+              console.error("DB error while fetching updated city list:", err1);
+              return resolve("Hotel deleted, but failed to fetch updated city list.");
+             }
+             console.table(result1); // Logs to your Node.js console
+        return resolve("city deleted successfully and city list updated in console.");
+        });
+      });
   });
 };
 

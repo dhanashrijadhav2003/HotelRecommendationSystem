@@ -224,9 +224,11 @@ exports.getHotelByIdCtrl = async (req, res) => {
 
 exports.deleteHotelCtrl = async (req, res) => {
   const hotel_id = parseInt(req.query.hotel_id);
+  console.log("Raw hotel_id:", req.query.hotel_id); // This will show undefined if not passed
+  console.log("Parsed hotel_id:", hotel_id);
 
   if (isNaN(hotel_id)) {
-    console.error("Invalid hotel_id:", req.params.hotel_id);
+    console.error("Invalid hotel_id:", req.query.hotel_id);
     return res.status(400).send("Invalid hotel ID");
   }
 
@@ -236,6 +238,23 @@ exports.deleteHotelCtrl = async (req, res) => {
   } catch (err) {
     console.error("Error deleting hotel:", err);
     res.status(500).send("Failed to delete hotel");
+  }
+};
+
+exports.deleteCityCtrl=async(req,res)=>{
+  const city_id=parseInt(req.query.city_id);
+  console.log(req.body);
+  if(isNaN(city_id)){
+    console.log("Inavlid city_id:",req.params.city_id);
+    return res.status(400).send("Invalid city id");
+  }
+  try{
+    await regService.deleteCityLogic(city_id);
+    //res.render("viewCity");
+  }
+  catch(err){
+    console.error("Error deleting city:",err);
+    res.status(500).send("Failed to delete city");
   }
 };
 
