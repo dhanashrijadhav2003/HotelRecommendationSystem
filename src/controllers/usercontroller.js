@@ -130,6 +130,8 @@ exports.addhotelCtrl = async (req, res) => {
 };
 
 
+
+
 exports.addCityCtrl=async(req,res)=>{
   try{
     const{city_name,pincode}=req.body;
@@ -160,10 +162,10 @@ exports.addAminitiesCtrl=async(req,res)=>{
   try{
     const{amenity_name}=req.body;
     const result = await regService.aminitySaveLogic(amenity_name);
-    res.render("Amenities",{ msg:"Amenity added successfully" });
+    res.render("Amenities",{amenities: result, msg:"Amenity added successfully" });
   } catch (err) {
     console.error("Error adding aminity:", err);
-     res.status(500).render('Amenities', { msg: 'Error adding amenity'  });
+     res.status(500).render('Amenities', {amenities:[], msg: 'Error adding amenity'  });
   }
 };
 
