@@ -4,6 +4,19 @@ let  controller=require("../controllers/usercontroller.js");
 
 let router=express.Router();
 
+const path = require('path');
+
+const multer = require('multer');
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+});
+const upload = multer({ storage });  
+
+
+
 router.get("/",controller.homeCtrl);
 
 router.get("/savereg",controller.regCtrl);
@@ -14,7 +27,7 @@ router.get("/login",controller.regLogin);
 
 router.post("/validate", controller.validateUser);
 
-router.post("/addHotel",controller.addhotelCtrl);//
+router.post("/addHotel", upload.single('filename'),controller.addhotelCtrl);//
 
 
 
@@ -29,6 +42,8 @@ router.get("/getHotelById",controller.getHotelByIdCtrl);
 router.get("/addCity",controller.addCityFormCtrl);
 
 router.post("/addCity",controller.addCityCtrl);//
+
+router.get("/viewCustomer",controller.viewCustomerCtrl);
 
 
 
