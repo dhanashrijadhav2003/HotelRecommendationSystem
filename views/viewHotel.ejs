@@ -159,7 +159,7 @@
   </div>
 </div>
 
-<!-- Hotel Detail Modal -->
+<!-- Hotel Detail Modal 
 <div id="hotelModal" class="modal" style="display:none;">
   <div class="modal-content">
     <span class="close" id="closeModal">&times;</span>
@@ -170,7 +170,7 @@
     <p><strong>Contact:</strong> <span id="modalHotelContact"></span></p>
     <p><strong>Image:</strong><br><img id="modalHotelImage" src="" alt="Hotel Image" style="max-width:100%; height:auto;"></p>
   </div>
-</div>
+</div>-->
 
 <script>
   // Ensure data is safely handled
@@ -202,7 +202,7 @@ const data = <%- JSON.stringify(data || []) %>;
         <td data-label="AREA">${data.area_name}</td>
         <td data-label="EMAIL">${data.hotel_email}</td>
         <td data-label="CONTACT">${data.hotel_contact}</td>
-        <td data-label="IMAGE">${data.filename}</td>
+        <td data-label="IMAGE"><img src="${data.filename}" alt="Image" width="100px" height="100px"/></td>
         <td data-label="DELETE"><a href="/deleteHotel?hotel_id=${data.hotel_id}">Delete</a></td>
         <td data-label="UPDATE"><a href="/updateHotel?hotel_id=${data.hotel_id}">Update</a></td>
         <td data-label="VIEW"><a href="/viewHotel?hotel_id=${data.hotel_id}">View</a></td>

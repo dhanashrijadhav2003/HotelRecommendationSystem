@@ -143,6 +143,7 @@ html, body {
 
   .iframe-wrapper iframe {
     height: 500px;
+    overflow: auto;
   }
 }
 
