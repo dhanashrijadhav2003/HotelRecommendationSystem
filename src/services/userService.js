@@ -18,10 +18,11 @@ exports.getOriginalPassword = (username) => {
   return regModel.getPasswordFromDB(username);
 };
 
-exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact,filename) => {
+exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact,filename,amenity_ids) => {
   try {
     const result = await regModel.saveHotelData(
-      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, filename
+      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, filename,
+      Array.isArray(amenity_ids) ? amenity_ids : [amenity_ids]
     );
     return result;
   } catch (err) {
@@ -105,6 +106,10 @@ exports.deleteAmenityLogic=(amenity_id)=>{
 
 exports.getHotelById = (hotel_id) => {
   return regModel.getHotelById(hotel_id);
+};
+
+exports.getAreabyId=(city_id) => {
+  return regModel.getAreaByIdLogic(city_id);
 };
 
 

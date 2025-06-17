@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });  
 
 
-
 router.get("/",controller.homeCtrl);
 
 router.get("/savereg",controller.regCtrl);
@@ -28,6 +27,8 @@ router.get("/login",controller.regLogin);
 router.post("/validate", controller.validateUser);
 
 router.post("/addHotel", upload.single('filename'),controller.addhotelCtrl);//
+
+router.get("/getareadata",controller.viewAreabyIdCtrl);
 
 
 

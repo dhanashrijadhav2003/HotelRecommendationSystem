@@ -77,27 +77,57 @@ exports.adminDashCtrl=(req,res)=>{
 }
 
 exports.addhotelCtrl = async (req, res) => {
-  console.log("Request body:",req.body);
-  console.log(req.body.filename);
-  const filename = req.file?.filename || req.body.filename || null;
-  const cities = await regService.getAllCities();
-  const areas = await regService.getAllArea();
+  console.log("Request body:", req.body);
+  console.log("Filename:", req.file?.filename || req.body.filename);
+  console.log("Raw amenity_ids:", req.body.amenity_ids);
+
+  let amenity_ids;
+
   try {
+    // Safely parse amenity_ids from string or fallback to array from comma-separated string
+    if (typeof req.body.amenity_ids === 'string') {
+      try {
+        amenity_ids = JSON.parse(req.body.amenity_ids);
+      } catch (e) {
+        // If JSON.parse fails, try splitting comma separated string
+        amenity_ids = req.body.amenity_ids.split(',').map(id => id.trim());
+      }
+    } else {
+      amenity_ids = req.body.amenity_ids || [];
+    }
+  } catch (parseErr) {
+    console.error("Error parsing amenity_ids:", parseErr);
+    amenity_ids = [];
+  }
+
+  const filename = req.file?.filename || req.body.filename || null;
+
+  try {
+    const cities = await regService.getAllCities();
+    const areas = await regService.getAllArea();
+    const amenity = await regService.getAllAmenities();
+
     const {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact
     } = req.body;
 
     const result = await regService.hotelSaveLogic(
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact,filename
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, filename, amenity_ids
     );
 
-     res.render("addHotel",{citymaster:cities,areamaster:areas,msg:"Hotel added successfully"});
+    res.render("addHotel", { citymaster: cities, areamaster: areas, amenities: amenity, msg: "Hotel added successfully" });
+
   } catch (err) {
     console.error("Error adding hotel:", err);
-    res.status(500).render('addHotel', { citymaster:cities,areamaster:areas,msg: 'Error adding hotel'  });
+
+    // In case of error, fetch data again to populate form dropdowns
+    const cities = await regService.getAllCities();
+    const areas = await regService.getAllArea();
+    const amenity = await regService.getAllAmenities();
+
+    res.status(500).render('addHotel', { citymaster: cities, areamaster: areas, amenities: amenity, msg: 'Error adding hotel' });
   }
 };
-
 
 
 exports.addCityCtrl=async(req,res)=>{
@@ -188,7 +218,21 @@ exports.viewAreaCtrl=async(req,res)=>{
     console.table(area);
     res.json(area);
   }catch(err){
-    console.log("Failed to feach erroe:",err);
+    console.log("Failed to fetch error:",err);
+  }
+};
+
+exports.viewAreabyIdCtrl = async (req, res) => {
+  try {
+    const city_id = parseInt(req.query.city_id);
+    if (isNaN(city_id)) {
+      return res.status(400).send("Invalid or missing city_id");
+    }
+    const area = await regService.getAreabyId(city_id);
+    res.json(area);
+  } catch (err) {
+    console.error("Error fetching area by city_id:", err);
+    res.status(500).json({ error: err.message || "Internal Server Error" });
   }
 };
 
