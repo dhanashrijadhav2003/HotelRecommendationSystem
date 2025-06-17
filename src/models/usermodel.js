@@ -54,65 +54,67 @@ exports.saveCity=(...citydata)=>{
   });
 };
 
-exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, filename) => {
+exports.saveHotelData = (
+  hotel_name,hotel_address,city_id,area_id,hotel_email,hotel_contact,filename,amenity_ids) => {
   return new Promise((resolve, reject) => {
-    // Check if city_id exists
-    db.query("select city_name from citymaster where city_id=?", [city_id], (err, result) => {
-      if (err) {
-        console.log("City fetch error:", err);
-        return reject("Failed to fetch city");
-      }
-      if (result.length === 0) {
-        console.log("City not found for id:", city_id);
-        return reject("Invalid city id");
-      }
+    // Validate city
+    db.query("SELECT city_name FROM citymaster WHERE city_id = ?", [city_id], (err, result) => {
+      if (err) return reject("Failed to fetch city");
+      if (result.length === 0) return reject("Invalid city ID");
 
-      // Check if area_id exists
-      db.query("select area_name from areamaster where area_id=?", [area_id], (err, arearesult) => {
-        if (err) {
-          console.log("Area fetch error:", err);
-          return reject("Failed to fetch area");
-        }
-        if (arearesult.length === 0) {
-          console.log("Area not found for id:", area_id);
-          return reject("Invalid area id");
-        }
+      // Validate area
+      db.query("SELECT area_name FROM areamaster WHERE area_id = ?", [area_id], (err, areaResult) => {
+        if (err) return reject("Failed to fetch area");
+        if (areaResult.length === 0) return reject("Invalid area ID");
 
-        // Insert into hotelmaster (fix typo here)
+        // Insert into hotelmaster
         db.query(
-          "insert into hotelmaster (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact) values (?, ?, ?, ?, ?, ?)",
+          "INSERT INTO hotelmaster (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact) VALUES (?, ?, ?, ?, ?, ?)",
           [hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact],
           (err, insertResult) => {
             if (err) {
-              console.log("Insert hotel error:", err.sqlMessage || err);
+              console.error("Hotel insert error:", err.sqlMessage || err);
               return reject("Insert hotel failed");
             }
 
-            db.query("select hotel_id from hotelmaster where hotel_name=? order by hotel_id desc limit 1",
-              [hotel_name],
-              (err,insertimgresult)=>{
-                if(err){
-                  reject("File not uploaded,hotel not added");
-                }
-                else{
-                  db.query("insert into hotelpicjoin (hotel_id,filename) values (?,?)",
-                    [insertimgresult[0].hotel_id,filename],
-                    (err,insertfileResult)=>{
-                      if(err){
-                        reject("Hotel addition failed...");
+            const hotel_id = insertResult.insertId; 
+
+            // Insert image
+            db.query(
+              "INSERT INTO hotelpicjoin (hotel_id, filename) VALUES (?, ?)",
+              [hotel_id, filename],
+              (err) => {
+                if (err) return reject("File not uploaded, hotel not added");
+
+                // Insert amenities (loop)
+                const insertAmenityPromises = amenity_ids.map((amenityId) => {
+                  return new Promise((res, rej) => {
+                    db.query(
+                      "INSERT INTO hotelamenitiesjoin (hotel_id, amenity_id) VALUES (?, ?)",
+                      [hotel_id, amenityId],
+                      (err) => {
+                        if (err) return rej(err); // Use rej, not reject from outer scope
+                        res();
                       }
-                      else{
-                        resolve("Hotel added successfully");
-                      }
-                      
-                    });
-                }
-              });
-          });
+                    );
+                  });
+                });
+
+                Promise.all(insertAmenityPromises)
+                  .then(() => resolve("Hotel and amenities added successfully"))
+                  .catch((err) => {
+                    console.error("Amenities insert error:", err);
+                    reject("Some amenities could not be inserted");
+                  });
+              }
+            );
+          }
+        );
       });
     });
   });
 };
+
 
 
 exports.saveArea = (area_name,city_id) => {
@@ -368,12 +370,27 @@ exports.deleteAmenityLogic = (amenity_id) => {
 exports.getHotelById = (hotel_id) => {
   return new Promise((resolve, reject) => {
     db.query(
-      " SELECT h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name, h.hotel_email,h.hotel_contact, h.rating FROM hotelmaster h JOIN citymaster c ON h.city_id = c.city_id JOIN areamaster a ON h.area_id = a.area_id WHERE hotel_id = ?",
+      " select h.hotel_id,h.hotel_name,h.hotel_address,c.city_name,a.area_name,h.hotel_email,h.hotel_contact,hp.filename from hotelmaster h inner join citymaster c on c.city_id=h.city_id inner join areamaster a on a.area_id=h.area_id inner join hotelpicjoin hp on h.hotel_id=hp.hotel_id; WHERE hotel_id = ?",
       [hotel_id],
       (err, result) => {
         if (err) return reject(err);
         if (result.length === 0) return reject("No hotel found");
         resolve(result[0]);
+      }
+    );
+  });
+};
+
+
+exports. getAreaByIdLogic= (city_id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "  select a.area_id,a.area_name from areamaster a inner join cityareajoin c on a.area_id=c.area_id where c.city_id=?",
+      [city_id],
+      (err, result) => {
+        if (err) return reject(err);
+        if (result.length === 0) return reject("No city found");
+        resolve(result);
       }
     );
   });
