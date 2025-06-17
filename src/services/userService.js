@@ -119,4 +119,11 @@ exports.updateHotelLogic = (hotel_id, data) => {
 };
 
 
+exports.getCityByIdLogic = (city_id) => {
+  return regModel.getCityById(city_id);
+};
+
+exports.updateCityLogic = (city_id, city_name, pincode) => {
+  return regModel.updateCity(city_id, city_name, pincode);
+};
 
