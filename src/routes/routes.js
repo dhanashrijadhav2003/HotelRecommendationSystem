@@ -36,6 +36,8 @@ router.get("/deleteCity", controller.deleteCityCtrl);
 
 router.get("/viewCity",controller.viewCityCtrl);//
 
+router.get("/deleteArea", controller.deleteAreaCtrl);
+
 router.get("/addArea",controller.addAreaFormCtrl);
 
 router.post("/addArea",controller.addAreaCtrl);//
@@ -50,6 +52,8 @@ router.get("/addAmenityForm", controller.renderAddAmenityForm);
 
 
 router.get("/viewAmenity",controller.viewAmenityCtrl);//
+
+router.get("/deleteAmenity", controller.deleteAmenityCtrl);
 
 router.get("/addHotel",controller.addHotelFormCtrl);
 

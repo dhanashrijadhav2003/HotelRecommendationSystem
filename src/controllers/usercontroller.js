@@ -259,6 +259,42 @@ exports.deleteCityCtrl=async(req,res)=>{
 };
 
 
+exports.deleteAreaCtrl=async(req,res)=>{
+  const area_id=parseInt(req.query.area_id);
+  console.log(req.body);
+  if(isNaN(area_id)){
+    console.log("Inavlid area_id_id:",req.params.area_id);
+    return res.status(400).send("Invalid area id");
+  }
+  try{
+    await regService.deleteAreaLogic(area_id);
+    res.redirect("/viewArea");
+  }
+  catch(err){
+    console.error("Error deleting area:",err);
+    res.status(500).send("Failed to delete area");
+  }
+};
+
+
+exports.deleteAmenityCtrl=async(req,res)=>{
+  const amenity_id=parseInt(req.query.amenity_id);
+  console.log(req.body);
+  if(isNaN(amenity_id)){
+    console.log("Inavlid amenity_id:",req.params.amenity_id);
+    return res.status(400).send("Invalid amenity id");
+  }
+  try{
+    await regService.deleteAmenityLogic(amenity_id);
+    res.redirect("/viewAmenity");
+  }
+  catch(err){
+    console.error("Error deleting amenity:",err);
+    res.status(500).send("Failed to delete amenity");
+  }
+};
+
+
 exports.loadHotelForUpdate = async (req, res) => {
   const hotel_id = parseInt(req.query.hotel_id);
 

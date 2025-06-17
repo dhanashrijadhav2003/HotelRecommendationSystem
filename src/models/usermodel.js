@@ -279,7 +279,7 @@ exports.deleteCity=(city_id)=>{
         db.query("select * from citymaster",(err1,result1)=>{
             if(err1){
               console.error("DB error while fetching updated city list:", err1);
-              return resolve("Hotel deleted, but failed to fetch updated city list.");
+              return resolve("City deleted, but failed to fetch updated city list.");
              }
              console.table(result1); // Logs to your Node.js console
         return resolve("city deleted successfully and city list updated in console.");
@@ -287,6 +287,49 @@ exports.deleteCity=(city_id)=>{
       });
   });
 };
+
+exports.deleteAreaLogic = (area_id) => {
+  return new Promise((resolve, reject) => {
+    console.log("Area ID:", area_id); 
+
+    db.query("DELETE FROM areamaster WHERE area_id = ?", [area_id], (err, result) => {
+      if (err) {
+        console.log("Error during deleting area:", err);
+        return reject("Delete failed");
+      }
+
+      if (result.affectedRows === 0) {
+        return reject(`No area found with id: ${area_id}`);
+      }
+
+      console.log("Area deleted successfully");
+      return resolve("Area deleted successfully");
+    });
+  });
+};
+
+
+
+exports.deleteAmenityLogic = (amenity_id) => {
+  return new Promise((resolve, reject) => {
+    console.log("Amenity ID:", amenity_id); 
+
+    db.query("DELETE FROM  amenities WHERE amenity_id = ?", [amenity_id], (err, result) => {
+      if (err) {
+        console.log("Error during deleting amenity:", err);
+        return reject("Delete failed");
+      }
+
+      if (result.affectedRows === 0) {
+        return reject(`No amenity found with id: ${amenity_id}`);
+      }
+
+      console.log("Amenity deleted successfully");
+      return resolve("Amenity deleted successfully");
+    });
+  });
+};
+
 
 
 exports.getHotelById = (hotel_id) => {

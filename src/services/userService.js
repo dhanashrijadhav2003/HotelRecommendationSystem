@@ -91,6 +91,14 @@ exports.deleteCityLogic=(city_id)=>{
   return regModel.deleteCity(city_id);
 };
 
+exports.deleteAreaLogic=(area_id)=>{
+  return regModel.deleteAreaLogic(area_id);
+};
+
+exports.deleteAmenityLogic=(amenity_id)=>{
+  return regModel.deleteAmenityLogic(amenity_id);
+};
+
 exports.getHotelById = (hotel_id) => {
   return regModel.getHotelById(hotel_id);
 };
@@ -98,7 +106,7 @@ exports.getHotelById = (hotel_id) => {
 
 exports.updateHotelLogic = (hotel_id, data) => {
   return regModel.updateHotelInDB(hotel_id, data);
-
+  
 };
 
 
