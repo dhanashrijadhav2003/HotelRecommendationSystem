@@ -173,7 +173,7 @@ exports.viewCustomerCtrl=async(req,res)=>{
   const cust=await regService.getCustomer();
   console.log("Customer:");
   console.table(cust);
-  res.json(cust);
+  //res.json(cust);
   res.render("viewUser",{data:cust});
   }
   catch(err){
