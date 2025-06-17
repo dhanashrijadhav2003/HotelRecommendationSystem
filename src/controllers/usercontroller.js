@@ -478,20 +478,28 @@ exports.loadUpdateCityForm = async (req, res) => {
 
 exports.finalCityUpdate = async (req, res) => {
   try {
-    const { city_id, city_name, pincode } = req.body;
+    let { city_id, city_name, pincode } = req.body;
+
+    city_id = parseInt(city_id);
+    if (isNaN(city_id)) {
+      return res.status(400).send("Invalid city ID.");
+    }
+
+    console.log("Update request:", city_id, city_name, pincode);
+
     await regService.updateCityLogic(city_id, city_name, pincode);
 
     const cities = await regService.getAllCities();
-    console.log("city updated");
-    console.log("city updated");
-  
+    res.json(cities);
+    console.table(cities);
+    //res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
 
-    res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
   } catch (err) {
     console.error("Error updating city:", err);
     res.status(500).send("Failed to update city.");
   }
 };
+
 
 
 exports.loadAmenityForUpdate = async (req, res) => {
