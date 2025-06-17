@@ -468,7 +468,7 @@ exports.loadUpdateCityForm = async (req, res) => {
     console.table(city);
     res.json(city);
 
-   // res.render("updateCity", { erecord: city, msg: "" });
+    res.render("UpdateCity", { erecord: city, msg: "" });
   } catch (err) {
     console.error("Error loading city for update:", err);
     res.status(500).send("Failed to load city.");
@@ -484,14 +484,52 @@ exports.finalCityUpdate = async (req, res) => {
     const cities = await regService.getAllCities();
     console.log("city updated");
     console.log("city updated");
-    res.json(cities);
+    //res.json(cities);
 
-   // res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
+    res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
   } catch (err) {
     console.error("Error updating city:", err);
     res.status(500).send("Failed to update city.");
   }
 };
 
+
+exports.loadAmenityForUpdate = async (req, res) => {
+  try {
+    const amenity_id = parseInt(req.query.amenity_id);
+    if (isNaN(amenity_id)) {
+      return res.status(400).send("Invalid amenity ID.");
+    }
+
+    const amenity = await regService.getAmenityByIdLogic(amenity_id);
+
+    if (!amenity) {
+      return res.status(404).send("Amenity not found.");
+    }
+
+    // Send amenity data as JSON (for Postman or frontend)
+    //res.json({ amenity });
+    res.render("UpdateAmenity", { erecord: amenitymenity, msg: "" });
+  } catch (err) {
+    console.error("Error loading amenity:", err);
+    res.status(500).send("Failed to load amenity.");
+  }
+};
+
+
+exports.finalAmenityUpdate = async (req, res) => {
+  try {
+    const { amenity_id, amenity_name } = req.body;
+    if (!amenity_id || !amenity_name) {
+      return res.status(400).send("Missing fields");
+    }
+    const amenities = await regService.getAllAmenities();
+    await regService.updateAmenityLogic(amenity_id, amenity_name);
+    res.render("viewCity", { data: amenities, msg: "✅ amenity updated successfully!" });
+  } catch (err) {
+    console.error("Error updating amenity:", err);
+    res.status(500).send("❌ Failed to update amenity");
+  }
+};
 
 

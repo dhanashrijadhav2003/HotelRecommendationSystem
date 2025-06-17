@@ -127,3 +127,10 @@ exports.updateCityLogic = (city_id, city_name, pincode) => {
   return regModel.updateCity(city_id, city_name, pincode);
 };
 
+exports.getAmenityByIdLogic = (amenity_id) => {
+  return regModel.getAmenityById(amenity_id);
+};
+
+exports.updateAmenityLogic = (amenity_id, amenity_name) => {
+  return regModel.updateAmenity(amenity_id, amenity_name);
+};

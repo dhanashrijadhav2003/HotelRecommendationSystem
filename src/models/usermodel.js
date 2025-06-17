@@ -464,3 +464,34 @@ exports.updateCity = (city_id, city_name, pincode) => {
   });
 };
 
+
+exports.getAmenityById = (amenity_id) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM amenities WHERE amenity_id = ?", [amenity_id], (err, result) => {
+      if (err) return reject(err);
+      resolve(result[0]); // return single amenity record
+    });
+  });
+};
+
+exports.updateAmenity = (amenity_id, amenity_name) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "UPDATE amenities SET amenity_name = ? WHERE amenity_id = ?",
+      [amenity_name, amenity_id],
+      (err, result) => {
+        if (err) return reject(err);
+
+        // Fetch updated amenity
+        db.query(
+          "SELECT * FROM amenities WHERE amenity_id = ?",
+          [amenity_id],
+          (err2, result2) => {
+            if (err2) return reject(err2);
+            resolve(result2[0]);
+          }
+        );
+      }
+    );
+  });
+};
