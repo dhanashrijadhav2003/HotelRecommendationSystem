@@ -466,7 +466,7 @@ exports.loadUpdateCityForm = async (req, res) => {
     const city = await regService.getCityByIdLogic(city_id);
     console.log("city by id:");
     console.table(city);
-    res.json(city);
+  
 
     res.render("UpdateCity", { erecord: city, msg: "" });
   } catch (err) {
@@ -484,7 +484,7 @@ exports.finalCityUpdate = async (req, res) => {
     const cities = await regService.getAllCities();
     console.log("city updated");
     console.log("city updated");
-    //res.json(cities);
+  
 
     res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
   } catch (err) {
@@ -507,8 +507,7 @@ exports.loadAmenityForUpdate = async (req, res) => {
       return res.status(404).send("Amenity not found.");
     }
 
-    // Send amenity data as JSON (for Postman or frontend)
-    //res.json({ amenity });
+    
     res.render("UpdateAmenity", { erecord: amenitymenity, msg: "" });
   } catch (err) {
     console.error("Error loading amenity:", err);
