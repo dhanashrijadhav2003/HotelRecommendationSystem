@@ -3,72 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registration Form</title>
-  <link rel="stylesheet" href="addhotel.css">
+  <title>Hotel Registration Form</title>
+  <link rel="stylesheet" href="addHotel.css" />
 </head>
 
 <body>
   <br>
   <div class="box">
-    <form name="frm" action="/addHotel" method="Post">
+    <form name="frm" action="/addHotel" method="POST" >
+	<h2 style="margin-bottom: 20px; color: black; text-align:center">Add Hotel</h2>
+      <div class="form-row">
+        <!-- Left Column -->
+	
+        <div class="form-column">
+          <div class="form-group">
+            <input type="text" name="hotel_name" id="hotelname" value="" placeholder="Enter Hotel Name" />
+          </div>
 
-      <div class="form-group">
-        <input type="text" name="hotel_name" id="hotelname" placeholder="Enter Hotel Name" />
-      </div>
+          <div class="form-group">
+            <input type="text" name="hotel_address" id="hoteladd" placeholder="Enter Hotel Address" />
+          </div>
 
-      <div class="form-group">
-        <input type="text" name="hotel_address" id="hoteladd" placeholder="Enter Hotel Address" />
-      </div>
+          <div class="form-group">
+            <input type="text" name="hotel_email" id="hotelemail" placeholder="Enter Email" />
+          </div>
 
-     <div class="form-group">
-          <select class="form-control" name="city_id" required>
-            <option value="">-- Select City --</option>
-            <% citymaster.forEach(city => { %>
-              <option value="<%= city.city_id %>"><%= city.city_name %></option>
-            <% }) %>
-          </select>
-        </div>       
+          <div class="form-group">
+            <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
+          </div>
+        </div>
 
-     <div class="form-group">
-          <select class="form-control" name="area_id" required>
-            <option value="">-- Select Area --</option>
-            <% areamaster.forEach(area => { %>
-              <option value="<%= area.area_id %>"><%= area.area_name %></option>
-            <% }) %>
-          </select>
-        </div>     
+        <!-- Right Column -->
+        <div class="form-column">
+          <div class="form-group">
+            <select class="form-control" name="city_id" required>
+              <option value="">-- Select City --</option>
+              <% citymaster.forEach(city => { %>
+                <option value="<%= city.city_id %>"><%= city.city_name %></option>
+              <% }) %>
+            </select>
+          </div>
 
+          <div class="form-group">
+            <select class="form-control" name="area_id" required>
+              <option value="">-- Select Area --</option>
+              <% areamaster.forEach(area => { %>
+                <option value="<%= area.area_id %>"><%= area.area_name %></option>
+              <% }) %>
+            </select>
+          </div>
 
-	<div class="form-group">
-        <input type="text" name="hotel_email" id="hotelemail" placeholder="Enter Email" />
-      </div>
-
-
-
-	<div class="form-group">
-        <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
+          <div class="form-group">
+            <label for="imageUpload" style="color:black">Choose Hotel Image</label>
+            <input type="file" name="filename" id="imageUpload" accept="image/*" />
+            <img id="previewImage" src="#" alt="Preview" />
+          </div>
+        </div>
       </div>
 
       
-
+      <!-- Submit Button -->
       <div class="form-group">
-          <label for="imageUpload" style="color:black">Choose Hotel Image</label>
-          <input type="file" name="filename" id="imageUpload" accept="image/*" />
-          <img id="previewImage" src="#" alt="Preview" />
-      </div>
-
-
-
-      <div class="form-group">
-        <input type="submit" value="➕Add Hotel" />
+        <input type="submit" value="➕ Add Hotel" />
         <span id="h"></span>
       </div>
-      <span><%=msg%></span>
 
+
+      <span><%= msg %></span>
     </form>
   </div>
 
   <script src="validation.js"></script>
 </body>
 </html>
-<!--hi hello nnnnn-->
