@@ -101,6 +101,10 @@ router.get("/rating",controller.ratingCtrl);
 router.get('/updateCity',controller.loadUpdateCityForm);
 router.post('/finalCityUpdate',controller.finalCityUpdate);
 
+router.get("/updateAmenity", controller.loadAmenityForUpdate);
+router.post("/finalAmenityUpdate", controller.finalAmenityUpdate);
+
+
 
 router.get("/logout",controller.logoutCtrl);
 
