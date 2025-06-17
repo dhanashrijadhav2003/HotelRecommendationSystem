@@ -491,7 +491,7 @@ exports.finalCityUpdate = async (req, res) => {
 
     const cities = await regService.getAllCities();
     //res.json(cities);
-    //console.table(cities);
+    console.table(cities);
     res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
 
   } catch (err) {
@@ -532,7 +532,7 @@ exports.finalAmenityUpdate = async (req, res) => {
     }
     const amenities = await regService.getAllAmenities();
     await regService.updateAmenityLogic(amenity_id, amenity_name);
-    res.render("viewCity", { data: amenities, msg: "✅ amenity updated successfully!" });
+    res.render("viewAmenity", { data: amenities, msg: "✅ amenity updated successfully!" });
   } catch (err) {
     console.error("Error updating amenity:", err);
     res.status(500).send("❌ Failed to update amenity");
