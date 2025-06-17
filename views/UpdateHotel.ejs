@@ -5,39 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hotel Registration Form</title>
   <link rel="stylesheet" href="addHotel.css" />
-  <script src="fetchArea.js"></script>
+
+  <!-- Select2 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  
 </head>
 
 <body>
-  <br>
+
   <div class="box">
-    <form name="frm" action="/addHotel" method="POST" >
-	<h2 style="margin-bottom: 20px; color: black; text-align:center">Add Hotel</h2>
+    <form name="frm" action="/updateHotel" method="POST" enctype="multipart/form-data">
+      <h2>Add Hotel</h2>
+
       <div class="form-row">
         <!-- Left Column -->
-	
+
         <div class="form-column">
           <div class="form-group">
-            <input type="text" name="hotel_name" id="hotelname" value="" placeholder="Enter Hotel Name" />
+            <input type="text" name="hotel_name" placeholder="Enter Hotel Name" required />
           </div>
 
           <div class="form-group">
-            <input type="text" name="hotel_address" id="hoteladd" placeholder="Enter Hotel Address" />
+            <input type="text" name="hotel_address" placeholder="Enter Hotel Address" required />
           </div>
 
           <div class="form-group">
-            <input type="text" name="hotel_email" id="hotelemail" placeholder="Enter Email" />
+            <input type="email" name="hotel_email" placeholder="Enter Email" required />
           </div>
 
           <div class="form-group">
-            <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="form-column">
-          <div class="form-group">
-            <select class="form-control" name="city_id" id="ns" onchange="fetcharea(this.value)" required>
+            <select name="city_id" required>
               <option value="">-- Select City --</option>
               <% citymaster.forEach(city => { %>
                 <option value="<%= city.city_id %>"><%= city.city_name %></option>
@@ -46,27 +44,44 @@
           </div>
 
           <div class="form-group">
-            <select class="form-control" name="area_id" id="area" required>
+            <select name="area_id" required>
               <option value="">-- Select Area --</option>
               <% areamaster.forEach(area => { %>
                 <option value="<%= area.area_id %>"><%= area.area_name %></option>
               <% }) %>
             </select>
           </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="form-column">
+          <div class="form-group">
+            <label for="imageUpload">Choose Hotel Image</label>
+            <input type="file" name="filename" id="imageUpload" accept="image/*" required />
+            
+          </div>
 
           <div class="form-group">
-          <!--<label for="imageUpload" style="color:black">Choose Hotel Image</label>-->
-            <input type="file" name="filename" id="imageUpload" accept="image/*" placeholder="Choose Hotel Image" required/>
-            <img id="previewImage" src="#" alt="Preview" />
+            <label for="amenities">Select Amenities</label>
+            <select id="amenities" name="amenity_ids[]" multiple required>
+              <% amenities.forEach(amenity => { %>
+                <option value="<%= amenity.amenity_id %>"><%= amenity.amenity_name %></option>
+              <% }) %>
+            </select>
+            <small>(Select multiple amenities)</small>
           </div>
+
+          <div class="form-group">
+        <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
+      </div>
+
+
         </div>
       </div>
 
-      
-      <!-- Submit Button -->
-      <div class="form-group">
+      <div class="form-group submit-container">
         <input type="submit" value="➕ Update Hotel" />
-        <span id="h"></span>
+
       </div>
 
 
@@ -74,6 +89,35 @@
     </form>
   </div>
 
-  <script src="validation.js"></script>
+  <!-- Select2 JS CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <script>
+    // Preview uploaded image
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById("previewImage");
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "#";
+        preview.style.display = "none";
+      }
+    });
+
+    // Initialize Select2 for amenities
+    $(document).ready(function() {
+      $('#amenities').select2({
+        placeholder: "Select amenities",
+        allowClear: true
+      });
+    });
+  </script>
 </body>
 </html>

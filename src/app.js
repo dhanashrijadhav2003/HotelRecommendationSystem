@@ -14,6 +14,9 @@ app.use(express.urlencoded({extended:true}));
 
 app.use("/",router);
 
+app.use('/uploads', express.static('uploads'));
+
+
 app.use(cors());
 app.use(express.static("public"));
 app.set("view engine","ejs");

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Area</title>
+  <link rel="stylesheet" href="area.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="box">
+    <form action="/updateArea" method="POST">
+
+      <h2 style="margin-bottom: 20px; color: black; text-align:center;">Add Area</h2>
+
+      <div class="form-group">
+        <input type="text" name="area_name" placeholder="Enter Area Name" required />
+      </div>
+
+      <div class="form-group">
+          <select class="form-control" name="city_id" required>
+            <option value="">-- Select City --</option>
+            <% citymaster.forEach(city => { %>
+              <option value="<%= city.city_id %>"><%= city.city_name %></option>
+            <% }) %>
+          </select>
+        </div>
+        
+      <div class="form-group">
+        <input type="submit" value="➕ Update Area" />
+      </div>
+      <span><%=msg%></span>
+    </form>
+  </div>
+
+</body>
+</html>

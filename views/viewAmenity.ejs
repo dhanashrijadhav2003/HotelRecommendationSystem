@@ -132,6 +132,7 @@
     <tr>
       <th>AMENITY_ID</th>
       <th>AMENITY_NAME</th>
+      <th>UPDATE</th>
       <th>DELETE</th>
     </tr>
     </thead>
@@ -170,6 +171,7 @@
       row.innerHTML = `
         <td data-label="AMENITY_ID">${item.amenity_id}</td>
         <td data-label="AMENITY_NAME">${item.amenity_name}</td>
+        <td data-label="UPDATE"><a href="/updateAmenity?amenity_id=${item.amenity_id}">Update</a></td>
         <td data-label="DELETE"><a href="/deleteAmenity?amenity_id=${item.amenity_id}">Delete</a></td>
       `;
       wrapper.appendChild(row);

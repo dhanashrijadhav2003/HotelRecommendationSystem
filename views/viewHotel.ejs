@@ -176,6 +176,7 @@
       <th>AREA</th>
       <th>EMAIL</th>
       <th>CONTACT</th>
+      <th>AMENITY</th>
       <th>IMAGE</th>
       <th>DELETE</th>
       <th>UPDATE</th>
@@ -233,7 +234,8 @@
         <td data-label="AREA">${item.area_name}</td>
         <td data-label="EMAIL">${item.hotel_email}</td>
         <td data-label="CONTACT">${item.hotel_contact}</td>
-        <td data-label="IMAGE"><img src="${item.filename}" alt="Image" width="100" height="100"/></td>
+      
+        <td data-label="IMAGE"><img src="/uploads/${item.filename}" width="100" height="100"></td>
         <td data-label="DELETE"><a href="/deleteHotel?hotel_id=${item.hotel_id}">Delete</a></td>
         <td data-label="UPDATE"><a href="/updateHotel?hotel_id=${item.hotel_id}">Update</a></td>
         <td data-label="VIEW"><a href="#" onclick='openModal(${JSON.stringify(item)})'>View</a></td>
@@ -301,7 +303,8 @@
     document.getElementById('modalHotelName').innerText = hotel.hotel_name;
     document.getElementById('modalHotelAddress').innerText = hotel.hotel_address;
     document.getElementById('modalHotelContact').innerText = hotel.hotel_contact;
-    document.getElementById('modalHotelImage').src = hotel.filename;
+    
+    document.getElementById('modalHotelImage').src = '/uploads/' + hotel.filename;
     document.getElementById('hotelModal').style.display = 'flex';
   }
 

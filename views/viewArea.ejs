@@ -134,6 +134,7 @@
       <th>AREA_NAME</th>
       <th>CITY_NAME</th>
       <th>PINCODE</th>
+      <th>UPDATE</th>
       <th>DELETE</th>
     </tr>
     </thead>
@@ -174,6 +175,7 @@
         <td data-label="AREA_NAME">${item.area_name}</td>
         <td data-label="CITY_NAME">${item.city_name}</td>
         <td data-label="PINCODE">${item.pincode}</td>
+        <td data-label="UPDATE"><a href="/updateArea?area_id=${item.area_id}">Update</a></td>
         <td data-label="DELETE"><a href="/deleteArea?area_id=${item.area_id}">Delete</a></td>
       `;
       wrapper.appendChild(row);

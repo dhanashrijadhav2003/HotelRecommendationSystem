@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add City</title>
+  <link rel="stylesheet" href="city.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="box">
+    <form action="/updateCity" method="POST">
+
+      <h2 style="margin-bottom: 20px; color: black; text-align:center">Add City</h2>
+
+      <div class="form-group">
+        <input type="text" name="city_name" placeholder="Enter City Name" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="pincode" placeholder="Enter Pincode" required />
+      </div>
+             
+
+
+      <div class="form-group">
+        <input type="submit" value="➕ Update City" />
+      </div>
+      <span><%=msg%></span>
+    </form>
+  </div>
+
+</body>
+</html>
