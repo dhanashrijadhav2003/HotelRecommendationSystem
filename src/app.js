@@ -1,29 +1,32 @@
-let express=require("express");
-let app=express();
-let cookieParser=require("cookie-parser");
-let cors=require("cors");
-let dotenv=require("dotenv");
-let bodyParser=require("body-parser");
-let db=require("./config/db.js");
-let router=require("./routes/routes.js");
-//let hotelRoutes=require("./routes/hotel.routes");
+let express = require("express");
+let app = express();
+let cookieParser = require("cookie-parser");
+let cors = require("cors");
+let dotenv = require("dotenv");
+let db = require("./config/db.js");
+let router = require("./routes/routes.js");
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+// Load env variables at the very top
+dotenv.config();
 
+// Enable CORS before routes
+app.use(cors());
 
-app.use("/",router);
-
+// Serve static files from "public" and "uploads"
+app.use(express.static("public"));
 app.use('/uploads', express.static('uploads'));
 
+// Parse JSON and urlencoded bodies before routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(cors());
-app.use(express.static("public"));
-app.set("view engine","ejs");
+// Parse cookies before routes
 app.use(cookieParser());
 
-//app.use("/api",hotelRoutes);
+// Set EJS view engine
+app.set("view engine", "ejs");
 
+// Use routes AFTER all middleware
+app.use("/", router);
 
-dotenv.config();
-module.exports=app;
+module.exports = app;
