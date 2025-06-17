@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hotel Registration Form</title>
   <link rel="stylesheet" href="addHotel.css" />
-  <script src="/fetchArea.js"></script>
+  <script src="fetchArea.js"></script>
 </head>
 
 <body>
@@ -55,8 +55,8 @@
           </div>
 
           <div class="form-group">
-            <label for="imageUpload" style="color:black">Choose Hotel Image</label>
-            <input type="file" name="filename" id="imageUpload" accept="image/*"  required/>
+          <!--<label for="imageUpload" style="color:black">Choose Hotel Image</label>-->
+            <input type="file" name="filename" id="imageUpload" accept="image/*" placeholder="Choose Hotel Image" required/>
             <img id="previewImage" src="#" alt="Preview" />
           </div>
         </div>
@@ -65,7 +65,7 @@
       
       <!-- Submit Button -->
       <div class="form-group">
-        <input type="submit" value="➕ Add Hotel" />
+        <input type="submit" value="➕ Update Hotel" />
         <span id="h"></span>
       </div>
 
