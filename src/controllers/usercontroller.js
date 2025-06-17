@@ -490,9 +490,9 @@ exports.finalCityUpdate = async (req, res) => {
     await regService.updateCityLogic(city_id, city_name, pincode);
 
     const cities = await regService.getAllCities();
-    res.json(cities);
-    console.table(cities);
-    //res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
+    //res.json(cities);
+    //console.table(cities);
+    res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
 
   } catch (err) {
     console.error("Error updating city:", err);
