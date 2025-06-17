@@ -105,7 +105,7 @@ exports.addhotelCtrl = async (req, res) => {
   try {
     const cities = await regService.getAllCities();
     const areas = await regService.getAllArea();
-    const amenity = await regService.getAllAmenities();
+    const amenities = await regService.getAllAmenities();
 
     const {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact
@@ -115,7 +115,7 @@ exports.addhotelCtrl = async (req, res) => {
       hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, filename, amenity_ids
     );
 
-    res.render("addHotel", { citymaster: cities, areamaster: areas, amenities: amenity, msg: "Hotel added successfully" });
+    res.render("addHotel", { citymaster: cities, areamaster: areas, amenities: amenities, msg: "Hotel added successfully" });
 
   } catch (err) {
     console.error("Error adding hotel:", err);
@@ -123,9 +123,9 @@ exports.addhotelCtrl = async (req, res) => {
     // In case of error, fetch data again to populate form dropdowns
     const cities = await regService.getAllCities();
     const areas = await regService.getAllArea();
-    const amenity = await regService.getAllAmenities();
+    const amenities = await regService.getAllAmenities();
 
-    res.status(500).render('addHotel', { citymaster: cities, areamaster: areas, amenities: amenity, msg: 'Error adding hotel' });
+    res.status(500).render('addHotel', { citymaster: cities, areamaster: areas, amenities: amenities, msg: 'Error adding hotel' });
   }
 };
 
@@ -433,7 +433,9 @@ exports.logoutCtrl=(req,res)=>{
 exports.addHotelFormCtrl=async(req,res)=>{
    const cities = await regService.getAllCities();
     const areas = await regService.getAllArea();
-  res.render("addhotel.ejs",{citymaster:cities,areamaster:areas,msg:""});
+    const amenities = await regService.getAllAmenities();
+
+  res.render("addhotel.ejs",{citymaster:cities,areamaster:areas,amenities:amenities,msg:""});
 }
 /*
 exports.viewHotelFormCtrl=(req,res)=>{
