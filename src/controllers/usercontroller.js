@@ -78,15 +78,17 @@ exports.adminDashCtrl=(req,res)=>{
 
 exports.addhotelCtrl = async (req, res) => {
   console.log("Request body:",req.body);
-   const cities = await regService.getAllCities();
+  console.log(req.body.filename);
+  const filename = req.file?.filename || req.body.filename || null;
+  const cities = await regService.getAllCities();
   const areas = await regService.getAllArea();
   try {
     const {
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact
     } = req.body;
 
     const result = await regService.hotelSaveLogic(
-      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating
+      hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact,filename
     );
 
      res.render("addHotel",{citymaster:cities,areamaster:areas,msg:"Hotel added successfully"});
@@ -163,6 +165,19 @@ exports.viewCityCtrl=async(req,res)=>{
     res.render("viewCity",{data:city});
   }catch(err){
     console.log("Failed to fetch error:",err);
+  }
+};
+
+exports.viewCustomerCtrl=async(req,res)=>{
+  try{
+  const cust=await regService.getCustomer();
+  console.log("Customer:");
+  console.table(cust);
+  res.json(cust);
+  res.render("viewUser",{data:cust});
+  }
+  catch(err){
+    console.log("Failed to fetch customer error",err);
   }
 };
 

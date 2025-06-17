@@ -18,10 +18,10 @@ exports.getOriginalPassword = (username) => {
   return regModel.getPasswordFromDB(username);
 };
 
-exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating) => {
+exports.hotelSaveLogic = async (hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact,filename) => {
   try {
     const result = await regModel.saveHotelData(
-      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, rating
+      hotel_name, hotel_address, city_id, area_id,hotel_email, hotel_contact, filename
     );
     return result;
   } catch (err) {
@@ -83,6 +83,10 @@ exports.getAllAmenities = () => {
   return regModel.fetchAllAmenities();
 };
 
+exports.getCustomer=()=>{
+  return regModel.fetchAllCustomer();
+};
+
 exports.deleteHotelLogic = (hotel_id) => {
   return regModel.deleteHotelFromDB(hotel_id);
 };
@@ -106,7 +110,7 @@ exports.getHotelById = (hotel_id) => {
 
 exports.updateHotelLogic = (hotel_id, data) => {
   return regModel.updateHotelInDB(hotel_id, data);
-  
+
 };
 
 

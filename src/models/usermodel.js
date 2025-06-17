@@ -54,7 +54,7 @@ exports.saveCity=(...citydata)=>{
   });
 };
 
-exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating) => {
+exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, filename) => {
   return new Promise((resolve, reject) => {
     // Check if city_id exists
     db.query("select city_name from citymaster where city_id=?", [city_id], (err, result) => {
@@ -80,16 +80,35 @@ exports.saveHotelData = (hotel_name, hotel_address, city_id, area_id, hotel_emai
 
         // Insert into hotelmaster (fix typo here)
         db.query(
-          "insert into hotelmaster (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating) values (?, ?, ?, ?, ?, ?, ?)",
-          [hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, rating],
+          "insert into hotelmaster (hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact) values (?, ?, ?, ?, ?, ?)",
+          [hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact],
           (err, insertResult) => {
             if (err) {
               console.log("Insert hotel error:", err.sqlMessage || err);
               return reject("Insert hotel failed");
             }
-            resolve("Hotel added successfully...");
-          }
-        );
+
+            db.query("select hotel_id from hotelmaster where hotel_name=? order by hotel_id desc limit 1",
+              [hotel_name],
+              (err,insertimgresult)=>{
+                if(err){
+                  reject("File not uploaded,hotel not added");
+                }
+                else{
+                  db.query("insert into hotelpicjoin (hotel_id,filename) values (?,?)",
+                    [insertimgresult[0].hotel_id,filename],
+                    (err,insertfileResult)=>{
+                      if(err){
+                        reject("Hotel addition failed...");
+                      }
+                      else{
+                        resolve("Hotel added successfully");
+                      }
+                      
+                    });
+                }
+              });
+          });
       });
     });
   });
@@ -151,11 +170,11 @@ exports.saveAminity=(amenity_name) => {
 exports.fetchAllHotelsWithCityAndArea = () => {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name,
-             h.hotel_email, h.hotel_contact, h.rating
-      FROM hotelmaster h
-      JOIN citymaster c ON h.city_id = c.city_id
-      JOIN areamaster a ON h.area_id = a.area_id;
+       select h.hotel_id,h.hotel_name,h.hotel_address,c.city_name,a.area_name,
+       h.hotel_email,h.hotel_contact,hp.filename 
+       from hotelmaster h inner join citymaster c on c.city_id=h.city_id 
+       inner join areamaster a on a.area_id=h.area_id 
+       inner join hotelpicjoin hp on h.hotel_id=hp.hotel_id;
     `;
 
     db.query(query, (err, result) => {
@@ -226,6 +245,20 @@ exports.fetchAllAmenities=()=>{
       }
     });
   });
+};
+
+exports.fetchAllCustomer=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select u.userid,u.username,u.useremail,u.contact from usermaster u where u.type=?",["user"],(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  })
 };
 
 exports.deleteHotelFromDB = (hotel_id) => {
