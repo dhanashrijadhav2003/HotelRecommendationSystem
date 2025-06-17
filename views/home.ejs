@@ -37,7 +37,7 @@
     // Slideshow for amenities background
     const imagesForDiv = [
       "BanquetHall.avif", "ResortImg.jpg", "AllSuit.jpg", "Villa.jpg",
-      "Motel.jpeg", "guesthouse.jpg", "luxuryLodge.jpg","farmstay.jpg"
+      "Motel.jpeg", "guesthouse.jpg", "luxuryLodge.jpg","farmstay1.jpg"
     ];
 
     let currentIndex1 = 0;
@@ -148,7 +148,7 @@
     
       </div>
       <div class="amenities-content">
-        <h2>Alternative Accommodation</h2>
+        <h2>Accommodation</h2>
         <p>"We believe a great stay starts with great service, which is why we prioritize your comfort with well-appointed rooms, convenient facilities, and a warm, welcoming atmosphere."</p>
         <div class="amenities-grid">
           <div class="amenity">Boutique hotel</div>
@@ -209,5 +209,33 @@
       </div>
     </div>
   </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const scrollContainer = document.querySelector(".scroll-container");
+    let direction = 1; // 1 = right, -1 = left
+    const scrollSpeed = 5; // pixels per tick
+    const scrollInterval = 20; // ms between scroll steps
+
+    setInterval(() => {
+      if (!scrollContainer) return;
+
+      scrollContainer.scrollLeft += scrollSpeed * direction;
+
+      // Reverse direction at edges
+      if (
+        scrollContainer.scrollLeft + scrollContainer.offsetWidth >= scrollContainer.scrollWidth
+      ) {
+        direction = -1;
+      }
+
+      if (scrollContainer.scrollLeft <= 0) {
+        direction = 1;
+      }
+    }, scrollInterval);
+  });
+</script>
+
+
 </body>
 </html>

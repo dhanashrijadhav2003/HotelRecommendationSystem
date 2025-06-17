@@ -159,6 +159,19 @@
   </div>
 </div>
 
+<!-- Hotel Detail Modal -->
+<div id="hotelModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h4>Hotel Details</h4>
+    <p><strong>Hotel ID:</strong> <span id="modalHotelId"></span></p>
+    <p><strong>Hotel Name:</strong> <span id="modalHotelName"></span></p>
+    <p><strong>Address:</strong> <span id="modalHotelAddress"></span></p>
+    <p><strong>Contact:</strong> <span id="modalHotelContact"></span></p>
+    <p><strong>Image:</strong><br><img id="modalHotelImage" src="" alt="Hotel Image" style="max-width:100%; height:auto;"></p>
+  </div>
+</div>
+
 <script>
   // Ensure data is safely handled
 const data = <%- JSON.stringify(data || []) %>;
@@ -260,6 +273,7 @@ const data = <%- JSON.stringify(data || []) %>;
   }
 
   update();
+  
 </script>
 
 </body>
