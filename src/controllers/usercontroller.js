@@ -455,3 +455,43 @@ exports.addAreaFormCtrl=async(req,res)=>{
   const cities = await regService.getAllCities();
   res.render("area",{citymaster:cities,msg:""});
 };
+
+
+exports.loadUpdateCityForm = async (req, res) => {
+  try {
+    const city_id = parseInt(req.query.city_id);
+    if (isNaN(city_id)) {
+      return res.status(400).send("Invalid city ID.");
+    }
+    const city = await regService.getCityByIdLogic(city_id);
+    console.log("city by id:");
+    console.table(city);
+    res.json(city);
+
+   // res.render("updateCity", { erecord: city, msg: "" });
+  } catch (err) {
+    console.error("Error loading city for update:", err);
+    res.status(500).send("Failed to load city.");
+  }
+};
+
+
+exports.finalCityUpdate = async (req, res) => {
+  try {
+    const { city_id, city_name, pincode } = req.body;
+    await regService.updateCityLogic(city_id, city_name, pincode);
+
+    const cities = await regService.getAllCities();
+    console.log("city updated");
+    console.log("city updated");
+    res.json(cities);
+
+   // res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
+  } catch (err) {
+    console.error("Error updating city:", err);
+    res.status(500).send("Failed to update city.");
+  }
+};
+
+
+

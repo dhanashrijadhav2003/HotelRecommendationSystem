@@ -172,11 +172,27 @@ exports.saveAminity=(amenity_name) => {
 exports.fetchAllHotelsWithCityAndArea = () => {
   return new Promise((resolve, reject) => {
     const query = `
-       select h.hotel_id,h.hotel_name,h.hotel_address,c.city_name,a.area_name,
-       h.hotel_email,h.hotel_contact,hp.filename 
-       from hotelmaster h inner join citymaster c on c.city_id=h.city_id 
-       inner join areamaster a on a.area_id=h.area_id 
-       inner join hotelpicjoin hp on h.hotel_id=hp.hotel_id;
+       SELECT 
+    h.hotel_id,
+    h.hotel_name,
+    h.hotel_address,
+    c.city_name,
+    a.area_name,
+    h.hotel_email,
+    h.hotel_contact,
+    h.rating,
+    GROUP_CONCAT(DISTINCT am.amenity_name ORDER BY am.amenity_name SEPARATOR ', ') AS amenity_names,
+    hp.filename
+FROM hotelmaster h
+LEFT JOIN citymaster c ON h.city_id = c.city_id
+LEFT JOIN areamaster a ON h.area_id = a.area_id
+LEFT JOIN hotelamenitiesjoin ha ON h.hotel_id = ha.hotel_id
+LEFT JOIN amenities am ON ha.amenity_id = am.amenity_id
+LEFT JOIN hotelpicjoin hp ON h.hotel_id = hp.hotel_id
+GROUP BY 
+    h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name,
+    h.hotel_email, h.hotel_contact, h.rating, hp.filename;
+
     `;
 
     db.query(query, (err, result) => {
@@ -415,3 +431,36 @@ exports.updateHotelInDB = (hotel_id, data) => {
     });
   });
 };
+
+exports.getCityById = (city_id) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM citymaster WHERE city_id = ?", [city_id], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+exports.updateCity = (city_id, city_name, pincode) => {
+  return new Promise((resolve, reject) => {
+    // First, update the city
+    db.query(
+      "UPDATE citymaster SET city_name = ?, pincode = ? WHERE city_id = ?",
+      [city_name, pincode, city_id],
+      (err, result) => {
+        if (err) return reject(err);
+
+        // Now, fetch the updated city data
+        db.query(
+          "SELECT * FROM citymaster WHERE city_id = ?",
+          [city_id],
+          (err2, result2) => {
+            if (err2) return reject(err2);
+            resolve(result2[0]); // Return the updated city record
+          }
+        );
+      }
+    );
+  });
+};
+

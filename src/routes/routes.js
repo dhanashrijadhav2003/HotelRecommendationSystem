@@ -13,7 +13,8 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
 });
-const upload = multer({ storage });  
+const upload = multer({ storage }); 
+ 
 
 
 router.get("/",controller.homeCtrl);
@@ -96,6 +97,10 @@ router.get("/area",controller.areaCtrl);
 router.get("/customer",controller.customerCtrl);
 
 router.get("/rating",controller.ratingCtrl);
+
+router.get('/updateCity',controller.loadUpdateCityForm);
+router.post('/finalCityUpdate',controller.finalCityUpdate);
+
 
 router.get("/logout",controller.logoutCtrl);
 
