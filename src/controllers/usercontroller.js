@@ -507,8 +507,8 @@ exports.loadAmenityForUpdate = async (req, res) => {
       return res.status(404).send("Amenity not found.");
     }
 
-    
-    res.render("UpdateAmenity", { erecord: amenitymenity, msg: "" });
+
+    res.render("UpdateAmenity", { erecord: amenity, msg: "" });
   } catch (err) {
     console.error("Error loading amenity:", err);
     res.status(500).send("Failed to load amenity.");
