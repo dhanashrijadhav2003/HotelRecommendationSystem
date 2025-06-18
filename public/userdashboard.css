@@ -1,4 +1,5 @@
-/* Reset & Base Styles */
+
+    /* Reset & Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -8,16 +9,18 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f1f1f1;
-  height: auto;
+  height: 100vh;
   width: 100vw;
-  overflow: auto;
+  overflow: hidden;
 }
 
 /* Navbar */
 .navbar {
   width: 100%;
-  height: 60px;
-  background: linear-gradient(to right,#4B0082, #FFA500, #d5d575);
+  height: 60px; /* Chrome 10-25, Safari 5.1-6 */
+ background: linear-gradient(to right,#4B0082, #FFA500, #d5d575); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -197,27 +200,6 @@ body {
   color: #000;
 }
 
-/* Make logout button look like sidebar links */
-.sidebar-menu .logout-btn {
-  all: unset;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  display: inline-block;
-  width: 100%;
-  text-align: left;
-}
-
-.sidebar-menu li:hover .logout-btn {
-  color: #fff;
-}
-
-/* Optional: Keep button aligned like links */
-.sidebar-menu li button.nav-link {
-  text-align: left;
-}
-
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard-container {
@@ -236,7 +218,7 @@ body {
   }
 
   .iframe-wrapper {
-    height: 100vh; /* Adjusted height for mobile/tablet */
+    height: 60vh; /* Adjusted height for mobile/tablet */
   }
 
   .iframe-wrapper iframe {
@@ -276,3 +258,4 @@ body {
     font-size: 20px;
   }
 }
+  

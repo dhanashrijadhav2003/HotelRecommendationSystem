@@ -172,15 +172,7 @@ exports.saveAminity=(amenity_name) => {
 exports.fetchAllHotelsWithCityAndArea = () => {
   return new Promise((resolve, reject) => {
     const query = `
-       SELECT 
-    h.hotel_id,
-    h.hotel_name,
-    h.hotel_address,
-    c.city_name,
-    a.area_name,
-    h.hotel_email,
-    h.hotel_contact,
-    h.rating,
+       SELECT  h.hotel_id,h.hotel_name, h.hotel_address,c.city_name,a.area_name,h.hotel_email,h.hotel_contact,
     GROUP_CONCAT(DISTINCT am.amenity_name ORDER BY am.amenity_name SEPARATOR ', ') AS amenity_names,
     hp.filename
 FROM hotelmaster h
@@ -295,12 +287,19 @@ exports.deleteHotelFromDB = (hotel_id) => {
 
       // Optional: fetch updated hotel list (for debugging or logging)
       db.query(`
-        SELECT h.hotel_id, h.hotel_name, h.hotel_address, 
-               c.city_name, a.area_name, h.hotel_email, 
-               h.hotel_contact, h.rating 
-        FROM hotelmaster h 
-        JOIN citymaster c ON h.city_id = c.city_id 
-        JOIN areamaster a ON h.area_id = a.area_id
+        SELECT  h.hotel_id,h.hotel_name, h.hotel_address,c.city_name,a.area_name,h.hotel_email,h.hotel_contact,
+    GROUP_CONCAT(DISTINCT am.amenity_name ORDER BY am.amenity_name SEPARATOR ', ') AS amenity_names,
+    hp.filename
+FROM hotelmaster h
+LEFT JOIN citymaster c ON h.city_id = c.city_id
+LEFT JOIN areamaster a ON h.area_id = a.area_id
+LEFT JOIN hotelamenitiesjoin ha ON h.hotel_id = ha.hotel_id
+LEFT JOIN amenities am ON ha.amenity_id = am.amenity_id
+LEFT JOIN hotelpicjoin hp ON h.hotel_id = hp.hotel_id
+GROUP BY 
+    h.hotel_id, h.hotel_name, h.hotel_address, c.city_name, a.area_name,
+    h.hotel_email, h.hotel_contact, h.rating, hp.filename;
+
       `, (err1, result1) => {
         if (err1) {
           console.error("DB error while fetching updated hotel list:", err1);
@@ -386,11 +385,33 @@ exports.deleteAmenityLogic = (amenity_id) => {
 exports.getHotelById = (hotel_id) => {
   return new Promise((resolve, reject) => {
     db.query(
-      " select h.hotel_id,h.hotel_name,h.hotel_address,c.city_name,a.area_name,h.hotel_email,h.hotel_contact,hp.filename from hotelmaster h inner join citymaster c on c.city_id=h.city_id inner join areamaster a on a.area_id=h.area_id inner join hotelpicjoin hp on h.hotel_id=hp.hotel_id; WHERE hotel_id = ?",
+      `SELECT h.hotel_id, h.hotel_name, h.hotel_address,
+              c.city_name, a.area_name,
+              h.hotel_email, h.hotel_contact,
+              GROUP_CONCAT(DISTINCT am.amenity_name ORDER BY am.amenity_name SEPARATOR ', ') AS amenity_names,
+              hp.filename
+       FROM hotelmaster h
+       LEFT JOIN citymaster c ON h.city_id = c.city_id
+       LEFT JOIN areamaster a ON h.area_id = a.area_id
+       LEFT JOIN hotelamenitiesjoin ha ON h.hotel_id = ha.hotel_id
+       LEFT JOIN amenities am ON ha.amenity_id = am.amenity_id
+       LEFT JOIN hotelpicjoin hp ON h.hotel_id = hp.hotel_id
+       WHERE h.hotel_id = ?
+       GROUP BY h.hotel_id, h.hotel_name, h.hotel_address,
+                c.city_name, a.area_name,
+                h.hotel_email, h.hotel_contact, hp.filename`,
       [hotel_id],
       (err, result) => {
-        if (err) return reject(err);
-        if (result.length === 0) return reject("No hotel found");
+        if (err) {
+          console.error("SQL error while fetching hotel:", err);
+          return reject(err);
+        }
+
+        if (result.length === 0) {
+          console.warn("Hotel not found for ID:", hotel_id);
+          return resolve(null); // or reject("Hotel not found");
+        }
+
         resolve(result[0]);
       }
     );
@@ -493,5 +514,124 @@ exports.updateAmenity = (amenity_id, amenity_name) => {
         );
       }
     );
+  });
+};
+
+
+
+exports.getAreaById = (area_id) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM areamaster WHERE area_id = ?", [area_id], (err, result) => {
+      if (err) return reject(err);
+      resolve(result[0]);
+    });
+  });
+};
+
+exports.updateArea = (area_id, area_name, city_id) => {
+  return new Promise((resolve, reject) => {
+    // Step 1: Update area name
+    db.query("UPDATE areamaster SET area_name = ? WHERE area_id = ?", [area_name, area_id], (err, result) => {
+      if (err) return reject(err);
+
+      // Step 2: Update city-area join
+      db.query("UPDATE cityareajoin SET city_id = ? WHERE area_id = ?", [city_id, area_id], (err2) => {
+        if (err2) return reject(err2);
+
+        // Step 3: Fetch updated area record (including city)
+        const query = `
+          SELECT a.area_id, a.area_name, c.city_id, c.city_name
+          FROM areamaster a
+          JOIN cityareajoin ca ON a.area_id = ca.area_id
+          JOIN citymaster c ON ca.city_id = c.city_id
+          WHERE a.area_id = ?
+        `;
+        db.query(query, [area_id], (err3, result3) => {
+          if (err3) return reject(err3);
+          resolve(result3[0]); // return the updated area record with city
+        });
+      });
+    });
+  });
+};
+
+
+exports.updateHotelData = (
+  hotel_id, hotel_name, hotel_address, city_id, area_id,
+  hotel_email, hotel_contact, filename, amenity_ids
+) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM citymaster WHERE city_id = ?", [city_id], (err, cityResult) => {
+      if (err) return reject("Failed to fetch city");
+      if (cityResult.length === 0) return reject("Invalid city ID");
+
+      db.query("SELECT * FROM areamaster WHERE area_id = ?", [area_id], (err, areaResult) => {
+        if (err) return reject("Failed to fetch area");
+        if (areaResult.length === 0) return reject("Invalid area ID");
+
+        db.query(
+          "UPDATE hotelmaster SET hotel_name = ?, hotel_address = ?, city_id = ?, area_id = ?, hotel_email = ?, hotel_contact = ? WHERE hotel_id = ?",
+          [hotel_name, hotel_address, city_id, area_id, hotel_email, hotel_contact, hotel_id],
+          (err) => {
+            if (err) return reject("Failed to update hotel");
+
+            const imageUpdate = filename
+              ? new Promise((res, rej) => {
+                  db.query("UPDATE hotelpicjoin SET filename = ? WHERE hotel_id = ?", [filename, hotel_id], (err) => {
+                    if (err) return rej("Failed to update hotel image");
+                    res();
+                  });
+                })
+              : Promise.resolve();
+
+            const amenityUpdate = new Promise((res, rej) => {
+              db.query("DELETE FROM hotelamenitiesjoin WHERE hotel_id = ?", [hotel_id], (err) => {
+                if (err) return rej("Failed to clear old amenities");
+
+                const promises = amenity_ids.map((aid) => {
+                  return new Promise((r, rj) => {
+                    db.query(
+                      "INSERT INTO hotelamenitiesjoin (hotel_id, amenity_id) VALUES (?, ?)",
+                      [hotel_id, aid],
+                      (err) => {
+                        if (err) return rj(err);
+                        r();
+                      }
+                    );
+                  });
+                });
+
+                Promise.all(promises)
+                  .then(() => res())
+                  .catch(() => rej("❌ Some amenities failed to update"));
+              });
+            });
+
+            Promise.all([imageUpdate, amenityUpdate])
+              .then(() => {
+                const query = `
+                  SELECT h.hotel_id, h.hotel_name, h.hotel_address, h.hotel_email, h.hotel_contact,
+                         c.city_name, a.area_name, MAX(p.filename) AS filename,
+                         GROUP_CONCAT(am.amenity_name) AS amenities
+                  FROM hotelmaster h
+                  JOIN citymaster c ON h.city_id = c.city_id
+                  JOIN areamaster a ON h.area_id = a.area_id
+                  LEFT JOIN hotelpicjoin p ON h.hotel_id = p.hotel_id
+                  LEFT JOIN hotelamenitiesjoin ha ON h.hotel_id = ha.hotel_id
+                  LEFT JOIN amenities am ON ha.amenity_id = am.amenity_id
+                  WHERE h.hotel_id = ?
+                  GROUP BY h.hotel_id;
+                `;
+
+                db.query(query, [hotel_id], (err, result) => {
+                  if (err) return reject("Failed to fetch updated hotel");
+                  resolve(result[0]);
+                });
+              })
+              .catch(reject);
+          }
+        );
+      });
+    });
   });
 };

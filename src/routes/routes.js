@@ -35,11 +35,15 @@ router.get("/getareadata",controller.viewAreabyIdCtrl);
 
 router.get("/deleteHotel", controller.deleteHotelCtrl);
 
-router.get("/updatehotel", controller.loadHotelForUpdate);
 
-router.post("/finalupdatehotel", controller.finalHotelUpdate);
 
-router.get("/getHotelById",controller.getHotelByIdCtrl);
+
+
+
+
+
+
+
 
 router.get("/addCity",controller.addCityFormCtrl);
 
@@ -104,9 +108,24 @@ router.post('/finalCityUpdate',controller.finalCityUpdate);
 router.get("/updateAmenity", controller.loadAmenityForUpdate);
 router.post("/finalAmenityUpdate", controller.finalAmenityUpdate);
 
+router.get("/updateArea", controller.loadAreaForUpdate);
+router.post("/finalAreaUpdate", controller.finalAreaUpdate);
+
+router.get("/updateHotel",controller.getHotelByIdCtrl);
+router.post("/finalHotelUpdate", upload.single("filename"), controller.finalHotelUpdate);
 
 
-router.get("/logout",controller.logoutCtrl);
+//usesr routers
+router.get("/userdash",controller.userDashCtrl);
+
+router.get("/userhotelview",controller.userHoteViewCtrl);
+
+
+
+
+
+
+router.post("/logout", controller.logoutAPI);
 
 module.exports=router;
 //hi

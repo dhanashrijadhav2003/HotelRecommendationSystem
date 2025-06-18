@@ -24,48 +24,46 @@
           <p><strong>Name:</strong> John Doe</p>
           <p><strong>Email:</strong> admin@example.com</p>
           <p><strong>Role:</strong> Admin</p>
-          <a href="/logout">Logout</a>
+          <button class="logout-btn">Logout</button>
         </div>
       </div>
     </div>
   </nav>
 
-<hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
+  <hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
 
   <!-- Page Layout -->
   <div class="dashboard-container">
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
       <ul class="sidebar-menu">
-	<li><i class="fa fa-hotel"></i><a class="nav-link active" onclick="loadPage('/hotelDash', this)">Hotels</a></li>
-	<li><i class="fa fa-suitcase"></i><a class="nav-link active" onclick="loadPage('/amenityDash', this)">Amenities</a></li>
-	<li><i class="fa fa-building"></i><a class="nav-link active" onclick="loadPage('/cityDash', this)">City</a></li>
-	<li><i class="fa fa-map-marker"></i><a class="nav-link active" onclick="loadPage('/areaDash', this)">Area</a></li>
-	<li><i class="fa fa-users"></i><a class="nav-link active" onclick="loadPage('/viewCustomer', this)">Customer</a></li>
-	<li><i class="fa fa-star"></i><a class="nav-link active" onclick="loadPage('', this)">Rating & Reviews</a></li>
-	<li><i class="fa fa-sign-out"></i><a class="nav-link active" onclick="loadPage('', this)">Logout</a></li>
+        <li><i class="fa fa-hotel"></i><a class="nav-link" onclick="loadPage('/hotelDash', this)">Hotels</a></li>
+        <li><i class="fa fa-suitcase"></i><a class="nav-link" onclick="loadPage('/amenityDash', this)">Amenities</a></li>
+        <li><i class="fa fa-building"></i><a class="nav-link" onclick="loadPage('/cityDash', this)">City</a></li>
+        <li><i class="fa fa-map-marker"></i><a class="nav-link" onclick="loadPage('/areaDash', this)">Area</a></li>
+        <li><i class="fa fa-users"></i><a class="nav-link" onclick="loadPage('/viewCustomer', this)">Customer</a></li>
+        <li><i class="fa fa-star"></i><a class="nav-link" onclick="loadPage('/ratingReviews', this)">Rating & Reviews</a></li>
+        <li><i class="fa fa-sign-out"></i><button class="nav-link logout-btn">Logout</button></li>
       </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="main-body">
       <div class="iframe-wrapper">
-      <iframe id="contentFrame" src="" scrolling="no"></iframe>
-    </div>
+        <iframe id="contentFrame" src="" scrolling="no"></iframe>
+      </div>
     </main>
-    
   </div>
 
-  <!-- JavaScript for Profile Dropdown -->
+  <!-- JavaScript -->
   <script>
     function toggleProfileMenu() {
       const menu = document.getElementById("profileMenu");
       menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
 
-    // Hide menu on outside click
-    document.addEventListener("click", function(event) {
+    document.addEventListener("click", function (event) {
       const profileContainer = document.querySelector(".profile-container");
       const profileMenu = document.getElementById("profileMenu");
       if (!profileContainer.contains(event.target)) {
@@ -73,18 +71,35 @@
       }
     });
 
-
-	function loadPage(page, clickedLink) {
-      		document.getElementById('contentFrame').src = page;
-
-      // Handle active class
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
+    function loadPage(page, clickedLink) {
+      document.getElementById("contentFrame").src = page;
+      document.querySelectorAll(".nav-link").forEach(link => {
+        link.classList.remove("active");
       });
-      clickedLink.classList.add('active');
+      clickedLink.classList.add("active");
     }
 
+    // ✅ Logout Function Using /logout POST
+    document.querySelectorAll(".logout-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        fetch("/logout", {
+          method: "POST",
+          credentials: "include",
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Logout failed");
+          return res.json();
+        })
+        .then(data => {
+          console.log(data.message);
+          window.location.href = "/login";
+        })
+        .catch(err => {
+          console.error("Logout failed:", err);
+          alert("Logout failed. Please try again.");
+        });
+      });
+    });
   </script>
 </body>
 </html>
-<!--hii-->
