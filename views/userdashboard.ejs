@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+
+  <!-- Font Awesome & Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="userdashboard.css">
+  
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <h3>User Panel</h3>
+    </div>
+    <div class="navbar-right">
+      <div class="profile-container" onclick="toggleProfileMenu()">
+        <i class="fa fa-user-circle-o profile-icon"></i>
+        <div class="profile-menu" id="profileMenu">
+          <p><strong>Name:</strong> John Doe</p>
+          <p><strong>Email:</strong> admin@example.com</p>
+          <p><strong>Role:</strong> Admin</p>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
+
+  <!-- Page Layout -->
+  <div class="dashboard-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <ul class="sidebar-menu">
+	    <li><i class="fa fa-hotel"></i><a class="nav-link active" onclick="loadPage('/userhotelview', this)">View Hotels</a></li>
+	    <li><i class="fa fa-suitcase"></i><a class="nav-link active" onclick="loadPage('/hotelpicDash', this)">Booking</a></li>
+	    <li><i class="fa fa-star"></i><a class="nav-link active" onclick="loadPage('/review', this)">Rating & Reviews</a></li>
+	    <li><i class="fa fa-sign-out"></i><a class="nav-link active" onclick="loadPage('', this)">Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-body">
+      <div class="iframe-wrapper">
+      <iframe id="contentFrame" src="" scrolling="no"></iframe>
+    </div>
+    </main>
+    
+  </div>
+
+  <!-- JavaScript for Profile Dropdown -->
+  <script>
+    function toggleProfileMenu() {
+      const menu = document.getElementById("profileMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Hide menu on outside click
+    document.addEventListener("click", function(event) {
+      const profileContainer = document.querySelector(".profile-container");
+      const profileMenu = document.getElementById("profileMenu");
+      if (!profileContainer.contains(event.target)) {
+        profileMenu.style.display = "none";
+      }
+    });
+
+
+	function loadPage(page, clickedLink) {
+      		document.getElementById('contentFrame').src = page;
+
+      // Handle active class
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      clickedLink.classList.add('active');
+    }
+
+  </script>
+</body>
+</html>
+<!--hii-->

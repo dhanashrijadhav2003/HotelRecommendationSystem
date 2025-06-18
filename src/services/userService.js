@@ -113,10 +113,11 @@ exports.getAreabyId=(city_id) => {
 };
 
 
-exports.updateHotelLogic = (hotel_id, data) => {
-  return regModel.updateHotelInDB(hotel_id, data);
 
-};
+
+
+
+
 
 
 exports.getCityByIdLogic = (city_id) => {
@@ -133,4 +134,21 @@ exports.getAmenityByIdLogic = (amenity_id) => {
 
 exports.updateAmenityLogic = (amenity_id, amenity_name) => {
   return regModel.updateAmenity(amenity_id, amenity_name);
+};
+
+exports.getAreaByIdLogic = (area_id) => {
+  return regModel.getAreaById(area_id);
+};
+
+exports.updateAreaLogic = (area_id, area_name, city_id) => {
+  return regModel.updateArea(area_id, area_name, city_id);
+};
+
+
+exports.updateHotelLogic = (
+  hotel_id, hotel_name, hotel_address,city_id, area_id, hotel_email, hotel_contact, filename,amenity_ids
+) => {
+  return regModel.updateHotelData(
+    hotel_id, hotel_name,hotel_address,city_id,area_id,hotel_email,hotel_contact,filename,amenity_ids
+  );
 };

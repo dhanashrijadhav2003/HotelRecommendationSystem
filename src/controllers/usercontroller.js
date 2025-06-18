@@ -58,10 +58,10 @@ exports.validateUser = async (req, res) => {
 
       if (user.type && user.type.toLowerCase().trim()==="admin" ) {
         return res.redirect("/admindash");
-      } else {
+      } else if(user.type && user.type.toLowerCase().trim()==="user") {
         console.log(user);
-        return res.send("Login successful. You are not admin.");
-        // Or redirect to a user dashboard
+        return res.redirect("/userdash");
+       
       }
     } else {
       return res.send("Incorrect password");
@@ -74,6 +74,10 @@ exports.validateUser = async (req, res) => {
 
 exports.adminDashCtrl=(req,res)=>{
   res.render("Admindashboard.ejs");
+}
+
+exports.userDashCtrl=(req,res)=>{
+  res.render("userdashboard.ejs");
 }
 
 exports.addhotelCtrl = async (req, res) => {
@@ -272,13 +276,20 @@ exports.getHotelByIdCtrl = async (req, res) => {
     if (isNaN(hotel_id)) {
       return res.status(400).send("Invalid or missing hotel_id");
     }
+    const cities = await regService.getAllCities();
+    const areas = await regService.getAllArea();
+    const amenities = await regService.getAllAmenities();
     const hotel = await regService.getHotelById(hotel_id);
-    console.log("Hotel by id:");
-    console.table(hotel);
-    res.json(hotel);
+    if (!hotel) {
+      return res.status(404).send("Hotel not found");
+      
+    }
+
+    console.log("Hotel fetched successfully:", hotel);
+    res.json(hotel); // For Postman / frontend
   } catch (err) {
-    console.error("Failed to fetch hotel by id:", err);
-    res.status(500).send("Failed to fetch hotel by id");
+    console.error("❌ Failed to load hotel for update:", err);
+    res.status(500).send("Failed to load hotel for update");
   }
 };
 
@@ -356,36 +367,7 @@ exports.deleteAmenityCtrl=async(req,res)=>{
 };
 
 
-exports.loadHotelForUpdate = async (req, res) => {
-  const hotel_id = parseInt(req.query.hotel_id);
 
-  if (isNaN(hotel_id)) return res.status(400).send("Invalid hotel_id");
-
-  try {
-    const hotel = await regService.getHotelById(hotel_id);
-    const cities = await regService.getAllCities();
-    const areas = await regService.getAllArea();
-
-    //res.render("updatehotel.ejs", { hotel, cities, areas });
-  } catch (err) {
-    console.error("Error loading hotel:", err);
-    res.status(500).send("Failed to load hotel for update");
-  }
-};
-
-exports.finalHotelUpdate = async (req, res) => {
-  const {hotel_id,hotel_name,hotel_address,hotel_email,hotel_contact,rating,city_id,area_id} = req.body;
-
-  try {
-    await regService.updateHotelLogic(hotel_id, {hotel_name,hotel_address,hotel_email,hotel_contact,rating,city_id,area_id });
-
-    const hotels = await regService.getAllHotelsForView();
-    //res.render("viewhotel.ejs", { data: hotels });
-  } catch (err) {
-    console.error("Error updating hotel:", err);
-    res.status(500).send("Failed to update hotel");
-  }
-};
 
 
 
@@ -479,7 +461,7 @@ exports.loadUpdateCityForm = async (req, res) => {
 exports.finalCityUpdate = async (req, res) => {
   try {
     let { city_id, city_name, pincode } = req.body;
-
+    console.log(req.body);
     city_id = parseInt(city_id);
     if (isNaN(city_id)) {
       return res.status(400).send("Invalid city ID.");
@@ -540,3 +522,101 @@ exports.finalAmenityUpdate = async (req, res) => {
 };
 
 
+exports.loadAreaForUpdate = async (req, res) => {
+  try {
+    const area_id = parseInt(req.query.area_id);
+    if (isNaN(area_id)) {
+      return res.status(400).send("Invalid area ID.");
+    }
+
+    const area = await regService.getAreaByIdLogic(area_id);
+    const cities = await regService.getAllCities(); // optional: if you want to show city dropdown
+
+    if (!area) {
+      return res.status(404).send("Area not found.");
+    }
+    const areacity=await regService.getCityArea();
+    res.json(areacity);
+    console.table(areacity);
+  
+    //res.render("UpdateArea", { erecord: area, cities, msg: "" });
+  } catch (err) {
+    console.error("Error loading area:", err);
+    res.status(500).send("Failed to load area.");
+  }
+};
+
+exports.finalAreaUpdate = async (req, res) => {
+  try {
+    const { area_id, area_name, city_id } = req.body;
+    if (!area_id || !area_name || !city_id) {
+      return res.status(400).send("Missing fields");
+    }
+
+    await regService.updateAreaLogic(area_id, area_name, city_id);
+    const areas = await regService.getAllArea(); // for updated list
+    const areacity=await regService.getCityArea();
+    res.json(areacity);
+    console.table(areacity);
+    console.log("Area updated");
+    //res.render("viewArea", { data: areas, msg: "✅ Area updated successfully!" });
+  } catch (err) {
+    console.error("Error updating area:", err);
+    res.status(500).send("❌ Failed to update area");
+  }
+};
+
+
+exports.finalHotelUpdate = async (req, res) => {
+  try {
+    let {
+      hotel_id, hotel_name, hotel_address,
+      city_id, area_id, hotel_email, hotel_contact
+    } = req.body;
+
+    hotel_id = parseInt(hotel_id);
+    city_id = parseInt(city_id);
+    area_id = parseInt(area_id);
+    hotel_contact = parseInt(hotel_contact);
+
+    if (isNaN(hotel_id) || isNaN(city_id) || isNaN(area_id)) {
+      return res.status(400).json({ msg: "Invalid hotel_id, city_id, or area_id" });
+    }
+
+    const filename = req.file ? req.file.filename : null;
+
+    const amenity_ids = Array.isArray(req.body.amenity_ids)
+      ? req.body.amenity_ids
+      : req.body.amenity_ids
+        ? [req.body.amenity_ids]
+        : [];
+
+    const updatedHotel = await regService.updateHotelLogic(
+      hotel_id, hotel_name, hotel_address,
+      city_id, area_id, hotel_email, hotel_contact,
+      filename, amenity_ids
+    );
+
+    if (!updatedHotel) {
+      throw new Error("Failed to fetch updated hotel");
+    }
+
+    res.status(200).json({ msg: "✅ Hotel updated", data: updatedHotel });
+
+  } catch (err) {
+    console.error("❌ Error updating hotel:", err);
+    res.status(500).json({ msg: "❌ Failed to update hotel", error: err.message });
+  }
+};
+
+
+
+exports.userHoteViewCtrl=(req,res)=>{
+  res.render("userHotelView.ejs");
+}
+
+
+exports.logoutAPI = (req, res) => {
+  res.clearCookie("token"); // Clear the JWT cookie
+  res.status(200).json({ message: "Logout successful" });
+};
