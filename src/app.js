@@ -5,6 +5,7 @@ let cors = require("cors");
 let dotenv = require("dotenv");
 let db = require("./config/db.js");
 let router = require("./routes/routes.js");
+const path = require('path');
 
 // Load env variables at the very top
 dotenv.config();
@@ -14,7 +15,7 @@ app.use(cors());
 
 // Serve static files from "public" and "uploads"
 app.use(express.static("public"));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Parse JSON and urlencoded bodies before routes
 app.use(express.json());
