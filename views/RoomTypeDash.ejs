@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>City Dashboard</title>
+  <title>RoomType Dashboard</title>
   
-  <link rel="stylesheet" href="styleCityDash.css" />
+  <link rel="stylesheet" href="styleAminityDash.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 <body>
 
@@ -16,35 +15,35 @@
     <nav class="navbar">
 
       <ul class="nav">
-        <li><a class="nav-link active" onclick="loadPage('/addCity', this)"><i class="fa-solid fa-plus"></i>Add City</a></li>
-        <li><a class="nav-link" onclick="loadPage('/newViewCity', this)"><i class="fa-solid fa-list"></i>View City</a></li>
+        <li><a class="nav-link active" onclick="loadPage('/savePriceForm', this)"><i class="fa-solid fa-plus"></i>Add Price</a></li>
+        <li><a class="nav-link" onclick="loadPage('/viewPrice', this)"><i class="fa-solid fa-list"></i>View Prices</a></li>
       </ul>
     </nav>
-  </div>
 
-  <!-- Iframe section wrapped -->
+    <!-- Iframe section wrapped -->
     <div class="iframe-wrapper">
+      
+
       <iframe id="contentFrame" src="" scrolling=""></iframe>
     </div>
-  </nav>
 
-  <!-- Main Content 
+
+  <!-- Main Content
   <div class="content">
-    <h1>Welcome to the City Admin Dashboard</h1>
-    <p>Use the navbar to add new Cities or view existing entries.</p>
+    <h1>Welcome to the Amenity Admin Dashboard</h1>
+    <p>Use the navbar to add new Amenities or view existing entries.</p>
   </div>-->
 
   <script>
     function loadPage(page, clickedLink) {
       document.getElementById('contentFrame').src = page;
 
-      // Handle active class
       document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
       });
       clickedLink.classList.add('active');
     }
   </script>
-  </div>
+</div>
 </body>
 </html>

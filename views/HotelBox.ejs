@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Rooms</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      overflow-y: auto;
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 25px;
+      box-sizing: border-box;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hotel-box {
+      background: linear-gradient(to bottom right, #ffffff, #f1f8e9);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      width: 280px;
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-sizing: border-box;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+    }
+
+    .hotel-box:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .hotel-box h3 {
+      font-size: 28px;
+      color: #4B0082;
+      margin-bottom: 10px;
+    }
+
+    .hotel-box p {
+      font-size: 14px;
+      margin: 4px 0;
+      color: #444;
+    }
+
+    .view-btn {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 13px 25px;
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .view-btn a {
+      text-decoration: none;
+      color: white;
+      display: block;
+    }
+
+    .view-btn:hover {
+      background-color: #360061;
+      color: white;
+    }
+
+    .hotel-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(75, 0, 130, 0.2);
+      margin-bottom: 12px;
+    }
+
+    /* Placeholder icon styling */
+    .placeholder-img {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, #d3ccee, #9a89c5);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 60px;
+      user-select: none;
+      margin-bottom: 12px;
+      box-shadow: 0 5px 15px rgba(75, 0, 130, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hotel-box {
+        width: 42%;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+      }
+      .hotel-box {
+        width: 100%;
+        max-width: 380px;
+      }
+      .hotel-box h3 {
+        font-size: 26px;
+      }
+      .view-btn {
+        padding: 14px 28px;
+        font-size: 17px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .hotel-box h3 {
+        font-size: 22px;
+      }
+      .view-btn {
+        width: 100%;
+        padding: 18px 0;
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <% if (data.length === 0) { %>
+    <p style="color: red;">No hotels found.</p>
+  <% } else { %>
+    <% data.forEach(hotel => { %>
+      <div class="hotel-box">
+        <% if (hotel.filename) { %>
+          <img src="/uploads/<%= hotel.filename %>" alt="Hotel Image" class="hotel-image">
+        <% } else { %>
+          <div class="placeholder-img">🏨</div>
+        <% } %>
+
+        <h3><%= hotel.hotel_name %></h3>
+        <p><strong>Address:</strong> <%= hotel.hotel_address %></p>
+        <p><strong>City:</strong> <%= hotel.city_name %></p>
+        <p><strong>Area:</strong> <%= hotel.area_name %></p>
+        <p><strong>Email:</strong> <%= hotel.hotel_email %></p>
+        <p><strong>Contact:</strong> <%= hotel.hotel_contact %></p>
+
+        <button class="view-btn">
+          <a href="/viewSpeHotelUser?hotel_id=<%= hotel.hotel_id %>" target="_blank">View Hotel</a>
+        </button>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+</body>
+</html>

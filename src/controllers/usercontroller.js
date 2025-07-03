@@ -68,7 +68,7 @@ exports.validateUser = async (req, res) => {
     }
   } catch (err) {
     console.error("Error in validateUser:", err);
-    res.status(500).send("Internal server error");
+    res.send("Internal server error");
   }
 };
 
@@ -76,9 +76,68 @@ exports.adminDashCtrl=(req,res)=>{
   res.render("Admindashboard.ejs");
 }
 
-exports.userDashCtrl=(req,res)=>{
-  res.render("userdashboard.ejs");
-}
+/*exports.userDashCtrl = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const showReviewTab = await regService.shouldShowReviewTab(userId);
+    res.render('userdashboard.ejs', { user: req.user, showReviewTab });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Something went wrong.');
+  }
+};*/
+
+
+/*exports.userDashCtrl = async (req, res) => {
+  const userId = req.user.id;  // or however you get user id
+  const user = await regService.getUserById(userId);
+  const latestBooking = await regModel.getLatestBooking(userId);
+
+  // Extract hotelId if booking exists, else null
+  const hotelId = latestBooking ? latestBooking.hotel_id : null;
+
+  // Also check if review tab should show based on checkin & checkout flags
+  const showReviewTab = latestBooking && latestBooking.checkin_flag === 1 && latestBooking.checkout_flag === 1;
+
+  res.render('userdashboard', { user, showReviewTab, hotelId });
+};*/
+
+exports.userDashCtrl = async (req, res) => {
+  try {
+    const userId = req.user.id; // assuming req.user is set by your auth middleware
+
+    // Fetch user details using service
+    const user = await regService.getUserById(userId);
+
+    // Fetch latest booking using service (NOT directly regModel)
+    const latestBooking = await regService.getLatestBooking(userId);
+
+    // Extract hotelId if booking exists
+    const hotelId = latestBooking ? latestBooking.hotel_id : null;
+
+    // Decide whether to show review tab
+    const showReviewTab = latestBooking &&
+                          latestBooking.checkin_flag === 1 &&
+                          latestBooking.checkout_flag === 1;
+
+    // Render dashboard view
+    res.render('userdashboard', {
+      user,
+      showReviewTab,
+      hotelId
+    });
+
+  } catch (err) {
+    console.error("❌ Error in userDashCtrl:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+
+
+
 
 exports.addhotelCtrl = async (req, res) => {
   console.log("Request body:", req.body);
@@ -88,12 +147,12 @@ exports.addhotelCtrl = async (req, res) => {
   let amenity_ids;
 
   try {
-    // Safely parse amenity_ids from string or fallback to array from comma-separated string
+
     if (typeof req.body.amenity_ids === 'string') {
       try {
         amenity_ids = JSON.parse(req.body.amenity_ids);
       } catch (e) {
-        // If JSON.parse fails, try splitting comma separated string
+
         amenity_ids = req.body.amenity_ids.split(',').map(id => id.trim());
       }
     } else {
@@ -124,12 +183,12 @@ exports.addhotelCtrl = async (req, res) => {
   } catch (err) {
     console.error("Error adding hotel:", err);
 
-    // In case of error, fetch data again to populate form dropdowns
+    
     const cities = await regService.getAllCities();
     const areas = await regService.getAllArea();
     const amenities = await regService.getAllAmenities();
 
-    res.status(500).render('addHotel', { citymaster: cities, areamaster: areas, amenities: amenities, msg: 'Error adding hotel' });
+    res.render('addHotel', { citymaster: cities, areamaster: areas, amenities: amenities, msg: 'Error adding hotel' });
   }
 };
 
@@ -144,7 +203,7 @@ exports.addCityCtrl=async(req,res)=>{
   }
   catch(err){
     console.error("Error adding city:",err);
-    res.status(500).render('city', { msg: 'Error adding city'  });
+    res.render('city', { msg: 'Error adding city'  });
   }
 };
 
@@ -158,7 +217,7 @@ exports.addAreaCtrl = async (req, res) => {
     res.render("area",{citymaster:cities,msg:"Area added successfully"});
   } catch (err) {
     console.error("Error adding area:", err);
-     res.status(500).render('area', {citymaster:cities,msg: 'Error adding area'  });
+     res.render('area', {citymaster:cities,msg: 'Error adding area'  });
   }
 };
 
@@ -169,7 +228,7 @@ exports.addAminitiesCtrl=async(req,res)=>{
     res.render("Amenities",{amenities: result, msg:"Amenity added successfully" });
   } catch (err) {
     console.error("Error adding aminity:", err);
-     res.status(500).render('Amenities', {amenities:[], msg: 'Error adding amenity'  });
+     res.render('Amenities', {amenities:[], msg: 'Error adding amenity'  });
   }
 };
 
@@ -182,10 +241,10 @@ exports.viewHotelFormCtrl = async (req, res) => {
     const area=await regService.getAllArea();
     console.table(hotels);
     //res.json(hotels); 
-    res.render("viewHotel",{data:hotels,city,area});
+    res.render("NewviewHotel",{data:hotels,city,area});
   } catch (err) {
     console.error("Error fetching hotels:", err);
-    res.status(500).render('viewHotel', {data:hotels, citymaster:cities,areamaster:areas,msg: 'Error adding amenity'  });
+    res.render('NewviewHotel', {data:hotels, citymaster:cities,areamaster:areas,msg: 'Error adding amenity'  });
   }
 };
 
@@ -198,7 +257,7 @@ exports.viewCityCtrl=async(req,res)=>{
     console.log("Cities from db:");
     console.table(city);
     //res.json(city);
-    res.render("viewCity",{data:city});
+    res.render("NewviewCity",{data:city});
   }catch(err){
     console.log("Failed to fetch error:",err);
   }
@@ -222,7 +281,7 @@ exports.viewAreaCtrl=async(req,res)=>{
     const area=await regService.getAllArea();
     console.log("Area from db:");
     console.table(area);
-    res.json(area);
+    res.render("newviewArea",{area});
   }catch(err){
     console.log("Failed to fetch error:",err);
   }
@@ -232,13 +291,13 @@ exports.viewAreabyIdCtrl = async (req, res) => {
   try {
     const city_id = parseInt(req.query.city_id);
     if (isNaN(city_id)) {
-      return res.status(400).send("Invalid or missing city_id");
+      return res.send("Invalid or missing city_id");
     }
     const area = await regService.getAreabyId(city_id);
     res.json(area);
   } catch (err) {
     console.error("Error fetching area by city_id:", err);
-    res.status(500).json({ error: err.message || "Internal Server Error" });
+    res.json({ error: err.message || "Internal Server Error" });
   }
 };
 
@@ -250,7 +309,7 @@ exports.viewAreaWithCityCtrl=async(req,res)=>{
     console.log("Area from db:");
     console.table(areacity);
    // res.json(areacity);
-   res.render("viewArea",{data:areacity,city,area});
+   res.render("newviewArea",{data:areacity,city,area});
   }catch(err){
     console.log("Failed to feach erroe:",err);
   }
@@ -263,7 +322,7 @@ exports.viewAmenityCtrl=async(req,res)=>{
     console.log("Amenity from db:");
     console.table(amenity);
     //res.json(amenity);
-    res.render("viewAmenity",{data:amenity});
+    res.render("newviewAmenity",{data:amenity});
 
   }catch(err){
     console.log("Failed to fetch error:",err);
@@ -273,23 +332,25 @@ exports.viewAmenityCtrl=async(req,res)=>{
 exports.getHotelByIdCtrl = async (req, res) => {
   try {
     const hotel_id = parseInt(req.query.hotel_id);
+
     if (isNaN(hotel_id)) {
-      return res.status(400).send("Invalid or missing hotel_id");
-    }
-    const cities = await regService.getAllCities();
-    const areas = await regService.getAllArea();
-    const amenities = await regService.getAllAmenities();
-    const hotel = await regService.getHotelById(hotel_id);
-    if (!hotel) {
-      return res.status(404).send("Hotel not found");
-      
+      return res.status(400).send("Invalid hotel ID.");
     }
 
-    console.log("Hotel fetched successfully:", hotel);
-    res.json(hotel); // For Postman / frontend
+    const hotel = await regService.getHotelById(hotel_id); // returns hotel details with city_name and area_name
+    const city = await regService.getAllCities();        // fetch all cities for dropdown
+    const area = await regService.getAllArea();          // fetch all areas for dropdown
+    const amenity = await regService.getAllAmenities(); // for checkboxes
+
+    if (!hotel) {
+      return res.status(404).send("Hotel not found.");
+    }
+
+    res.render("NewUpdateHotel", {hotel,city,area,amenity,msg: ""});
+
   } catch (err) {
-    console.error("❌ Failed to load hotel for update:", err);
-    res.status(500).send("Failed to load hotel for update");
+    console.error("Error loading hotel:", err);
+    res.send("Failed to load hotel.");
   }
 };
 
@@ -301,7 +362,7 @@ exports.deleteHotelCtrl = async (req, res) => {
 
   if (isNaN(hotel_id)) {
     console.error("Invalid hotel_id:", req.query.hotel_id);
-    return res.status(400).send("Invalid hotel ID");
+    return res.send("Invalid hotel ID");
   }
 
   try {
@@ -309,7 +370,7 @@ exports.deleteHotelCtrl = async (req, res) => {
     res.redirect("/viewHotels");
   } catch (err) {
     console.error("Error deleting hotel:", err);
-    res.status(500).send("Failed to delete hotel");
+    res.send("Failed to delete hotel");
   }
 };
 
@@ -322,11 +383,12 @@ exports.deleteCityCtrl=async(req,res)=>{
   }
   try{
     await regService.deleteCityLogic(city_id);
-    res.redirect("/viewCity");
+     const city=await regService.getAllCities();
+    res.render("newViewCity",{data:city});
   }
   catch(err){
-    console.error("Error deleting city:",err);
-    res.status(500).send("Failed to delete city");
+    console.log("Error deleting city:",err);
+    res.send("Failed to delete city");
   }
 };
 
@@ -336,15 +398,16 @@ exports.deleteAreaCtrl=async(req,res)=>{
   console.log(req.body);
   if(isNaN(area_id)){
     console.log("Inavlid area_id_id:",req.params.area_id);
-    return res.status(400).send("Invalid area id");
+    return res.send("Invalid area id");
   }
   try{
     await regService.deleteAreaLogic(area_id);
-    res.redirect("/viewArea");
+    const areacity=await regService.getCityArea();
+    res.render("newViewArea",{data:areacity});
   }
   catch(err){
     console.error("Error deleting area:",err);
-    res.status(500).send("Failed to delete area");
+    res.send("Failed to delete area");
   }
 };
 
@@ -354,7 +417,7 @@ exports.deleteAmenityCtrl=async(req,res)=>{
   console.log(req.body);
   if(isNaN(amenity_id)){
     console.log("Inavlid amenity_id:",req.params.amenity_id);
-    return res.status(400).send("Invalid amenity id");
+    return res.send("Invalid amenity id");
   }
   try{
     await regService.deleteAmenityLogic(amenity_id);
@@ -362,7 +425,7 @@ exports.deleteAmenityCtrl=async(req,res)=>{
   }
   catch(err){
     console.error("Error deleting amenity:",err);
-    res.status(500).send("Failed to delete amenity");
+    res.send("Failed to delete amenity");
   }
 };
 
@@ -439,21 +502,20 @@ exports.addAreaFormCtrl=async(req,res)=>{
 };
 
 
+
 exports.loadUpdateCityForm = async (req, res) => {
   try {
     const city_id = parseInt(req.query.city_id);
+    console.log("update",city_id);
     if (isNaN(city_id)) {
-      return res.status(400).send("Invalid city ID.");
+      return res.send("Invalid city ID.");
     }
     const city = await regService.getCityByIdLogic(city_id);
-    console.log("city by id:");
-    console.table(city);
-  
-
-    res.render("UpdateCity", { erecord: city, msg: "" });
+    console.log(city);
+    res.render("NewUpdateCity", {city:city[0], msg: "" });
   } catch (err) {
     console.error("Error loading city for update:", err);
-    res.status(500).send("Failed to load city.");
+    res.send("Failed to load city.");
   }
 };
 
@@ -461,24 +523,24 @@ exports.loadUpdateCityForm = async (req, res) => {
 exports.finalCityUpdate = async (req, res) => {
   try {
     let { city_id, city_name, pincode } = req.body;
-    console.log(req.body);
+
     city_id = parseInt(city_id);
+    console.log("final",city_id);
     if (isNaN(city_id)) {
-      return res.status(400).send("Invalid city ID.");
+      return res.send("Invalid city ID.");
     }
 
-    console.log("Update request:", city_id, city_name, pincode);
+
 
     await regService.updateCityLogic(city_id, city_name, pincode);
 
-    const cities = await regService.getAllCities();
-    //res.json(cities);
-    console.table(cities);
-    res.render("viewCity", { data: cities, msg: "✅ City updated successfully!" });
+    const city = await regService.getAllCities();
+
+    res.render("NewviewCity", { data:city, msg: "✅ City updated successfully!" });
 
   } catch (err) {
     console.error("Error updating city:", err);
-    res.status(500).send("Failed to update city.");
+    res.send("Failed to update city.");
   }
 };
 
@@ -488,20 +550,20 @@ exports.loadAmenityForUpdate = async (req, res) => {
   try {
     const amenity_id = parseInt(req.query.amenity_id);
     if (isNaN(amenity_id)) {
-      return res.status(400).send("Invalid amenity ID.");
+      return res.send("Invalid amenity ID.");
     }
 
     const amenity = await regService.getAmenityByIdLogic(amenity_id);
-
+    const amenities = await regService.getAllAmenities();
     if (!amenity) {
-      return res.status(404).send("Amenity not found.");
+      return res.send("Amenity not found.");
     }
 
 
-    res.render("UpdateAmenity", { erecord: amenity, msg: "" });
+    res.render("NewUpdateAmenity", { amenity, msg: "" });
   } catch (err) {
     console.error("Error loading amenity:", err);
-    res.status(500).send("Failed to load amenity.");
+    res.send("Failed to load amenity.");
   }
 };
 
@@ -510,14 +572,15 @@ exports.finalAmenityUpdate = async (req, res) => {
   try {
     const { amenity_id, amenity_name } = req.body;
     if (!amenity_id || !amenity_name) {
-      return res.status(400).send("Missing fields");
+      return res.send("Missing fields");
     }
-    const amenities = await regService.getAllAmenities();
+   
     await regService.updateAmenityLogic(amenity_id, amenity_name);
+     const amenities = await regService.getAllAmenities();
     res.render("viewAmenity", { data: amenities, msg: "✅ amenity updated successfully!" });
   } catch (err) {
     console.error("Error updating amenity:", err);
-    res.status(500).send("❌ Failed to update amenity");
+    res.send("❌ Failed to update amenity");
   }
 };
 
@@ -526,23 +589,23 @@ exports.loadAreaForUpdate = async (req, res) => {
   try {
     const area_id = parseInt(req.query.area_id);
     if (isNaN(area_id)) {
-      return res.status(400).send("Invalid area ID.");
+      return res.send("Invalid area ID.");
     }
 
     const area = await regService.getAreaByIdLogic(area_id);
-    const cities = await regService.getAllCities(); // optional: if you want to show city dropdown
+    const city = await regService.getAllCities(); // optional: if you want to show city dropdown
 
     if (!area) {
-      return res.status(404).send("Area not found.");
+      return res.send("Area not found.");
     }
     const areacity=await regService.getCityArea();
-    res.json(areacity);
+   // res.json(areacity);
     console.table(areacity);
   
-    //res.render("UpdateArea", { erecord: area, cities, msg: "" });
+    res.render("NewUpdateArea", { area, city:city, msg: "" });
   } catch (err) {
     console.error("Error loading area:", err);
-    res.status(500).send("Failed to load area.");
+    res.send("Failed to load area.");
   }
 };
 
@@ -550,19 +613,19 @@ exports.finalAreaUpdate = async (req, res) => {
   try {
     const { area_id, area_name, city_id } = req.body;
     if (!area_id || !area_name || !city_id) {
-      return res.status(400).send("Missing fields");
+      return res.send("Missing fields");
     }
 
     await regService.updateAreaLogic(area_id, area_name, city_id);
     const areas = await regService.getAllArea(); // for updated list
-    const areacity=await regService.getCityArea();
-    res.json(areacity);
+     const areacity=await regService.getCityArea();
+   // res.json(areacity);
     console.table(areacity);
     console.log("Area updated");
-    //res.render("viewArea", { data: areas, msg: "✅ Area updated successfully!" });
+    res.render("viewArea", { data:areacity, msg: "✅ Area updated successfully!" });
   } catch (err) {
     console.error("Error updating area:", err);
-    res.status(500).send("❌ Failed to update area");
+    res.send("❌ Failed to update area");
   }
 };
 
@@ -580,7 +643,7 @@ exports.finalHotelUpdate = async (req, res) => {
     hotel_contact = parseInt(hotel_contact);
 
     if (isNaN(hotel_id) || isNaN(city_id) || isNaN(area_id)) {
-      return res.status(400).json({ msg: "Invalid hotel_id, city_id, or area_id" });
+      return res.json({ msg: "Invalid hotel_id, city_id, or area_id" });
     }
 
     const filename = req.file ? req.file.filename : null;
@@ -600,12 +663,17 @@ exports.finalHotelUpdate = async (req, res) => {
     if (!updatedHotel) {
       throw new Error("Failed to fetch updated hotel");
     }
-
-    res.status(200).json({ msg: "✅ Hotel updated", data: updatedHotel });
-
+    console.log(updatedHotel);
+   const hotel = await regService.getHotelById(hotel_id); // returns hotel details with city_name and area_name
+    const city = await regService.getAllCities();        // fetch all cities for dropdown
+    const area = await regService.getAllArea();          // fetch all areas for dropdown
+    const amenity = await regService.getAllAmenities(); 
+   // res.json({ msg: "✅ Hotel updated", data: updatedHotel });
+    //res.render("NewviewHotel",{data:updatedHotel,msg:"✅ Hotel updated"});
+    res.redirect("/viewHotels");
   } catch (err) {
     console.error("❌ Error updating hotel:", err);
-    res.status(500).json({ msg: "❌ Failed to update hotel", error: err.message });
+    res.json({ msg: "❌ Failed to update hotel", error: err.message });
   }
 };
 
@@ -618,5 +686,395 @@ exports.userHoteViewCtrl=(req,res)=>{
 
 exports.logoutAPI = (req, res) => {
   res.clearCookie("token"); // Clear the JWT cookie
-  res.status(200).json({ message: "Logout successful" });
+  console.log({ message: "Logout successful" });
+  res.render("login.ejs",{message:""});
 };
+
+exports.roomCtrl=async(req,res)=>{
+  try{
+    const room=await regService.getAllRooms();
+    console.log("Room from db:");
+    console.table(room);
+    res.json(room);
+   // res.render("viewAmenity",{data:amenity});
+
+  }catch(err){
+    console.log("Failed to fetch error:",err);
+  }
+};
+
+
+
+
+exports.addPriceCtrl = async (req, res) => {
+  try {
+    const hotels = await regService.getAllHotelsForView(); 
+    const rooms = await regService.getAllRooms(); 
+    const priceroom=await regService.getPriceRoom();
+    //res.json(priceroom);
+    res.render("viewRoomType", {data:priceroom, hotels,rooms });
+  } catch (err) {
+    console.error("Error loading price form:", err);
+    res.render("viewRoomType", { data:priceroom, hotels,rooms });
+  }
+};
+
+
+exports.savePriceCtrl = async (req, res) => {
+  try {
+    const { hotel_id, room_id, price } = req.body;
+
+    if (!hotel_id || !room_id || !price) {
+      return res.send("All fields are required");
+    }
+
+    const priceroom=await regService.saveRoomPrice(hotel_id, room_id, price);
+    const hotels = await regService.getAllHotelsForView();
+    const rooms = await regService.getAllRooms();
+    //res.json(priceroom);
+    console.table(priceroom);
+    res.render("HotelRoom.ejs", { hotels:[], rooms:[], msg: "✅ Price save successfully." });
+   
+  } catch (err) {
+    console.error("Error saving price:", err);
+    res.render("HotelRoom.ejs", { hotels:[], rooms:[], msg: "❌ Failed to save price" });
+  }
+};
+
+exports.roomDashCtrl=(req,res)=>{
+  res.render("RoomTypeDash.ejs");
+}
+
+exports.savePriceFormCtrl = async (req, res) => {
+  try {
+    const hotels = await regService.getAllHotelsForView();
+    const rooms = await regService.getAllRooms();
+    res.render("HotelRoom.ejs", { hotels, rooms, msg: "" });
+  } catch (err) {
+    console.error("Error loading HotelRoom form:", err);
+    res.render("HotelRoom.ejs", { hotels: [], rooms: [], msg: "❌ Failed to load form" });
+  }
+};
+
+
+
+exports.getRoomPriceByHotelCtrl = async (req, res) => {
+  try {
+    const hotel_id = req.params.hotel_id || req.query.hotel_id;  
+
+    if (!hotel_id) {
+      return res.json({ error: "hotel_id is required" });
+    }
+
+    const rooms = await regService.getRoomWithPrice(hotel_id);
+    res.json(rooms);
+    console.table(rooms);
+  } catch (err) {
+    console.log("Error loading room price :", err);
+    res.send("Failed to load data");
+  }
+};
+
+exports.bookHotelCtrl = async (req, res) => {
+  try {
+    const hotel_id = parseInt(req.query.hotel_id, 10);
+    if (isNaN(hotel_id)) {
+      return res.send("Invalid hotel_id");
+    }
+
+    
+    const user = req.user;
+    console.log("req.user =", req.user);
+
+    if (!user) {
+      return res.send("Unauthorized: Please log in");
+    }
+
+   
+    const hotel = await regService.getHotelById(hotel_id);
+    if (!hotel) {
+      return res.send("Hotel not found");
+    }
+
+    const rooms = await regService.getRoomWithPrice(hotel_id);
+
+    
+    res.render("bookingForm.ejs", { hotel, user, rooms });
+  } catch (err) {
+    console.error("Error in bookHotelCtrl:", err);
+    res.send("Internal server error");
+  }
+};
+
+
+exports.saveBookingFormCtrl = async (req, res) => {
+  try {
+    const {userid, hotel_id, checkin_date, checkout_date, checkin_time, checkout_time} = req.body;
+
+    if (!userid || isNaN(Number(userid))) {
+      return res.send("Invalid or missing userid");
+    }
+
+    await regService.saveBooking({ userid: Number(userid),  hotel_id, checkin_date, checkout_date, checkin_time, checkout_time });
+    res.redirect("/userdash");
+  } catch (err) {
+    console.error("Booking insert error:", err);
+    alert("❌ Error while booking");
+  }
+};
+
+
+
+/*exports.hotelBoxCtrl = async (req, res) => {
+  const city = req.query.city || '';
+  const area = req.query.area || '';
+
+  try {
+    const data = await regService.searchHotelsByCityAndArea(city, area);
+    res.render('HotelBox', { data });
+  } catch (err) {
+    console.error('Error fetching hotels:', err);
+    res.send('Internal Server Error');
+  }
+};
+*/
+
+exports.hotelBoxCtrl = async (req, res) => {
+  const city = req.query.city || '';
+  const area = req.query.area || '';
+
+  try {
+    const hotel_id = req.query.hotel_id; 
+    const cityarea = await regService.searchHotelsByCityAndArea(city, area);
+      const hotel = await regService.getHotelById(hotel_id);
+    res.render('HotelBox', { data:cityarea,hotel });
+  } catch (err) {
+    console.error('Error fetching hotels:', err);
+    res.send('<p style="color:red;">Internal Server Error</p>');
+  }
+};
+
+exports.backBtnInSpeHotelCtrl=(req,res)=>{
+  res.redirect("/userhotelview");
+};
+
+
+exports.allHotelsCtrl = async (req, res) => {
+  try {
+    // Query params from URL
+    const city = req.query.city ? req.query.city.toLowerCase() : '';
+    const area = req.query.area ? req.query.area.toLowerCase() : '';
+
+    // Get all hotels from service
+    const allHotels = await regService.getAllHotelsWithImages();
+
+    // Filter hotels based on city and area query params (if provided)
+    const filteredHotels = allHotels.filter(hotel => {
+      const hotelCity = hotel.city_name ? hotel.city_name.toLowerCase() : '';
+      const hotelArea = hotel.area_name ? hotel.area_name.toLowerCase() : '';
+
+      const cityMatch = city === '' || hotelCity.includes(city);
+      const areaMatch = area === '' || hotelArea.includes(area);
+
+      return cityMatch && areaMatch;
+    });
+
+    // Render EJS template with filtered data
+    res.render('HotelBox', { data: filteredHotels });
+  } catch (err) {
+    console.error('Error fetching hotels:', err);
+    res.status(500).send('<p style="color:red;">Internal Server Error</p>');
+  }
+};
+
+
+
+
+exports.viewSpecHotelByUserCtrl = async (req, res) => {
+  try {
+    const hotel_id = req.query.hotel_id; 
+
+    if (!hotel_id) {
+      return res.send("Hotel ID is missing");
+    }
+
+    const hotel = await regService.getHotelById(hotel_id);
+
+    if (!hotel) {
+      return res.send("Hotel not found");
+    }
+
+    res.render("specificHotelView.ejs", { hotel });
+  } catch (error) {
+    console.error("Error fetching specific hotel:", error);
+    res.send("Internal Server Error");
+  }
+};
+
+exports.bookingDetailsCtrl=async(req,res)=>{
+  try{
+    const hotel = await regService.getAllHotelsForView();
+    const user = req.user;
+    const booking=await regService.getAllBookingAdmin();
+    console.table(booking);
+    //res.json(booking);
+    res.render("BookingDetailsForAdmin.ejs",{booking});
+  }
+  catch(err){
+    console.log("Error fetching booking:",err);
+    //res.send("internal err");
+    res.render("BookingDetailsForAdmin.ejs",{booking:[]});
+  }
+};
+
+
+
+
+exports.bookingHistroryCtrl = async (req, res) => {
+  console.log("Inside reviewCtrl");
+  const userid = req.user.id; 
+  console.log("ueserid:",userid);
+  try {
+    const booking = await regService.getAllBookingByUserId(userid); 
+    //res.json(booking);
+    res.render("LoginUserBookingDetails.ejs",{data:userid,booking});
+  } catch (err) {
+    console.error("Error fetching booking:", err);
+    //res.json({ message: "Internal Server Error" });
+  }
+};
+
+
+exports.recommendHotelsCtrl = async (req, res) => {
+  const userid = req.user.id;
+  try {
+    const recommendedHotels = await regService.getRecommendedHotels(userid);
+    res.render("recommendHotels.ejs", { recommendedHotels });
+  } catch (err) {
+    console.error("Error fetching recommendations:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.reviewFormCtrl = (req, res) => {
+  if (!req.user) {
+    return res.status(401).send("Unauthorized: No user found in request.");
+  }
+
+  const userId = req.user.id;
+  const hotelId = parseInt(req.query.hotel_id);
+
+  if (!hotelId) {
+    console.log("Hotel ID not found in query:", req.query);
+    return res.status(400).send("Hotel ID is missing.");
+  }
+
+  res.render("ReviewRatingForm.ejs", {
+    userId,
+    hotelId,
+    msg: ''
+  });
+};
+
+
+exports.reviewRatingFormCtrl = async (req, res) => {
+  try {
+    const userid = req.user.id; 
+    const { hotel_id, rev_text, rating } = req.body;
+    const review_date = new Date();
+
+    await regService.addReview(userid, hotel_id, rev_text, rating, review_date);
+
+    res.render("ReviewRatingForm.ejs", {
+      msg: "✅ Review & rating added successfully!",
+      userId: userid,
+      hotelId: hotel_id
+    });
+  } catch (err) {
+    console.log("Error adding review:", err);
+    res.render("ReviewRatingForm.ejs", {
+      msg: "❌ Failed to add review.",
+      userId: req.user.userid,
+      hotelId: req.body.hotel_id
+    });
+  }
+};
+
+
+exports.recomendationBackBtnCtrl=(req,res)=>{
+  res.redirect("/recommendHotels");
+};
+
+
+exports.recommSpecHotelCtrl = async (req, res) => {
+  try {
+    const hotel_id = req.query.hotel_id; 
+
+    if (!hotel_id) {
+      return res.send("Hotel ID is missing");
+    }
+
+    const hotel = await regService.getHotelById(hotel_id);
+
+    if (!hotel) {
+      return res.send("Hotel not found");
+    }
+
+    res.render("recomentadationSpecHotel.ejs", { hotel });
+  } catch (error) {
+    console.error("Error fetching specific hotel:", error);
+    res.send("Internal Server Error");
+  }
+};
+
+exports.checkInCtrl = async (req, res) => {
+  try {
+    const userId = req.query.userid;
+    const hotelId = req.query.hotel_id;
+
+    console.log('Check-in route hit with:', { userId, hotelId }); // <-- Add this
+    if (!hotelId) {
+      return res.status(400).send('Hotel ID is required');
+    }
+
+    await regService.checkIn(userId, hotelId);
+    res.redirect('/bookingDetailsAdmin');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Check-in failed.');
+  }
+};
+
+
+/*exports.checkOutCtrl = async (req, res) => {
+  try {
+    const userId = req.query.userid;
+    const hotelId = req.query.hotel_id;
+    await regService.checkOut(userId, hotelId);
+    res.redirect('/bookingDetailsAdmin');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Check-out failed.');
+  }
+};*/
+
+
+exports.checkOutCtrl = async (req, res) => {
+  console.log('🟢 checkOutCtrl reached'); 
+  try {
+    const userId = req.query.userid;
+    const hotelId = req.query.hotel_id;
+
+    console.log('✅ /usercheckout called with:', { userId, hotelId });
+
+    await regService.checkOut(userId, hotelId);
+
+    res.redirect('/bookingDetailsAdmin');
+  } catch (e) {
+    console.error('❌ checkOutCtrl error:', e);
+    res.status(500).send('Check-out failed.');
+  }
+};
+
+
+

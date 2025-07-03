@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel List</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; 
+      min-height: 100vh; 
+      color: #333; 
+    }
+
+    .container { 
+      background: #fff; 
+      border-radius: 16px; 
+      padding: 25px; 
+      margin: 10px auto; 
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25); 
+      max-width: 95%; 
+    }
+
+    .form-group { 
+      display: flex; 
+      justify-content: center; 
+      margin-bottom: 30px; 
+    }
+
+    .page-heading { 
+      font-size: 2.5rem; 
+      font-weight: 700; 
+      text-align: center; 
+      color: #4e54c8; 
+      margin-bottom: 10px; 
+      animation: fadeIn 1s ease-in-out; 
+    }
+
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(-10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      border-radius: 12px; 
+      overflow: hidden;
+    }
+
+    thead { 
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+      color: white; 
+    }
+
+    th, td { 
+      padding: 14px 10px; 
+      text-align: center; 
+      font-size: 15px; 
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    tbody tr:hover {
+      background-color: #eef1ff;
+    }
+
+    a { 
+      color: #4e54c8; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+
+    a:hover { 
+      color: #8f94fb; 
+      text-decoration: underline;
+    }
+
+    @media (max-width: 576px) {
+      table, thead, tbody, th, td, tr { 
+        display: block; 
+      }
+
+      thead tr {
+        display: none;
+      }
+
+      tbody tr { 
+        margin-bottom: 15px;
+        background: #f4f4f4;
+        border-radius: 10px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        padding: 10px; 
+      }
+
+      td { 
+        text-align: left; 
+        padding: 8px 12px; 
+        position: relative;
+      }
+
+      td::before {
+        content: attr(data-label); 
+        font-weight: bold; 
+        display: block; 
+        margin-bottom: 4px; 
+        color: #4e54c8;
+      }
+    }
+
+    .modal-overlay {
+      position: fixed; 
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); 
+      display: none;
+      justify-content: center; 
+      align-items: center;
+      animation: fadeIn 0.5s ease-in-out; 
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 25px; 
+      border-radius: 15px;
+      width: 90%; 
+      max-width: 500px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      animation: popUp 0.4s ease;
+    }
+
+    @keyframes popUp {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .close { 
+      float: right; 
+      font-size: 1.5rem;
+      cursor: pointer; 
+      color: #ff5c5c; 
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-group mt-5">
+  <h4 class="page-heading">Hotel Details</h4>
+</div>
+
+<div class="container">
+  <div class="container mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search by Hotel Name, City or Area">
+  </div>
+
+  <!-- ✅ Table Wrapper for Scroll Fix -->
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>HOTEL_ID</th>
+          <th>HOTEL_NAME</th>
+          <th>ADDRESS</th>
+          <th>CITY</th>
+          <th>AREA</th>
+          <th>EMAIL</th>
+          <th>CONTACT</th>
+          <th>AMENITY</th>
+          <th>IMAGE</th>
+          <th>DELETE</th>
+          <th>UPDATE</th>
+          <th>VIEW</th>
+        </tr>
+      </thead>
+      <tbody id="tblBody1"></tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3">
+    <nav>
+      <ul class="pagination" id="pagination"></ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="hotelModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h4>Hotel Details</h4>
+    <p><strong>H ID:</strong> <span id="modalHotelId"></span></p>
+    <p><strong>Hotel Name:</strong> <span id="modalHotelName"></span></p>
+    <p><strong>Address:</strong> <span id="modalHotelAddress"></span></p>
+    <p><strong>Contact:</strong> <span id="modalHotelContact"></span></p>
+    <p><strong>Amenities:</strong> <span id="modalHotelAmenity"></span></p>
+    <p><strong>Image:</strong><br><img id="modalHotelImage" src="" alt="Hotel Image" style="max-width:100%; height:auto;"></p>
+  </div>
+</div>
+
+<script>
+  const allData = <%- JSON.stringify(data) %>;
+  let filteredData = [...allData];
+  let currentPage = 1;
+  const rowsPerPage = 5;
+
+  function displayTableItems(data, wrapper, rowsPerPage, page) {
+    wrapper.innerHTML = "";
+    page--;
+    const start = rowsPerPage * page;
+    const end = start + rowsPerPage;
+    const paginatedItems = data.slice(start, end);
+
+    if (paginatedItems.length === 0) {
+      wrapper.innerHTML = `<tr><td colspan="12">No matching records found.</td></tr>`;
+      return;
+    }
+
+    for (let item of paginatedItems) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td data-label="HOTEL_ID">${item.hotel_id}</td>
+        <td data-label="HOTEL_NAME">${item.hotel_name}</td>
+        <td data-label="ADDRESS">${item.hotel_address}</td>
+        <td data-label="CITY">${item.city_name}</td>
+        <td data-label="AREA">${item.area_name}</td>
+        <td data-label="EMAIL">${item.hotel_email}</td>
+        <td data-label="CONTACT">${item.hotel_contact}</td>
+        <td data-label="AMENITY">${item.amenity_names || 'N/A'}</td>
+        <td data-label="IMAGE"><img src="/uploads/${item.filename}" width="100" height="100"></td>
+        <td data-label="DELETE"><a href="/deleteHotel?hotel_id=${item.hotel_id}">Delete</a></td>
+        <td data-label="UPDATE"><a href="/updateHotel?hotel_id=${item.hotel_id}">Update</a></td>
+        <td data-label="VIEW"><a href="#" onclick='openModal(${JSON.stringify(item)})'>View</a></td>
+      `;
+      wrapper.appendChild(row);
+    }
+  }
+
+  function setupPagination(items, wrapper, rowsPerPage) {
+    wrapper.innerHTML = "";
+    const pageCount = Math.ceil(items.length / rowsPerPage);
+
+    const prevLi = document.createElement("li");
+    prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+    const prevLink = document.createElement("a");
+    prevLink.className = "page-link";
+    prevLink.href = "#";
+    prevLink.innerText = "Previous";
+    prevLink.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, wrapper, rowsPerPage);
+      }
+    };
+    prevLi.appendChild(prevLink);
+    wrapper.appendChild(prevLi);
+
+    for (let i = 1; i <= pageCount; i++) {
+      const li = document.createElement("li");
+      li.className = "page-item" + (currentPage === i ? " active" : "");
+      const a = document.createElement("a");
+      a.className = "page-link";
+      a.href = "#";
+      a.innerText = i;
+      a.onclick = () => {
+        currentPage = i;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, wrapper, rowsPerPage);
+      };
+      li.appendChild(a);
+      wrapper.appendChild(li);
+    }
+
+    const nextLi = document.createElement("li");
+    nextLi.className = "page-item" + (currentPage === pageCount ? " disabled" : "");
+    const nextLink = document.createElement("a");
+    nextLink.className = "page-link";
+    nextLink.href = "#";
+    nextLink.innerText = "Next";
+    nextLink.onclick = () => {
+      if (currentPage < pageCount) {
+        currentPage++;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, wrapper, rowsPerPage);
+      }
+    };
+    nextLi.appendChild(nextLink);
+    wrapper.appendChild(nextLi);
+  }
+
+  function openModal(item) {
+    document.getElementById("modalHotelId").textContent = item.hotel_id;
+    document.getElementById("modalHotelName").textContent = item.hotel_name;
+    document.getElementById("modalHotelAddress").textContent = item.hotel_address;
+    document.getElementById("modalHotelContact").textContent = item.hotel_contact;
+    document.getElementById("modalHotelAmenity").textContent = item.amenity_names || "N/A";
+    document.getElementById("modalHotelImage").src = "/uploads/" + item.filename;
+    document.getElementById("hotelModal").style.display = "flex";
+  }
+
+  document.getElementById("closeModal").onclick = function () {
+    document.getElementById("hotelModal").style.display = "none";
+  };
+
+  document.getElementById("searchInput").addEventListener("input", () => {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    filteredData = allData.filter(item =>
+      item.hotel_name.toLowerCase().includes(query) ||
+      item.city_name.toLowerCase().includes(query) ||
+      item.area_name.toLowerCase().includes(query)
+    );
+    currentPage = 1;
+    displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+    setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+  });
+
+  // Initial Load
+  displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+  setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+</script>
+
+</body>
+</html>

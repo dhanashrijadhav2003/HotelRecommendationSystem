@@ -81,7 +81,7 @@ body {
 .dashboard-container {
   display: flex;
   height: calc(100vh - 60px); /* Remaining space below navbar */
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* Sidebar */
@@ -137,7 +137,7 @@ body {
   height: 100%;
   position: relative;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .iframe-wrapper iframe {

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= hotel.hotel_name %> - Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f3f4f6, #ffffff);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    p{
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .image-section {
+      width: 100%;
+      max-height: 600px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .image-section img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .image-section:hover img {
+      transform: scale(1.03);
+    }
+
+    .info-section {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .info-item {
+      margin: 10px 0;
+      font-size: 1.1rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .label {
+      font-weight: 600;
+      color: #555;
+      min-width: 100px;
+    }
+
+    .amenities {
+      margin: 25px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .amenities span {
+      background-color: #e3e8f0;
+      color: #2c3e50;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .rating {
+      margin: 20px 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #e67e22;
+    }
+
+    .book-btn {
+      display: inline-block;
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575);
+      color: white;
+      padding: 14px 40px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .book-btn:hover {
+      background:  #4B0082;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .info-section {
+        padding: 20px;
+      }
+
+      .book-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+
+      .label {
+        min-width: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Hotel Image -->
+    <div class="image-section">
+      <img src="/uploads/<%= hotel.filename || 'default.jpg' %>" alt="Image of <%= hotel.hotel_name %>" />
+    </div>
+
+    <!-- Hotel Details -->
+    <div class="info-section">
+      <h1><%= hotel.hotel_name %></h1>
+
+      <div class="info-item">
+        <span class="label">Address:</span>
+        <span><%= hotel.hotel_address %>, <%= hotel.area_name %>, <%= hotel.city_name %></span>
+      </div>
+
+      <div class="info-item">
+        <span class="label">Email:</span>
+        <span><%= hotel.hotel_email %></span>
+      </div>
+
+      <div class="info-item">
+        <span class="label">Contact:</span>
+        <span><%= hotel.hotel_contact %></span>
+      </div>
+
+
+      <span class="label">Amenities:</span>
+      <div class="amenities">
+        <% if (hotel.amenity_names) {
+          hotel.amenity_names.split(',').forEach(function(amenity) { %>
+            <span><%= amenity.trim() %></span>
+        <% }) } else { %>
+          <span>No amenities listed.</span>
+        <% } %>
+      </div>
+
+     <span class="label">Features:</span>
+<br>Elegant Rooms & Suites: Comfortable, well-furnished rooms with en-suite bathrooms, free Wi-Fi, flat-screen TVs, and 24-hour room service.</br>
+
+On-Site Dining: Enjoy a variety of cuisines at our in-house restaurant and bar, offering breakfast, lunch, and dinner.<br>
+
+Meeting & Event Facilities: Conference rooms and banquet halls equipped with the latest technology, perfect for business meetings and social gatherings.<br>
+
+Leisure & Wellness: Fitness center, spa, and swimming pool to help guests relax and unwind.<br>
+
+Central Location: Strategically located near transportation hubs, tourist attractions, shopping centers, and business districts.<br>
+
+Exceptional Service: Friendly staff available 24/7 to assist with guest needs, from concierge services to travel arrangements.</p>
+
+
+
+      <div class="rating">
+        Rating: <%= hotel.rating %> ⭐
+      </div>
+
+      <a href="/bookHotelForm?hotel_id=<%= hotel.hotel_id %>" class="book-btn"><i class="fas fa-calendar-check"></i>&nbsp&nbspBook Now</a>
+       <a href="/recommendationBackBtn" class="book-btn"><i class="fas fa-arrow-left"></i>&nbsp&nbspBack</a>
+    </div>
+  </div>
+
+</body>
+</html>

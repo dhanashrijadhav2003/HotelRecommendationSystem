@@ -389,7 +389,7 @@ exports.getHotelById = (hotel_id) => {
               c.city_name, a.area_name,
               h.hotel_email, h.hotel_contact,
               GROUP_CONCAT(DISTINCT am.amenity_name ORDER BY am.amenity_name SEPARATOR ', ') AS amenity_names,
-              hp.filename
+              hp.filename 
        FROM hotelmaster h
        LEFT JOIN citymaster c ON h.city_id = c.city_id
        LEFT JOIN areamaster a ON h.area_id = a.area_id
@@ -399,7 +399,7 @@ exports.getHotelById = (hotel_id) => {
        WHERE h.hotel_id = ?
        GROUP BY h.hotel_id, h.hotel_name, h.hotel_address,
                 c.city_name, a.area_name,
-                h.hotel_email, h.hotel_contact, hp.filename`,
+                h.hotel_email, h.hotel_contact,hp.filename`,
       [hotel_id],
       (err, result) => {
         if (err) {
@@ -411,7 +411,7 @@ exports.getHotelById = (hotel_id) => {
           console.warn("Hotel not found for ID:", hotel_id);
           return resolve(null); // or reject("Hotel not found");
         }
-
+        console.log(result);
         resolve(result[0]);
       }
     );
@@ -521,7 +521,7 @@ exports.updateAmenity = (amenity_id, amenity_name) => {
 
 exports.getAreaById = (area_id) => {
   return new Promise((resolve, reject) => {
-    db.query("SELECT * FROM areamaster WHERE area_id = ?", [area_id], (err, result) => {
+    db.query("select a.area_id,a.area_name,c.city_id from areamaster a left join cityareajoin c on a.area_id=c.area_id  WHERE a.area_id = ?", [area_id], (err, result) => {
       if (err) return reject(err);
       resolve(result[0]);
     });
@@ -635,3 +635,547 @@ exports.updateHotelData = (
     });
   });
 };
+
+
+exports.fetchAllRoom=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query("select * from roomsmaster",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  })
+};
+
+
+exports.getPriceRoomHotel=()=>{
+  return new Promise((resolve,reject)=>{
+    db.query(" select h.hotel_name,r.room_type,hr.price from hotelmaster h inner join hotelroomjoin hr on h.hotel_id=hr.hotel_id inner join roomsmaster r on hr.room_id=r.room_id",(err,result)=>{
+      if(err){
+        console.log("Error:",err);
+        reject(err);
+      }
+      else{
+        resolve(result);
+      }
+    });
+  });
+};
+
+
+exports.insertRoomPrice = (hotel_id, room_id, price) => {
+  return new Promise((resolve, reject) => {
+    // Validate that hotel_id exists
+    db.query("SELECT * FROM hotelmaster WHERE hotel_id = ?", [hotel_id], (err, hotelResult) => {
+      if (err) {
+        console.error("DB error checking hotel:", err);
+        return reject("Database error checking hotel.");
+      }
+
+      if (hotelResult.length === 0) {
+        return reject("Hotel ID not found.");
+      }
+
+      // Validate that room_id exists
+      db.query("SELECT * FROM roomsmaster WHERE room_id = ?", [room_id], (err, roomResult) => {
+        if (err) {
+          console.error("DB error checking room:", err);
+          return reject("Database error checking room.");
+        }
+
+        if (roomResult.length === 0) {
+          return reject("Room ID not found.");
+        }
+
+        // Check if combination already exists
+        db.query(
+          "SELECT * FROM hotelroomjoin WHERE hotel_id = ? AND room_id = ?",
+          [hotel_id, room_id],
+          (err, existingResult) => {
+            if (err) {
+              return reject("Error checking existing room price.");
+            }
+
+            if (existingResult.length > 0) {
+              return reject("This hotel-room combination already has a price.");
+            }
+
+            // Finally insert
+            db.query(
+              "INSERT INTO hotelroomjoin (hotel_id, room_id, price) VALUES (?, ?, ?)",
+              [hotel_id, room_id, price],
+              (err, insertResult) => {
+                if (err) {
+                  console.error("Insert error:", err);
+                  return reject("Failed to insert room price.");
+                }
+
+                resolve("Room price added successfully.");
+              }
+            );
+          }
+        );
+      });
+    });
+  });
+};
+
+
+//search
+/*exports.getHotelsByCity = (city) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT hm.*, cm.city_name, am.area_name
+       FROM hotelmaster hm
+       JOIN citymaster cm ON hm.city_id = cm.city_id
+       JOIN areamaster am ON hm.area_id = am.area_id
+       WHERE cm.city_name LIKE ?`,
+      [`%${city}%`],
+      (err, results) => {
+        if (err) {
+          console.error("DB error:", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      }
+    );
+  });
+};*/
+
+
+
+
+/*exports.getHotelsByCityAndArea = (city, area) => {
+  return new Promise((resolve, reject) => {
+    let query = `
+      SELECT hm.*, cm.city_name, am.area_name
+      FROM hotelmaster hm
+      JOIN citymaster cm ON hm.city_id = cm.city_id
+      JOIN areamaster am ON hm.area_id = am.area_id
+      WHERE 1=1
+    `;
+
+    const params = [];
+
+    if (city) {
+      query += ` AND cm.city_name LIKE ?`;
+      params.push(`%${city}%`);
+    }
+
+    if (area) {
+      query += ` AND am.area_name LIKE ?`;
+      params.push(`%${area}%`);
+    }
+
+    db.query(query, params, (err, results) => {
+      if (err) {
+        console.error('DB error:', err);
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
+};*/
+
+exports.getAllHotels = () => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT hm.*, cm.city_name, am.area_name, hp.filename
+      FROM hotelmaster hm
+      JOIN citymaster cm ON hm.city_id = cm.city_id
+      JOIN areamaster am ON hm.area_id = am.area_id
+      LEFT JOIN hotelpicjoin hp ON hm.hotel_id = hp.hotel_id
+    `;
+    db.query(query, [], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+
+exports.getAllHotelsWithImages = () => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT 
+        hm.hotel_id,
+        hm.hotel_name,
+        hm.hotel_address,
+        hm.hotel_email,
+        hm.hotel_contact,
+        cm.city_name,
+        am.area_name,
+        hpj.filename
+      FROM hotelmaster hm
+      JOIN citymaster cm ON hm.city_id = cm.city_id
+      JOIN areamaster am ON hm.area_id = am.area_id
+      LEFT JOIN hotelpicjoin hpj ON hm.hotel_id = hpj.hotel_id
+    `;
+    db.query(query, [], (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+exports.getRoomHotelById = (hotel_id) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT h.hotel_name, r.room_type, hr.price 
+      FROM hotelmaster h 
+      INNER JOIN hotelroomjoin hr ON h.hotel_id = hr.hotel_id 
+      INNER JOIN roomsmaster r ON r.room_id = hr.room_id 
+      WHERE h.hotel_id = ?`;
+
+    db.query(sql, [hotel_id], (err, result) => {
+      if (err) {
+        console.log("Error:", err);
+        return reject(err);
+      }
+      if (result.length === 0) {
+        console.log("Hotel not found for id:", hotel_id);
+        return resolve([]);
+      }
+      resolve(result); 
+    });
+  });
+};
+
+
+
+exports.insertBooking = (bookingData) => {
+  const {
+    userid,
+    hotel_id,
+    booking_date,
+    checkin_date,
+    checkin_time,
+    checkout_date,
+    checkout_time,
+  } = bookingData;
+
+  const query = `
+    INSERT INTO bookingmaster
+    (userid, hotel_id, booking_date, checkin_date, checkin_time, checkout_date, checkout_time)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    userid,
+    hotel_id,
+    booking_date,
+    checkin_date,
+    checkin_time,
+    checkout_date,
+    checkout_time
+  ];
+
+  return new Promise((resolve, reject) => {
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error('❌ Error inserting booking:', err);
+        return reject(err);
+      }
+      resolve(result);
+    });
+  });
+};
+
+
+exports.getAllBookingAdmin=()=>{
+  return new Promise((resolve,reject)=>{
+    const query=`
+    select b.booking_id,b.hotel_id,u.userid,u.username,u.useremail,
+    h.hotel_name,b.booking_date,b.checkin_date,
+    b.checkin_time,b.checkout_date,b.checkout_time
+     from bookingmaster b inner join usermaster u 
+     on u.userid=b.userid inner join hotelmaster h
+      on b.hotel_id=h.hotel_id
+      `;
+
+      db.query(query,(err,result)=>{
+        if(err){
+          console.log(err);
+          reject(err);
+        }
+        else{
+          console.log("Model:",result);
+          resolve(result);
+        }
+      });
+  });
+};
+
+
+exports.enableReview=(userid)=>{
+  return new Promise((resolve,reject)=>{
+    db.query("UPDATE usermaster SET can_review = TRUE WHERE userid = ?"
+      [userid],
+      (err,result)=>{
+        if(err){
+          console.log(err);
+          reject(err);
+        }
+        else{
+          console.log("enable review");
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+/*exports.getUserById = (userid) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * FROM usermaster WHERE userid = ?',
+      [userid],
+      (err, results) => {
+        if (err) return reject(err);
+        
+        console.log('Query results:', results);
+
+        // ✅ Return first result if available
+        if (results.length === 0) return resolve(null);
+        
+        resolve(results[0]); // Return user object
+      }
+    );
+  });
+};*/
+
+
+
+exports.updateCheckIn = (userid) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      UPDATE bookingmaster 
+      SET checkin_flag = TRUE 
+      WHERE booking_id = (
+        SELECT booking_id FROM (
+          SELECT booking_id FROM bookingmaster 
+          WHERE userid = ? AND checkin_flag = FALSE 
+          ORDER BY booking_date DESC 
+          LIMIT 1
+        ) AS sub
+      )`;
+
+    db.query(query, [userid], (err, result) => {
+      if (err) {
+        console.log("Check-in error:", err);
+        return reject(err);
+      }
+      console.log("Check-in success:", result);
+      resolve(result);
+    });
+  });
+};
+
+
+
+/*exports.updateCheckOut = (userid) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      UPDATE bookingmaster 
+      SET checkin_flag = FALSE 
+      WHERE booking_id = (
+        SELECT booking_id FROM (
+          SELECT booking_id FROM bookingmaster 
+          WHERE userid = ? AND checkin_flag = TRUE 
+          ORDER BY booking_date DESC 
+          LIMIT 1
+        ) AS sub
+      )`;
+
+      
+    console.log("Executing updateCheckOut query:", query);
+    console.log("userid:", userid);
+
+    db.query(query, [userid], (err, result) => {
+      if (err) {
+        console.log("Check-out error:", err);
+        return reject(err);
+      }
+      console.log("Check-out success:", result);
+      resolve(result);
+    });
+  });
+};*/
+
+
+exports.getAllBookingByUserId = (userid) => {
+  return new Promise((resolve, reject) => {
+    console.log("model user id:",userid);
+    const query = `SELECT b.booking_id, userid,h.hotel_name, b.booking_date, b.checkin_date,b.checkin_time, b.checkout_date, b.checkout_time FROM bookingmaster b INNER JOIN hotelmaster h ON b.hotel_id = h.hotel_id WHERE userid = ?`;
+
+    db.query(query, [userid], (err, result) => {
+      if (err) {
+        console.log("DB error:", err);
+        reject(err);
+      } else {
+        console.log(result);
+        resolve(result);
+      }
+    });
+  });
+};
+
+exports.saveReview = (rev_text, rating, review_date) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "INSERT INTO reviewmaster (rev_text, rating, rev_date) VALUES (?, ?, ?)",
+      [rev_text, rating, review_date],
+      (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      }
+    );
+  });
+};
+
+exports.saveHotelReviewJoin = (userid, hotel_id, rev_id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "INSERT INTO hotelreviewjoin (userid, hotel_id, rev_id) VALUES (?, ?, ?)",
+      [userid, hotel_id, rev_id],
+      (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      }
+    );
+  });
+};
+
+
+
+
+exports.getRecommendedHotels = (userid) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT 
+  h.hotel_id,
+  h.hotel_name,
+  h.hotel_address,
+  h.hotel_email,
+  h.hotel_contact,
+  a2.area_name,
+  c.city_name,
+  ROUND(AVG(r.rating), 1) AS avg_rating,
+  GROUP_CONCAT(DISTINCT a.amenity_name ORDER BY a.amenity_name SEPARATOR ', ') AS amenities,
+  hp.filename AS image_filename
+FROM hotelmaster h
+JOIN citymaster c ON h.city_id = c.city_id
+JOIN areamaster a2 ON h.area_id = a2.area_id
+LEFT JOIN hotelamenitiesjoin ha ON ha.hotel_id = h.hotel_id
+LEFT JOIN amenities a ON a.amenity_id = ha.amenity_id
+LEFT JOIN hotelreviewjoin hrj ON hrj.hotel_id = h.hotel_id
+LEFT JOIN reviewmaster r ON r.rev_id = hrj.rev_id
+LEFT JOIN hotelpicjoin hp ON hp.hotel_id = h.hotel_id
+WHERE h.city_id IN (
+    SELECT DISTINCT h2.city_id
+    FROM bookingmaster b2
+    JOIN hotelmaster h2 ON b2.hotel_id = h2.hotel_id
+    WHERE b2.userid = ?
+)
+AND h.hotel_id NOT IN (
+    SELECT b3.hotel_id
+    FROM bookingmaster b3
+    WHERE b3.userid = ?
+)
+GROUP BY h.hotel_id, h.hotel_name, h.hotel_address, h.hotel_email, h.hotel_contact, a2.area_name, c.city_name, hp.filename
+ORDER BY avg_rating DESC
+LIMIT 10;
+
+    `;
+
+    db.query(query, [userid, userid], (err, result) => {
+      if (err) {
+        console.error("DB error in getRecommendedHotels:", err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
+
+exports.getLatestBooking = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT checkin_flag, checkout_flag FROM bookingmaster
+       WHERE userid = ?
+       ORDER BY booking_id DESC LIMIT 1`,
+      [userId],
+      (err, results) => {
+        if (err) return reject(err);
+        resolve(results[0] || null);
+      }
+    );
+  });
+};
+
+exports.updateBookingFlag = (userId, hotelId, flagKey, flagValue) => {
+  return new Promise((resolve, reject) => {
+    console.log('➡️ Updating flag:', { userId, hotelId, flagKey, flagValue });
+
+    db.query(
+      `SELECT booking_id FROM bookingmaster
+       WHERE userid = ? AND hotel_id = ?
+       ORDER BY booking_id DESC LIMIT 1`,
+      [userId, hotelId],
+      (err, results) => {
+        if (err) {
+          console.error('❌ SELECT error:', err);
+          return reject(err);
+        }
+
+        if (results.length === 0) {
+          console.warn('⚠️ No booking found for:', { userId, hotelId });
+          return reject(new Error('No booking found'));
+        }
+
+        const bookingId = results[0].booking_id;
+        console.log('✅ Found bookingId:', bookingId);
+
+        // Escape column name safely
+        const query = `UPDATE bookingmaster SET \`${flagKey}\` = ? WHERE booking_id = ?`;
+        db.query(query, [flagValue, bookingId], (err, result) => {
+          if (err) {
+            console.error('❌ UPDATE error:', err);
+            return reject(err);
+          }
+
+          console.log('✅ UPDATE result:', result);
+
+          if (result.affectedRows === 0) {
+            console.warn('⚠️ No rows updated. Was the flag already set?');
+            return reject(new Error('Update affected 0 rows.'));
+          }
+
+          resolve();
+        });
+      }
+    );
+  });
+};
+
+// regModel.js (or userModel.js)
+exports.getUserById = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM usermaster WHERE userid = ?', [userId], (err, results) => {
+      if (err) return reject(err);
+      resolve(results[0] || null);
+    });
+  });
+};
+
+
+
+
+

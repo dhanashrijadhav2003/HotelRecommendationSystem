@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Review</title>
+  <link rel="stylesheet" href="Review.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="box">
+    <form action="/reviewRatingForm" method="POST">
+
+      <h2 style="margin-bottom: 20px; color: black; text-align:center">Add Review And Rating</h2>
+
+      <input type="hidden" name="userid" value="<%= userId %>" />
+      <input type="hidden" name="hotel_id" value="<%= hotelId %>" />
+
+      <div class="form-group">
+        <input type="text" name="rev_text" placeholder="Enter Review" required />
+      </div>
+
+      <div class="form-group">
+        <input type="number" step="0.1" min="0" max="5" name="rating" placeholder="Enter Rating (0-5)" required />
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="➕ ADD" />
+      </div>
+
+      <% if (msg) { %>
+        <span style="color: red"><%= msg %></span>
+      <% } %>
+    </form>
+  </div>
+
+</body>
+</html>

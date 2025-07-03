@@ -2,6 +2,8 @@ let express=require("express");
 
 let  controller=require("../controllers/usercontroller.js");
 
+const authenticateToken = require("../middlewares/authMiddleware");
+
 let router=express.Router();
 
 const path = require('path');
@@ -55,7 +57,7 @@ router.get("/viewCustomer",controller.viewCustomerCtrl);
 
 router.get("/deleteCity", controller.deleteCityCtrl);
 
-router.get("/viewCity",controller.viewCityCtrl);//
+router.get("/newViewCity",controller.viewCityCtrl);//
 
 router.get("/deleteArea", controller.deleteAreaCtrl);
 
@@ -102,7 +104,9 @@ router.get("/customer",controller.customerCtrl);
 
 router.get("/rating",controller.ratingCtrl);
 
-router.get('/updateCity',controller.loadUpdateCityForm);
+
+
+router.get('/updateCities',controller.loadUpdateCityForm);
 router.post('/finalCityUpdate',controller.finalCityUpdate);
 
 router.get("/updateAmenity", controller.loadAmenityForUpdate);
@@ -116,12 +120,54 @@ router.post("/finalHotelUpdate", upload.single("filename"), controller.finalHote
 
 
 //usesr routers
-router.get("/userdash",controller.userDashCtrl);
+router.get("/userdash",authenticateToken,controller.userDashCtrl);
 
 router.get("/userhotelview",controller.userHoteViewCtrl);
 
+//room
+router.get("/viewPrice", controller.addPriceCtrl);//table
+router.post("/savePrice", controller.savePriceCtrl);//add
+router.get("/savePriceForm",controller.savePriceFormCtrl);//form
+router.get("/roomDash",controller.roomDashCtrl);//dash
+router.get("/room",controller.roomCtrl);
+router.get("/roomPricesByHotel",controller.getRoomPriceByHotelCtrl);
+
+//search by city
+
+//router.get("/hotelBox",controller.hotelBoxCtrl);
+
+router.get("/hotelBox",controller.allHotelsCtrl);
 
 
+//book hotel
+router.get("/bookHotelForm",authenticateToken,controller.bookHotelCtrl);
+router.post("/saveBookingForm",controller.saveBookingFormCtrl);
+
+router.get("/viewSpeHotelUser",controller.viewSpecHotelByUserCtrl);
+
+router.get("/backBtnInSpeHotel",controller.backBtnInSpeHotelCtrl);
+
+
+router.get("/bookingHistoryByUserId", authenticateToken, controller.bookingHistroryCtrl);
+
+router.post("/reviewRatingForm",authenticateToken,controller.reviewRatingFormCtrl);
+
+router.get("/reviewForm",authenticateToken,controller.reviewFormCtrl);
+
+router.get("/bookingDetailsAdmin",controller.bookingDetailsCtrl);
+
+//recommendation
+
+router.get("/recommendHotels", authenticateToken, controller.recommendHotelsCtrl);
+
+router.get("/recommSpecificHotel",controller.recommSpecHotelCtrl);
+
+router.get("/recommendationBackBtn",controller.recomendationBackBtnCtrl);
+
+
+//check in check out
+router.get('/usercheckin', authenticateToken, controller.checkInCtrl);
+router.get('/usercheckout', authenticateToken, controller.checkOutCtrl);
 
 
 
