@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking List</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
+  <style>
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      margin: 0; 
+      min-height: 100vh; 
+      color: #333; 
+    }
+
+    .container { 
+      background: #fff; 
+      border-radius: 16px; 
+      padding: 25px; 
+      margin: 10px auto; 
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25); 
+      max-width: 95%; 
+    }
+
+    .form-group { 
+      display: flex; 
+      justify-content: center; 
+      margin-bottom: 30px; 
+    }
+
+    .page-heading { 
+      font-size: 2.5rem; 
+      font-weight: 700; 
+      text-align: center; 
+      color: #4e54c8; 
+      margin-bottom: 10px; 
+      animation: fadeIn 1s ease-in-out; 
+    }
+
+    @keyframes fadeIn { 
+      from { 
+          opacity: 0; 
+          transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); 
+      } 
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      
+    }
+
+    thead { 
+      background: linear-gradient(to right, #4B0082, #FFA500, #d5d575); 
+      color: white; 
+    }
+
+    th, td { 
+      padding: 14px 10px; 
+      text-align: center; 
+      font-size: 15px; 
+      border-bottom: 1px solid #e0e0e0; 
+    }
+
+
+
+    tbody tr:hover { 
+      background-color: #eef1ff; 
+    }
+
+    a { 
+      color: #4e54c8; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+
+    a:hover { 
+      color: #8f94fb; 
+      text-decoration: underline; 
+    }
+
+
+
+    @media (max-width: 576px) {
+      table, thead, tbody, th, td, tr { 
+        display: block; 
+      }
+
+      thead tr { 
+        display: none; 
+      }
+
+      tbody tr {
+         margin-bottom: 15px; 
+         background: #f4f4f4; 
+         border-radius: 10px; 
+         box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+         padding: 10px; 
+      }
+
+      td { 
+        text-align: left; 
+        padding: 8px 12px; 
+        position: relative; 
+      }
+
+      td::before {
+         content: attr(data-label);
+          font-weight: bold; 
+          display: block; 
+          margin-bottom: 4px; 
+          color: #4e54c8; 
+      }
+    }
+
+    .modal-overlay {
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); 
+      display: none;
+      justify-content: center; 
+      align-items: center;
+      animation: fadeIn 0.5s ease-in-out; 
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: #fff; 
+      padding: 25px; 
+      border-radius: 15px;
+      width: 90%; 
+      max-width: 500px; 
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      animation: popUp 0.4s ease;
+    }
+
+    @keyframes popUp {
+      0% { 
+          transform: scale(0.8); 
+          opacity: 0; 
+      }
+      100% { 
+          transform: scale(1); 
+          opacity: 1; 
+        }
+    }
+
+    .close { 
+      float: right; 
+      font-size: 1.5rem; 
+      cursor: pointer; 
+      color: #ff5c5c; 
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-group mt-5">
+  <h2 class="page-heading">Booking Details</h2>
+</div>
+
+<div class="container">
+    <div class="container mb-3">
+  <input type="text" id="searchInput" class="form-control" placeholder="Search by Username, User ID or Hotel Name">
+</div>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>BOOKING_ID</th>
+      <th>USER_ID</th>
+      <th>USER_NAME</th>
+      <th>HOTEL_ID</th>
+      <th>HOTEL_NAME</th>
+      <th>BOOKING DATE</th>
+      <th>CHECK-IN DATE</th>
+      <th>CHECK-IN TIME</th>
+      <th>CHECK-OUT DATE</th>
+      <th>CHECK-OUT TIME</th>
+      <th>CHECK IN</th>
+      <th>CHECK OUT</th>
+    </tr>
+    </thead>
+    <tbody id="tblBody1"></tbody>
+  </table>
+
+  <div class="d-flex justify-content-center mt-3">
+    <nav>
+      <ul class="pagination" id="pagination"></ul>
+    </nav>
+  </div>
+</div>
+
+
+
+<script>
+  const data = <%- JSON.stringify(booking) %>;
+  console.log("Booking data in JS:", data);
+
+  let filteredData = [...data];  // store filtered results
+  const rowsPerPage = 3;
+  let currentPage = 1;
+
+  const searchInput = document.getElementById("searchInput");
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    filteredData = data.filter(item =>
+      item.username.toLowerCase().includes(query) ||
+      String(item.userid).includes(query) ||
+      item.hotel_name.toLowerCase().includes(query)
+    );
+    currentPage = 1; // reset to page 1 after search
+    displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+    setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+  });
+
+  function displayTableItems(dataArray, wrapper, rowsPerPage, page) {
+    wrapper.innerHTML = "";
+    page--;
+    const start = rowsPerPage * page;
+    const end = start + rowsPerPage;
+    const paginatedItems = dataArray.slice(start, end);
+
+    if (paginatedItems.length === 0) {
+      wrapper.innerHTML = `<tr><td colspan="11">No matching records found.</td></tr>`;
+      return;
+    }
+
+    for (let item of paginatedItems) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td data-label="BOOKING_ID">${item.booking_id}</td>
+        <td data-label="USER_ID">${item.userid}</td>
+        <td data-label="USER_NAME">${item.username}</td>
+        <td data-label="HOTEL_ID">${item.hotel_id}</td>
+        <td data-label="HOTEL_NAME">${item.hotel_name}</td>
+        <td data-label="BOOKING DATE">${item.booking_date}</td>
+        <td data-label="CHECK-IN DATE">${item.checkin_date}</td>
+        <td data-label="CHECK-IN TIME">${item.checkin_time}</td>
+        <td data-label="CHECK-OUT DATE">${item.checkout_date}</td>
+        <td data-label="CHECK-OUT TIME">${item.checkout_time}</td>
+         <td data-label="CHECK-In"><a Check-In href="/usercheckin?hotel_id=${item.hotel_id}&userid=${item.userid}">Check-In</a></td>
+         <td data-label="CHECK IN"><a Check-Out href="/usercheckout?hotel_id=${item.hotel_id}&userid=${item.userid}">Check-Out</a></td>
+      `;
+      wrapper.appendChild(row);
+    }
+  }
+
+  function setupPagination(items, wrapper, rowsPerPage) {
+    wrapper.innerHTML = "";
+    const pageCount = Math.ceil(items.length / rowsPerPage);
+
+    const prevLi = document.createElement("li");
+    prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+    const prevLink = document.createElement("a");
+    prevLink.className = "page-link";
+    prevLink.href = "#";
+    prevLink.innerText = "Previous";
+    prevLink.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+      }
+    };
+    prevLi.appendChild(prevLink);
+    wrapper.appendChild(prevLi);
+
+    for (let i = 1; i <= pageCount; i++) {
+      let li = document.createElement("li");
+      li.className = "page-item" + (currentPage === i ? " active" : "");
+      let a = document.createElement("a");
+      a.className = "page-link";
+      a.href = "#";
+      a.innerText = i;
+      a.onclick = () => {
+        currentPage = i;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+      };
+      li.appendChild(a);
+      wrapper.appendChild(li);
+    }
+
+    const nextLi = document.createElement("li");
+    nextLi.className = "page-item" + (currentPage === pageCount ? " disabled" : "");
+    const nextLink = document.createElement("a");
+    nextLink.className = "page-link";
+    nextLink.href = "#";
+    nextLink.innerText = "Next";
+    nextLink.onclick = () => {
+      if (currentPage < pageCount) {
+        currentPage++;
+        displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+        setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+      }
+    };
+    nextLi.appendChild(nextLink);
+    wrapper.appendChild(nextLi);
+  }
+
+  // Initial display
+  displayTableItems(filteredData, document.getElementById("tblBody1"), rowsPerPage, currentPage);
+  setupPagination(filteredData, document.getElementById("pagination"), rowsPerPage);
+</script>
+
+
+</body>
+</html>

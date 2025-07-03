@@ -3,51 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hotel Registration Form</title>
-  <link rel="stylesheet" href="addHotel.css" />
+  <title>Update Hotel</title>
   <script src="fetchArea.js"></script>
-
-  <!-- Select2 CSS CDN -->
-
+  <link rel="stylesheet" href="addHotel.css" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
 </head>
 
 <body>
   <div class="box">
-    <form name="frm" action="/addHotel" method="POST" enctype="multipart/form-data">
-      <h2>Add Hotel</h2>
+    <form name="frm" action="/finalHotelUpdate" method="POST" enctype="">
+      <h2>Update Hotel</h2>
+
+      <input type="hidden" name="hotel_id" value="<%= hotel.hotel_id %>">
 
       <div class="form-row">
         <!-- Left Column -->
         <div class="form-column">
           <div class="form-group">
-            <input type="text" name="hotel_name" placeholder="Enter Hotel Name" required />
+            <input type="text" name="hotel_name" placeholder="Enter Hotel Name" value="<%= hotel.hotel_name %>" required />
           </div>
 
           <div class="form-group">
-            <input type="text" name="hotel_address" placeholder="Enter Hotel Address" required />
+            <input type="text" name="hotel_address" placeholder="Enter Hotel Address" value="<%= hotel.hotel_address %>" required />
           </div>
 
           <div class="form-group">
-            <input type="email" name="hotel_email" placeholder="Enter Email" required />
+            <input type="email" name="hotel_email" placeholder="Enter Email" value="<%= hotel.hotel_email %>" required />
           </div>
 
           <div class="form-group">
-            <select name="city_id" id="city" required onchange="fetcharea(this.value)">
+            <select name="city_id" required>
               <option value="">-- Select City --</option>
-              <% citymaster.forEach(city => { %>
-                <option value="<%= city.city_id %>"><%= city.city_name %></option>
+              <% city.forEach(c => { %>
+                <option value="<%= c.city_id %>" <%= c.city_name === hotel.city_name ? "selected" : "" %>>
+                  <%= c.city_name %>
+                </option>
               <% }) %>
             </select>
           </div>
 
           <div class="form-group">
-            <select name="area_id" id="area" required>
+            <select name="area_id" required>
               <option value="">-- Select Area --</option>
-              <% areamaster.forEach(area => { %>
-                <option value="<%= area.area_id %>"><%= area.area_name %></option>
+              <% area.forEach(a => { %>
+                <option value="<%= a.area_id %>" <%= a.area_name === hotel.area_name ? "selected" : "" %>>
+                  <%= a.area_name %>
+                </option>
               <% }) %>
             </select>
           </div>
@@ -57,36 +58,46 @@
         <div class="form-column">
           <div class="form-group">
             <label for="imageUpload">Choose Hotel Image</label>
-            <input type="file" name="filename" id="imageUpload" accept="image/*" required />
+            <input type="file" name="filename" id="imageUpload" accept="image/*" />
+            <% if (hotel.filename) { %>
+              <img id="previewImage" src="/uploads/<%= hotel.filename %>" width="120" style="margin-top: 10px;" />
+            <% } else { %>
+              <img id="previewImage" style="display:none;" width="120" />
+            <% } %>
           </div>
 
           <div class="form-group">
             <label for="amenities">Select Amenities</label>
             <select id="amenities" name="amenity_ids[]" multiple required>
-              <% amenities.forEach(amenity => { %>
-                <option value="<%= amenity.amenity_id %>"><%= amenity.amenity_name %></option>
+              <% 
+                const selectedAmenities = hotel.amenity_names 
+                  ? hotel.amenity_names.split(",").map(a => a.trim()) 
+                  : []; 
+              %>
+              <% amenity.forEach(amenity => { %>
+                <option value="<%= amenity.amenity_id %>" <%= selectedAmenities.includes(amenity.amenity_name) ? "selected" : "" %>>
+                  <%= amenity.amenity_name %>
+                </option>
               <% }) %>
             </select>
             <small>(Select multiple amenities)</small>
           </div>
 
           <div class="form-group">
-            <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" />
+            <input type="text" name="hotel_contact" id="hotelcontact" placeholder="Enter Contact" value="<%= hotel.hotel_contact %>" />
           </div>
         </div>
       </div>
 
       <div class="form-group submit-container">
-        <input type="submit" value="➕ Add Hotel" />
-
+        <input type="submit" value="✔ Update Hotel" />
       </div>
-      
 
       <span><%= msg %></span>
     </form>
   </div>
 
-  <!-- Select2 JS CDN -->
+  <!-- JS Libraries -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
@@ -108,13 +119,13 @@
       }
     });
 
-    // Initialize Select2 for amenities
-    $(document).ready(function() {
+    // Select2 for amenities
+    $(document).ready(function () {
       $('#amenities').select2({
         placeholder: "Select amenities",
         allowClear: true
       });
     });
   </script>
-</body>  
+</body>
 </html>

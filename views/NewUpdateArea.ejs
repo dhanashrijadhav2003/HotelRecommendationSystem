@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Area</title>
+  <link rel="stylesheet" href="/Newarea.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="box">
+    <form action="/finalAreaUpdate" method="POST">
+
+      <h2 style="margin-bottom: 20px; color: black; text-align:center;">Update Area</h2>
+
+      <!-- Hidden area_id field to identify which area to update -->
+      <input type="hidden" name="area_id" value="<%= area.area_id %>" />
+
+      <div class="form-group">
+        <input 
+          type="text" 
+          name="area_name" 
+          placeholder="Enter Area Name" 
+          value="<%= area.area_name %>" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <select class="form-control" name="city_id" required>
+          <option value="">-- Select City --</option>
+          <% city.forEach(c => { %>
+            <option value="<%= c.city_id %>" <%= c.city_id === area.city_id ? 'selected' : '' %>>
+              <%= c.city_name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="✅ Update Area" />
+      </div>
+
+      <% if (msg) { %>
+        <span><%= msg %></span>
+      <% } %>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -3,94 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hotel Admin Template</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="userHotelView.css">
+  <title>Hotel Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #eef5ff;
+    color: #333;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #4B0082;
+    margin: 30px 0 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  }
+
+  .search-box-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  .search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .search-box input {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: #4B0082;
+  }
+
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    background: #fafafa;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  }
+
+  .card h3 {
+    color: #4B0082;
+    margin: 0 0 8px;
+    font-size: 20px;
+  }
+
+  .card p {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .search-box {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .search-box input {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .container {
+      padding: 15px;
+    }
+  }
+</style>
+
 </head>
 <body>
 
-<div class="container">
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search hotels..." />
-  </div>
+  <h2>Search Hotels</h2>
 
-  <nav class="navbar">
-    <ul class="nav">
-      <li class="nav-item"><a class="nav-link active" id="city" onclick="getdata()">Citywise</a></li>
-      <li class="nav-item"><a class="nav-link" id="are" onclick="getarea()">Areawise</a></li>
-      <li class="nav-item">
-        <a class="nav-link">Rating</a>
-        <div class="dropdown-content">
-          <a onclick="loadPage('rating_5.html', this)">6 Star</a>
-          <a onclick="loadPage('rating_4.html', this)">4 Star</a>
-          <a onclick="loadPage('rating_3.html', this)">3 Star</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link">Type</a>
-        <div class="dropdown-content">
-          <a onclick="loadPage('type_resort.html', this)">Resort</a>
-          <a onclick="loadPage('type_business.html', this)">Business Hotel</a>
-          <a onclick="loadPage('type_boutique.html', this)">Boutique</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <button class="price-btn" onclick="toggleDiv()">Price</button>
-      </li>
-    </ul>
-  </nav>
-
-  <div id="hidediv" class="hidediv">
-    <div class="price-heading">PRICE</div>
-    <div class="price-options">
-      <div class="price-tag">₹ 0 - ₹ 99</div>
-      <div class="price-tag">₹ 100 - ₹ 149</div>
-      <div class="price-tag">₹ 150 - ₹ 199</div>
-      <div class="price-tag">₹ 200 - ₹ 249</div>
-      <div class="price-tag">₹ 250 - ₹ 299</div>
-      <div class="price-tag">₹ 300 - ₹ 399</div>
-      <div class="price-tag">₹ 400 - ₹ 499</div>
-      <div class="price-tag">₹ 500 - ₹ 599</div>
-      <div class="price-tag">₹ 600 - ₹ 699</div>
-      <div class="price-tag">₹ 700 - ₹ 799</div>
-      <div class="price-tag">₹ 800 & Above</div>
+  <div class="container">
+    <div class="search-box">
+      <input id="cityInput" type="text" placeholder="Search by city" onkeyup="liveSearch()">
+      <input id="areaInput" type="text" placeholder="Search by area" onkeyup="liveSearch()">
     </div>
-    <button class="done-btn" onclick="toggleDiv()">Done</button>
+
+    <div class="results" id="results">
+      <!-- Hotel cards will be loaded here -->
+    </div>
   </div>
 
-  <div class="iframe-wrapper">
-    <iframe id="contentFrame" src=""></iframe>
-  </div>
-</div>
+  <script>
+    window.onload = liveSearch;
 
-<script>
-  function toggleDiv() {
-    const div = document.getElementById('hidediv');
-    div.style.display = div.style.display === 'block' ? 'none' : 'block';
-  }
+    function liveSearch() {
+      const city = cityInput.value.trim();
+      const area = areaInput.value.trim();
 
-  function loadPage(page, clickedLink) {
-    document.getElementById('contentFrame').src = page;
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.classList.remove('active');
-    });
-    if (clickedLink.closest('.dropdown-content')) {
-      clickedLink.closest('.nav-item').querySelector('.nav-link').classList.add('active');
-    } else {
-      clickedLink.classList.add('active');
+      fetch(`/hotelBox?city=${encodeURIComponent(city)}&area=${encodeURIComponent(area)}`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("results").innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById("results").innerHTML = "<p style='color:red'>Failed to load hotels.</p>";
+        });
     }
-  }
-
-  function getdata() {
-    // show city dropdown if needed
-    alert("City dropdown logic placeholder");
-  }
-
-  function getarea() {
-    // show area dropdown if needed
-    alert("Area dropdown logic placeholder");
-  }
-</script>
+  </script>
 
 </body>
 </html>

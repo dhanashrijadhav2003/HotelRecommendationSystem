@@ -8,11 +8,12 @@
   <!-- Font Awesome & Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet"/>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="userdashboard.css">
   
 </head>
 <body>
+
   <!-- Top Navigation Bar -->
   <nav class="navbar">
     <div class="navbar-left">
@@ -22,35 +23,49 @@
       <div class="profile-container" onclick="toggleProfileMenu()">
         <i class="fa fa-user-circle-o profile-icon"></i>
         <div class="profile-menu" id="profileMenu">
-          <p><strong>Name:</strong> John Doe</p>
-          <p><strong>Email:</strong> admin@example.com</p>
-          <p><strong>Role:</strong> Admin</p>
+          <p><strong>Name:</strong> <%= user.name %></p>
+          <p><strong>Email:</strong> <%= user.email %></p>
+          <p><strong>Role:</strong> User</p>
           <a href="/logout">Logout</a>
         </div>
       </div>
     </div>
   </nav>
 
-<hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
+  <hr style="border: none; border-top: 4px solid #ccc; margin: 0;">
 
   <!-- Page Layout -->
   <div class="dashboard-container">
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
       <ul class="sidebar-menu">
-	    <li><i class="fa fa-hotel"></i><a class="nav-link active" onclick="loadPage('/userhotelview', this)">View Hotels</a></li>
-	    <li><i class="fa fa-suitcase"></i><a class="nav-link active" onclick="loadPage('/hotelpicDash', this)">Booking</a></li>
-	    <li><i class="fa fa-star"></i><a class="nav-link active" onclick="loadPage('/review', this)">Rating & Reviews</a></li>
-	    <li><i class="fa fa-sign-out"></i><a class="nav-link active" onclick="loadPage('', this)">Logout</a></li>
+        <li><i class="fa fa-hotel"></i><a class="nav-link active" onclick="loadPage('/userhotelview', this)">View Hotels</a></li>
+        <li><i class="fa fa-suitcase"></i><a class="nav-link active" onclick="loadPage('/bookingHistoryByUserId', this)">Booking History</a></li>
+        
+        <!-- Conditional Rating & Reviews Tab -->
+        <li>
+          <i class="fa fa-star"></i>
+          <% if (showReviewTab) { %>
+            <a class="nav-link active" onclick="loadPage('/reviewForm?hotel_id=<%= hotelId %>', this)">Rating & Reviews</a>
+          <% } else { %>
+            <a class="nav-link disabled" title="Available after checkout" style="pointer-events: none; opacity: 0.5;">Rating & Reviews</a>
+          <% } %>
+        </li>
+
+        <li><i class="fas fa-bullseye"></i><a class="nav-link active" onclick="loadPage('/recommendHotels', this)">Recommendation</a></li>
+
+        <form id="logoutForm" method="POST" action="/logout">
+          <li><i class="fa fa-sign-out"></i><a class="nav-link active" onclick="document.getElementById('logoutForm').submit()">Logout</a></li>
+        </form>
       </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="main-body">
       <div class="iframe-wrapper">
-      <iframe id="contentFrame" src="" scrolling="no"></iframe>
-    </div>
+        <iframe id="contentFrame" src="" scrolling="no"></iframe>
+      </div>
     </main>
     
   </div>
@@ -71,18 +86,13 @@
       }
     });
 
-
-	function loadPage(page, clickedLink) {
-      		document.getElementById('contentFrame').src = page;
-
-      // Handle active class
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-      });
+    function loadPage(page, clickedLink) {
+      document.getElementById('contentFrame').src = page;
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
       clickedLink.classList.add('active');
     }
 
   </script>
+
 </body>
 </html>
-<!--hii-->
